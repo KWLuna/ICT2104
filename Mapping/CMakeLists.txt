@@ -13,7 +13,7 @@ project(Mapping C CXX ASM)
 pico_sdk_init()
 
 add_executable(${PROJECT_NAME}
-        blink.c
+        mapping.c
 )
 
 # Create map/bin/hex/uf2 files
