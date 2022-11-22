@@ -18,7 +18,7 @@ typedef struct Node
 // Grid contains all Node information
 typedef struct Grid
 {
-    Node gridArray[8][10];
+    Node gridArray[7][9];
 } Grid;
 
 typedef enum Direction
@@ -93,6 +93,9 @@ Direction GetBackDirection(Direction frontDirection)
     }
 }
 
+//array used by navigation code
+int navigationArray[9][11];
+
 void MarkWall(int x, int y, Node gridArray[][10], float ultrasonicDistance, Direction ultrasonicDirection)
 {
     // if ultrasonic value is more than distance, it is not a wall
@@ -166,6 +169,56 @@ void SetCar(Car *car, int xPos, int yPos, Direction direction)
     car->directionFacing = direction;
 }
 
+//convert 4x5 into 9x11 
+//conversion guide: (lengthx2) + 1
+void conversionConstructor(Node gridArray[4][5])
+{
+    //initialization node centers
+    //0 = wall, 1 = space
+    
+    for(int x=0; x<9;x++)
+    {
+        for(int y=0; y<11; y++)
+        {
+            navigationArray[x][y]=0;
+        }
+    }
+
+    //constructing navigation array map
+    for(int i=0; i<4; i++)
+    {
+        for(int j=0; j<5; j++)
+        {
+            int refRow = (i*2)+1;
+            int refCol = (j*2)+1;
+
+            //blocking out diagonals for each node
+            navigationArray[refRow-1][refCol-1]=1;
+            navigationArray[refRow-1][refCol+1]=1;
+            navigationArray[refRow+1][refCol-1]=1;
+            navigationArray[refRow+1][refCol+1]=1;
+
+            //creating blocked off walls
+            if(gridArray[i][j].northIsWall == 0)
+            {
+               navigationArray[refRow-1][refCol]=1;
+            }
+            if(gridArray[i][j].southIsWall == 0)
+            {
+               navigationArray[refRow+1][refCol]=1;
+            }
+            if(gridArray[i][j].eastIsWall == 0)
+            {
+               navigationArray[refRow][refCol-1]=1;
+            }
+            if(gridArray[i][j].westIsWall == 0)
+            {
+               navigationArray[refRow][refCol+1]=1;
+            }
+        }
+    }
+}
+
 int main() 
 {
     // Initialising Objects
@@ -173,7 +226,7 @@ int main()
     Grid grid;  // The Map
 
     //Set Car Starting Position
-    SetCar(&car, 4, 5, North);
+    SetCar(&car, 3, 4, North);
 
     while (1)
     {
