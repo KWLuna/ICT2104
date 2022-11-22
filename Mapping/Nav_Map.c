@@ -133,7 +133,10 @@ bool navigateTo(int navigationArray[9][11],bool visitedArray[9][11], int currRow
     
 
     if((currRow==destRow) && (currCol==destCol))
-        {
+        {   
+            movementList[backfill].row=currRow;
+            movementList[backfill].col=currCol;
+            backfill+=1;
             visitedArray[currRow][currCol]=true;
             found = true;
             return true;
@@ -166,9 +169,10 @@ bool navigateTo(int navigationArray[9][11],bool visitedArray[9][11], int currRow
 
     if(foundExit)
     {
-        movementList[0+backfill].row=currRow;
-        movementList[0+backfill].col=currCol;
+        movementList[backfill].row=currRow;
+        movementList[backfill].col=currCol;
         backfill+=1;
+        
         return true;
     }
     return false;
@@ -238,10 +242,15 @@ int main()
         }
     }
 
-    destRow=7;
-    destCol=9;
+    //allow custom coordinate here once we fix with other teams
+    destRow=1;
+    destCol=4;
 
-    navigateTo(navigationArray,visitedArray,1,1);
+    //allow custom coordinate here once we fix with other teams
+    carRow=1;
+    carCol=1;
+
+    navigateTo(navigationArray,visitedArray,carRow,carCol);
 
     printf("\n");
     //printing travelled bool map
@@ -262,44 +271,57 @@ int main()
     else
         printf("\nNO ROUTE POSSIBLE!");
 
-    printf("\nTOTAL STEPS: %d",backfill);
+    printf("\nTOTAL STEPS: %d",backfill-1);
 
+    //debug lines
+    printf("\nX:%d, Y:%d", movementList[0].col,movementList[0].row);
+    printf("\nX:%d, Y:%d", movementList[1].col,movementList[1].row);
+    printf("\nX:%d, Y:%d", movementList[2].col,movementList[2].row);
+    printf("\nX:%d, Y:%d", movementList[3].col,movementList[3].row);
 
+    if(backfill==2)
+    {
+
+    }
+
+    
     for(int i=0;i<backfill;i++)
     {
         if(i==0)
         {
-            printf("\nStarting location: X:%d, Y:%d", movementList[backfill-i-1].col,movementList[backfill-i-1].row);
+            printf("\nStarting location: X:%d, Y:%d", movementList[backfill-1].col,movementList[backfill-1].row);
             printf("\nTarget Location: X:%d, Y:%d",destCol,destRow);
-        }
+            continue;
 
+        }
+        
         //this means that the row increased by one, aka the coordinate moved down
-        if(movementList[backfill-i-2].row == movementList[backfill-i-1].row + 1)
+        if(movementList[backfill-i-1].row == movementList[backfill-i].row + 1)
         {
             //move car IRL southwards half a grid worth of distance
             printf("\nDOWN");
         }
         //this means that the row decreased by one, aka the coordinate moved up
-        else if(movementList[backfill-i-2].row == movementList[backfill-i-1].row - 1)
+        else if(movementList[backfill-i-1].row == movementList[backfill-i].row - 1)
         {
             //move car IRL northwards half a grid worth of distance
             printf("\nUP");
         }
         //this means that the col increased by one, aka the coordinate moved right
-        else if(movementList[backfill-i-2].col == movementList[backfill-i-1].col + 1)
+        else if(movementList[backfill-i-1].col == movementList[backfill-i].col + 1)
         {
             //move car IRL eastwards half a grid worth of distance
             printf("\nRIGHT");
         }
         //this means that the col decreased by one, aka the coordinate moved left
-        else if(movementList[backfill-i-2].col == movementList[backfill-i-1].col - 1)
+        else if(movementList[backfill-i-1].col == movementList[backfill-i].col - 1)
         {
             //move car IRL westwards half a grid worth of distance
             printf("\nLEFT");
-        }
+        }    
         
-
         
     }
+    
 }
 
