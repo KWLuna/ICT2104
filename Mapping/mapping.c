@@ -3,10 +3,8 @@
 // Node is used by Grid
 typedef struct Node
 {
-    // unsigned int is replacing boolean cz c does not have boolean data type. 
-    
-    // 0 = false, 1 = true
-    unsigned int isVisited:1; 
+    // unsigned int used to save space, only 1 bit used. 
+    unsigned int isVisited : 1; // 0 = false, 1 = true
 
     // 0 = isWall, 1 = isGap, 2 = isTravelledGap
     int northIsWall;
@@ -33,6 +31,13 @@ typedef struct Car
 {
     int xCoord;
     int yCoord;
+
+    // pointers to node walls that car is in
+    int *forward;
+    int *right;
+    int *left;
+    int *back; 
+    
     Direction directionFacing;
 } Car;
 
@@ -96,10 +101,10 @@ Direction GetBackDirection(Direction frontDirection)
 //array used by navigation code
 int navigationArray[9][11];
 
-void MarkWall(int x, int y, Node gridArray[][10], float ultrasonicDistance, Direction ultrasonicDirection)
+void MarkWall(int x, int y, Node gridArray[][9], float ultrasonicDistance, Direction ultrasonicDirection)
 {
     // if ultrasonic value is more than distance, it is not a wall
-    if (ultrasonicDistance > 18.f) // check how many cm is wall from car (one grid is 27cm)
+    if (ultrasonicDistance > 13.5f) // check how many cm is wall from car (one grid is 27cm)
     {
         // mark ultrasonic direction as gap
         switch(ultrasonicDirection)
@@ -140,7 +145,7 @@ void MarkWall(int x, int y, Node gridArray[][10], float ultrasonicDistance, Dire
 }
 
 // checks current node's walls
-void CheckNode(int x, int y, Node gridArray[][10], Direction directionFacing)
+void CheckNode(int x, int y, Node gridArray[][9], Direction directionFacing)
 {
     // if current node has not been visted
     if (gridArray[x][y].isVisited == 0)
@@ -219,57 +224,64 @@ void conversionConstructor(Node gridArray[4][5])
     }
 }
 
-int main() 
+// The Map
+Grid grid;  // map is global so that its values are 0 at initialisation
+
+int main()
 {
     // Initialising Objects
     Car car;    // Our Car
-    Grid grid;  // The Map
 
     //Set Car Starting Position
     SetCar(&car, 3, 4, North);
 
-    while (1)
-    {
-        CheckNode(car.xCoord, car.yCoord, grid.gridArray, car.directionFacing);
-        
-        Node *node = &grid.gridArray[car.xCoord][car.yCoord];
+    // counter for number of nodes visited
+    int numNodeVisited = 0;
 
-        int *forward, *right, *left, *back;
+    while (numNodeVisited < 20)
+    {
+        CheckNode(car.xCoord, car.yCoord, grid.gridArray, car.directionFacing); // mark current node
+
+        numNodeVisited++; // add 1 to number of nodes visited
+        
+        Node *node = &grid.gridArray[car.xCoord][car.yCoord];   // pointer of current node
+
+        //int *forward, *right, *left, *back;
         Direction currLeft, currRight, currBack;
         switch (car.directionFacing)
         {
         case North:
-            forward = &node->northIsWall;
-            right = &node->eastIsWall;
-            left = &node->westIsWall;
-            back = &node->southIsWall;
+            car.forward = &node->northIsWall;
+            car.right = &node->eastIsWall;
+            car.left = &node->westIsWall;
+            car.back = &node->southIsWall;
             currRight = East;
             currLeft = West;
             currBack = South;
             break;
         case East:
-            forward = &node->eastIsWall;
-            right = &node->southIsWall;
-            left = &node->northIsWall;
-            back = &node->westIsWall;
+            car.forward = &node->eastIsWall;
+            car.right = &node->southIsWall;
+            car.left = &node->northIsWall;
+            car.back = &node->westIsWall;
             currRight = South;
             currLeft = North;
             currBack = West;
             break;
         case West:
-            forward = &node->westIsWall;
-            right = &node->northIsWall;
-            left = &node->southIsWall;
-            back = &node->eastIsWall;
+            car.forward = &node->westIsWall;
+            car.right = &node->northIsWall;
+            car.left = &node->southIsWall;
+            car.back = &node->eastIsWall;
             currRight = North;
             currLeft = South;
             currBack = East;
             break;
         case South:
-            forward = &node->southIsWall;
-            right = &node->westIsWall;
-            left = &node->eastIsWall;
-            back = &node->northIsWall;
+            car.forward = &node->southIsWall;
+            car.right = &node->westIsWall;
+            car.left = &node->eastIsWall;
+            car.back = &node->northIsWall;
             currRight = West;
             currLeft = East;
             currBack = North;
@@ -278,9 +290,9 @@ int main()
             break;
         }
 
-        if (*forward == 1)
+        if (*car.forward == 1)
         {
-            *forward = 2;   // set to isTravelled
+            *car.forward = 2;   // set to isTravelled
 
             // Travel Forward <to be done>
             
@@ -302,9 +314,9 @@ int main()
                     break;
             }    
         }
-        else if (*right == 1)
+        else if (*car.right == 1)
         {
-            *right = 2;   // set to isTravelled
+            *car.right = 2;   // set to isTravelled
 
             // Travel Right <to be done>
 
@@ -328,9 +340,9 @@ int main()
             // update car direction
             SetCar(&car, car.xCoord, car.yCoord, currRight);
         }
-        else if (*left == 1)
+        else if (*car.left == 1)
         {
-            *left = 2;   // set to isTravelled
+            *car.left = 2;   // set to isTravelled
 
             // Travel Left <to be done>
 
@@ -354,9 +366,9 @@ int main()
             // update car direction
             SetCar(&car, car.xCoord, car.yCoord, currLeft);
         }
-        else if (*back == 1)
+        else if (*car.back == 1)
         {
-            *back = 2;   // set to isTravelled
+            *car.back = 2;   // set to isTravelled
 
             // reverse 1 Node <to be Done>
 
