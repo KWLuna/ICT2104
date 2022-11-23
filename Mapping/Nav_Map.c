@@ -43,6 +43,25 @@ int backfill=0;
 
 //functions
 
+//function call sequence
+//receive coordinate from signal team
+//-> call setCoord with current car coord and dest row/col with ref to [9][11]
+//-> call conversionConstructor with a [4][5] array from mapping to create navigation array
+//-> call navigateTo with the navigation array, visited array
+//-> print out movement list
+//-> TODO: replace movement list print instructions with movement calls to car movement
+//-> TODO: send signal once destination reach to signal team to keep polling for more inputs
+//-> TODO: send a signal if no route possible to reach target dest 
+
+void setCoord(int carrow, int carcol, int destrow, int destcol)
+{   
+    carRow = carrow;
+    carCol = carcol;
+    destRow = destrow;
+    destCol = destcol;
+
+}
+
 void conversionConstructor(Node gridArray[4][5])
 {
     //initialization node centers as well as visited bool map
@@ -223,7 +242,7 @@ int main()
         //sample map, go from 1,1 to 1,9
         1,1,1,1,1,1,1,1,1,1,1,
         1,0,1,0,0,0,0,0,1,0,1,
-        1,1,1,0,0,1,1,0,1,0,1,
+        1,0,1,0,0,1,1,0,1,0,1,
         1,0,0,0,0,1,0,0,1,0,1,
         1,0,0,0,0,1,0,0,1,0,1,
         1,1,1,1,0,1,0,0,1,0,1,
@@ -243,7 +262,7 @@ int main()
     }
 
     //allow custom coordinate here once we fix with other teams
-    destRow=2;
+    destRow=4;
     destCol=1;
 
     //allow custom coordinate here once we fix with other teams
