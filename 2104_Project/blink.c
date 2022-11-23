@@ -7,7 +7,7 @@
 #include "pico/stdlib.h"
 
 int main() {
-#ifndef PICO_DEFAULT_LED_PIN
+#ifndef PICO_DEFAULT_LED_PINs
 #warning blink example requires a board with a regular LED
 #else
     const uint LED_PIN = PICO_DEFAULT_LED_PIN;
