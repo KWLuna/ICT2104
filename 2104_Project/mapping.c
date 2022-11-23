@@ -1,6 +1,8 @@
 // #include "pico/stdlib.h"
 
 #define NUMBER_OF_NODES 20
+#define CAR_START_X 3
+#define CAR_START_Y 4
 
 // Node is used by Grid
 typedef struct Node
@@ -13,6 +15,10 @@ typedef struct Node
     int southIsWall;
     int eastIsWall;
     int westIsWall;
+
+    // to store first node xy that car entered node from
+    int prevX;
+    int prevY;
 } Node;
 
 // Grid contains all Node information
@@ -111,13 +117,17 @@ int navigationArray[9][11];
 
 // global so that its values are 0 at initialisation
 Grid grid;  // The Map 
+Car car;    // Our Car
 int numNodeVisited = 0; // counter for number of nodes visited
 int stackTop = -1;  // to track the top element of stack array
 Stack dfsStack[NUMBER_OF_NODES];  // max 20 as there are 20 nodes
-int carPrevX;
-int carPrevY;
+int carPrevX = CAR_START_X;
+int carPrevY = CAR_START_Y;
 
 // declare functions
+void CheckCurrentNode();
+void MoveCarToStackPos();
+void SavePrevXYToCurrentNode();
 void Push(int x, int y);
 Stack Pop();
 Stack Peek();
@@ -128,11 +138,18 @@ void conversionConstructor(Node gridArray[4][5]);
 
 int main()
 {
-    // Initialising Objects
-    Car car;    // Our Car
+    // Initialise Nodes prevX and prevY to 100
+    for (int i = 0; i < 7; i++)
+    {
+        for (int p = 0; p < 9; p++)
+        {
+            grid.gridArray[i][p].prevX = 100;
+            grid.gridArray[i][p].prevY = 100;
+        }
+    }
 
     //Set Car Starting Position and Direction
-    SetCar(&car, 3, 4, North);
+    SetCar(&car, CAR_START_X, CAR_START_Y, North);
 
     while (numNodeVisited < 20)
     {
@@ -319,7 +336,11 @@ void MoveCarToStackPos()
 
 void SavePrevXYToCurrentNode()
 {
-
+    if (grid.gridArray[car.xCoord][car.yCoord].prevX == 100 && grid.gridArray[car.xCoord][car.yCoord].prevY == 100)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].prevX = carPrevX;
+        grid.gridArray[car.xCoord][car.yCoord].prevY = carPrevY;
+    }
 }
 
 // push element to top of stack
