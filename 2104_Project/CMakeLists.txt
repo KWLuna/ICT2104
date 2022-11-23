@@ -4,6 +4,8 @@ add_executable(${PROJECT_NAME}
         Nav_Map.c
         uart.c
         i2c.c
+        encoder.c
+        motor.c
 )
 
 # Pull in common dependencies
@@ -11,6 +13,9 @@ target_link_libraries(${PROJECT_NAME}
         pico_stdlib
         pico_binary_info
         hardware_i2c
+        hardware_pwm
+        hardware_gpio
+        hardware_clocks
 )
 
 # Enable USB serial
