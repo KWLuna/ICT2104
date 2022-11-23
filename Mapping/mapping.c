@@ -389,8 +389,8 @@ int main()
                     car.yCoord++;
                     break;
             }
-            // update car direction
-            SetCar(&car, car.xCoord, car.yCoord, currBack);
+            // no need update car direction cuz reversing
+            // SetCar(&car, car.xCoord, car.yCoord, currBack);
         }
     }
 
