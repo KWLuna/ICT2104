@@ -1,5 +1,7 @@
 // #include "pico/stdlib.h"
 
+#define NUMBER_OF_NODES 20
+
 // Node is used by Grid
 typedef struct Node
 {
@@ -40,6 +42,12 @@ typedef struct Car
     
     Direction directionFacing;
 } Car;
+
+typedef struct Stack
+{
+    int x;
+    int y;
+} Stack;
 
 Direction GetLeftDirection(Direction frontDirection)
 {
@@ -104,14 +112,37 @@ int navigationArray[9][11];
 // global so that its values are 0 at initialisation
 Grid grid;  // The Map 
 int numNodeVisited = 0; // counter for number of nodes visited
+int stackTop = -1;  // to track the top element of stack array
+Stack dfsStack[NUMBER_OF_NODES];  // max 20 as there are 20 nodes
+int carPrevX;
+int carPrevY;
 
 // declare functions
+void Push(int x, int y);
+Stack Pop();
+Stack Peek();
 void MarkWall(int x, int y, Node gridArray[][9], float ultrasonicDistance, Direction ultrasonicDirection);
 void CheckNode(int x, int y, Node gridArray[][9], Direction directionFacing);
 void SetCar(Car *car, int xPos, int yPos, Direction direction);
 void conversionConstructor(Node gridArray[4][5]);
 
 int main()
+{
+    // Initialising Objects
+    Car car;    // Our Car
+
+    //Set Car Starting Position and Direction
+    SetCar(&car, 3, 4, North);
+
+    while (numNodeVisited < 20)
+    {
+        CheckCurrentNode();
+        MoveCarToStackPos();
+        SavePrevXYToCurrentNode();
+    }
+}
+
+int OldMain()
 {
     // Initialising Objects
     Car car;    // Our Car
@@ -274,6 +305,55 @@ int main()
     }
 
     return 0;
+}
+
+void CheckCurrentNode()
+{
+
+}
+
+void MoveCarToStackPos()
+{
+
+}
+
+void SavePrevXYToCurrentNode()
+{
+
+}
+
+// push element to top of stack
+void Push(int x, int y)
+{
+    if (stackTop == NUMBER_OF_NODES - 1)
+        printf("Stack is full!");
+    else
+    {
+        stackTop++;
+        dfsStack[stackTop].x = x;
+        dfsStack[stackTop].y = y;
+    }
+}
+
+// pop element from top of stack and return element
+Stack Pop()
+{
+    if (stackTop == -1)
+        printf("Stack is empty!");
+    else
+    {
+        stackTop--;
+        return dfsStack[stackTop-1];
+    }
+}
+
+// view element at top of stack
+Stack Peek()
+{
+    if (stackTop == -1)
+        printf("Stack is empty!");
+    else
+        return dfsStack[stackTop];
 }
 
 void MarkWall(int x, int y, Node gridArray[][9], float ultrasonicDistance, Direction ultrasonicDirection)
