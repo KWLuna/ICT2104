@@ -223,7 +223,7 @@ int main()
         //sample map, go from 1,1 to 1,9
         1,1,1,1,1,1,1,1,1,1,1,
         1,0,1,0,0,0,0,0,1,0,1,
-        1,0,1,0,0,1,1,0,1,0,1,
+        1,1,1,0,0,1,1,0,1,0,1,
         1,0,0,0,0,1,0,0,1,0,1,
         1,0,0,0,0,1,0,0,1,0,1,
         1,1,1,1,0,1,0,0,1,0,1,
@@ -243,8 +243,8 @@ int main()
     }
 
     //allow custom coordinate here once we fix with other teams
-    destRow=1;
-    destCol=4;
+    destRow=2;
+    destCol=1;
 
     //allow custom coordinate here once we fix with other teams
     carRow=1;
@@ -267,11 +267,14 @@ int main()
     }
 
     if(found)
-        printf("\nEXIT FOUND!");
+        {
+            printf("\nEXIT FOUND!");
+            printf("\nTOTAL STEPS: %d",backfill-1);
+        }
     else
         printf("\nNO ROUTE POSSIBLE!");
 
-    printf("\nTOTAL STEPS: %d",backfill-1);
+    
 
     //debug lines
     printf("\nX:%d, Y:%d", movementList[0].col,movementList[0].row);
