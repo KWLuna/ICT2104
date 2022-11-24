@@ -395,10 +395,10 @@ void MarkWall(float ultrasonicDistance, Direction ultrasonicDirection)
 void CheckUltrasonic()
 {
     // check front, left, right, back sides for wall
-    float frontUltrasonicDist = 2.f; // call function to get front ultrasonic distance <to be done>
-    float rightUltrasonicDist = 20.f; // call function to get right ultrasonic distance <to be done>
-    float leftUltrasonicDist = 20.f; // call function to get left ultrasonic distance <to be done>
-    float backUltrasonicDist = 20.f; // call function to get back ultrasonic distance <to be done>
+    float frontUltrasonicDist = ultrasonicPulse(10, 16); // call function to get front ultrasonic distance <to be done>
+    float rightUltrasonicDist = ultrasonicPulse(11, 17); // call function to get right ultrasonic distance <to be done>
+    float leftUltrasonicDist = ultrasonicPulse(12, 18); // call function to get left ultrasonic distance <to be done>
+    float backUltrasonicDist = ultrasonicPulse(13, 19); // call function to get back ultrasonic distance <to be done>
 
     MarkWall(frontUltrasonicDist, car.directionFacing);
     MarkWall(rightUltrasonicDist, GetRightDirection(car.directionFacing));

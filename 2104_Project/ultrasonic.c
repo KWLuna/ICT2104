@@ -1,16 +1,16 @@
-#include "pico/stdlib.h"
 #include <stdio.h>
+#include "pico/stdlib.h"
 #include "hardware/gpio.h"
 #include "hardware/timer.h"
 
 int timeOut = 26100; // unknown reason for number
 int timeLoop = 500;  // sample every few (milliseconds)
 
-const int numOfPins = 1;
+const int numOfPins = 4;
 const int filterPoints = 10;
 
 // set up pins for ultrasound
-void setupUltrasonicPins(uint trigPin, uint echoPin)
+void setupUltrasonicPins(int trigPin, int echoPin)
 {
     gpio_init(trigPin);
     gpio_init(echoPin);
@@ -18,7 +18,7 @@ void setupUltrasonicPins(uint trigPin, uint echoPin)
     gpio_set_dir(echoPin, GPIO_IN);
 }
 
-uint64_t getPulse(uint trigPin, uint echoPin)
+int getPulse(int trigPin, int echoPin)
 {
     gpio_put(trigPin, 1); // start of trigger signal
     sleep_us(10);         // duration of trigger signal
@@ -37,15 +37,15 @@ uint64_t getPulse(uint trigPin, uint echoPin)
             return 0;
     }
     absolute_time_t endTime = get_absolute_time(); // record end time
-    return absolute_time_diff_us(startTime, endTime);
+    return (int)absolute_time_diff_us(startTime, endTime);
 }
 
-int checkDistance(uint trigPin, uint echoPin)
+int checkDistance(int trigPin, int echoPin)
 {
     int meanDist = 0;
     for (int i = 0; i < filterPoints; i++)
     {
-        meanDist = meanDist + (int)(getPulse(trigPin, echoPin) / 58);
+        meanDist = meanDist + (getPulse(trigPin, echoPin) / 58);
     }
     meanDist = meanDist / filterPoints;
 
