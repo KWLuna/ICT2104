@@ -4,18 +4,13 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "motor.h"
+#include "ultrasonic.h"
 
 #define NUMBER_OF_NODES 20
 #define MAPPING_GRID_SIZE_X 7
 #define MAPPING_GRID_SIZE_Y 9
 #define CAR_START_X 3
 #define CAR_START_Y 4
-
-typedef struct
-{
-    int row;
-    int col;
-} Coordinate;
 
 // Node is used by Grid
 typedef struct Node
@@ -72,7 +67,7 @@ typedef struct Stack
 } Stack;
 
 // extern
-extern int navigationArray[9][11];
+//extern int navigationArray[9][11];
 extern Grid grid;                       // The Map
 extern Car car;                         // Our Car
 extern int numNodeVisited;              // counter for number of nodes visited
@@ -80,16 +75,6 @@ extern int stackTop;                    // to track the top element of stack arr
 extern Stack dfsStack[NUMBER_OF_NODES]; // Store Node to of where the stack can travel to but has not visited
 extern int carPrevX;
 extern int carPrevY;
-extern Node visitGrid[4][5];
-extern int navigationArray[9][11];
-extern bool visitedArray[9][11];
-extern Coordinate movementList[90];
-extern bool found;
-extern int carRow;
-extern int carCol;
-extern int destRow;
-extern int destCol;
-extern int backfill; // number of total movements taken by algo
 
 // declare functions
 void MappingMain();
@@ -111,10 +96,10 @@ void ChangeCarDirection(Direction directionToGo, int xPosToGo, int yPosToGo);
 Direction GetLeftDirection(Direction frontDirection);
 Direction GetRightDirection(Direction frontDirection);
 Direction GetBackDirection(Direction frontDirection);
-void conversionConstructor(Node gridArray[4][5]);
-void setCoord(int carrow, int carcol, int destrow, int destcol);
-void conversionConstructor(Node gridArray[4][5]);
-bool validMove(int navigationArray[9][11], bool visitedArray[9][11], int newRow, int newCol);
-bool navigateTo(int navigationArray[9][11], bool visitedArray[9][11], int currRow, int currCol);
+// void conversionConstructor(Node gridArray[4][5]);
+// void setCoord(int carrow, int carcol, int destrow, int destcol);
+// void conversionConstructor(Node gridArray[4][5]);
+// bool validMove(int navigationArray[9][11], bool visitedArray[9][11], int newRow, int newCol);
+// bool navigateTo(int navigationArray[9][11], bool visitedArray[9][11], int currRow, int currCol);
 
 #endif

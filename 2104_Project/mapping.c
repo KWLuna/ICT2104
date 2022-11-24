@@ -1,5 +1,13 @@
 #include "mapping.h"
-#include "ultrasonic.h"
+
+// Mapping
+Grid grid;  // The Map 
+Car car;    // Our Car
+int numNodeVisited = 0; // counter for number of nodes visited
+int stackTop = -1;  // to track the top element of stack array
+Stack dfsStack[NUMBER_OF_NODES]; // Store Node to of where the stack can travel to but has not visited
+int carPrevX = CAR_START_X;
+int carPrevY = CAR_START_Y;
 
 void MappingMain()
 {
