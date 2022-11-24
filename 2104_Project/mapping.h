@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "motor.h"
 
 #define NUMBER_OF_NODES 20
 #define MAPPING_GRID_SIZE_X 7
