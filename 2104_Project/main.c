@@ -42,7 +42,8 @@ int main()
     stdio_init_all(); // Enable UART so we can print status output
     
     init_motor(); //initialize motor
-    init_pins(); //initialize pins for encoder 
+    init_pins(); //initialize pins for encoder
+    init_ultrasonic(); //initialize pins for ultrasonic 
     struct repeating_timer timer;
     add_repeating_timer_ms(500, ISR_timer, NULL, &timer); //set timer to calculate rotation
     add_repeating_timer_ms(100, ISR_PID, NULL, &timer);   //set pid timer for every 100ms
