@@ -404,15 +404,20 @@ void MarkWall(float ultrasonicDistance, Direction ultrasonicDirection)
 void CheckUltrasonic()
 {
     // check front, left, right, back sides for wall
-    float frontUltrasonicDist = ultrasonicPulse(10, 16); // call function to get front ultrasonic distance <to be done>
-    float rightUltrasonicDist = ultrasonicPulse(11, 17); // call function to get right ultrasonic distance <to be done>
-    float leftUltrasonicDist = ultrasonicPulse(12, 18); // call function to get left ultrasonic distance <to be done>
-    float backUltrasonicDist = ultrasonicPulse(13, 19); // call function to get back ultrasonic distance <to be done>
-
+    // float frontUltrasonicDist = ultrasonicPulse(10, 16); // call function to get front ultrasonic distance <to be done>
+    // float rightUltrasonicDist = ultrasonicPulse(11, 17); // call function to get right ultrasonic distance <to be done>
+    // float leftUltrasonicDist = ultrasonicPulse(12, 18); // call function to get left ultrasonic distance <to be done>
+    // float backUltrasonicDist = ultrasonicPulse(13, 19); // call function to get back ultrasonic distance <to be done>
+    float frontUltrasonicDist = 0.0f; // call function to get front ultrasonic distance <to be done>
+    float rightUltrasonicDist = 0.0f; // call function to get right ultrasonic distance <to be done>
+    float leftUltrasonicDist = 0.0f; // call function to get left ultrasonic distance <to be done>
+    float backUltrasonicDist = 0.0f; // call function to get back ultrasonic distance <to be done>
+    
+    //moveForward();
     TempMarkWall(frontUltrasonicDist, car.directionFacing);
-    TempMarkWall(rightUltrasonicDist, GetRightDirection(car.directionFacing));
-    TempMarkWall(leftUltrasonicDist, GetLeftDirection(car.directionFacing));
-    TempMarkWall(backUltrasonicDist, GetBackDirection(car.directionFacing));
+    // MarkWall(rightUltrasonicDist, GetRightDirection(car.directionFacing));
+    // MarkWall(leftUltrasonicDist, GetLeftDirection(car.directionFacing));
+    // MarkWall(backUltrasonicDist, GetBackDirection(car.directionFacing));
 }
 
 void SetCar(Car *car, int xPos, int yPos, Direction direction)
