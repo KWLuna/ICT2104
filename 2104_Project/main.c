@@ -6,6 +6,8 @@
 #include "hardware/pwm.h"
 #include "motor.h"
 #include "encoder.h"
+#include "mapping.h"
+
 /*
  * Instructions to be passed as first parameter for send functions (comms)
  * Used by M5 to differentiate the data received
@@ -21,6 +23,18 @@
 // Coordinates received from M5
 extern uint8_t coords[2];
 extern uint8_t x, y;
+
+// Navigation
+int navigationArray[9][11];
+
+// Mapping
+Grid grid;  // The Map 
+Car car;    // Our Car
+int numNodeVisited = 0; // counter for number of nodes visited
+int stackTop = -1;  // to track the top element of stack array
+Stack dfsStack[NUMBER_OF_NODES]; // Store Node to of where the stack can travel to but has not visited
+int carPrevX = CAR_START_X;
+int carPrevY = CAR_START_Y;
 
 /* Main program */
 int main()

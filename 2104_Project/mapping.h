@@ -11,6 +11,15 @@
 #define CAR_START_X 3
 #define CAR_START_Y 4
 
+// extern
+extern Grid grid;  // The Map 
+extern Car car;    // Our Car
+extern int numNodeVisited; // counter for number of nodes visited
+extern int stackTop;  // to track the top element of stack array
+extern Stack dfsStack[NUMBER_OF_NODES]; // Store Node to of where the stack can travel to but has not visited
+extern int carPrevX;
+extern int carPrevY;
+
 // Node is used by Grid
 typedef struct Node
 {
@@ -66,6 +75,7 @@ typedef struct Stack
 } Stack;
 
 // declare functions
+void MappingMain();
 void CheckCurrentNode();
 void MoveCarToStackPos();
 void SavePrevXYToCurrentNode();
