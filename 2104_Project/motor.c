@@ -27,7 +27,7 @@ bool ISR_PID(struct repeating_timer *t){
     float leftRotation = (leftCounter / 20) * 60.00;
    
     //PID values
-    float kp = 0.19; 
+    float kp = 0.17; 
     float ki = 0.95;
     float kd = 0.2; 
     float lasterror; 
@@ -116,7 +116,7 @@ void init_pwmChanB(uint16_t duty) {
 
 //move backward
 void moveBackward() {
-    set_duty_cycle= 70;
+    set_duty_cycle= 50;
     init_pwmChanA(set_duty_cycle);
     init_pwmChanB(set_duty_cycle);
     gpio_put(6, 1);
@@ -128,7 +128,7 @@ void moveBackward() {
 
 //move forward
 void moveForward() {
-    set_duty_cycle= 70;
+    set_duty_cycle= 50;
     init_pwmChanA(set_duty_cycle);
     init_pwmChanB(set_duty_cycle);
     gpio_put(6, 0);
@@ -214,7 +214,7 @@ void turnLeft180(){
     gpio_put(7, 0);
     init_pwmChanA(100);
     init_pwmChanB(0);
-    sleep_ms(1200);
+    sleep_ms(1300);
     stop();
 }
 
@@ -223,7 +223,7 @@ void turnRight180(){
     gpio_put(9, 0);
     init_pwmChanA(0);
     init_pwmChanB(100);
-    sleep_ms(1200);
+    sleep_ms(1300);
     stop();
 }
 
@@ -232,7 +232,7 @@ void turnLeft90(){
     gpio_put(7, 0);
     init_pwmChanA(100);
     init_pwmChanB(0);
-    sleep_ms(600);
+    sleep_ms(650);
     stop();
 }
 
@@ -241,7 +241,7 @@ void turnRight90(){
     gpio_put(9, 0);
     init_pwmChanA(0);
     init_pwmChanB(100);
-    sleep_ms(600);
+    sleep_ms(650);
     stop();
 }
 
@@ -269,7 +269,7 @@ void turnLeft15(){
     gpio_put(7, 0);
     init_pwmChanA(100);
     init_pwmChanB(0);
-    sleep_ms(200);
+    sleep_ms(160);
     stop();
 }
 
@@ -278,6 +278,6 @@ void turnRight15(){
     gpio_put(9, 0);
     init_pwmChanA(0);
     init_pwmChanB(100);
-    sleep_ms(200);
+    sleep_ms(160);
     stop();
 }
