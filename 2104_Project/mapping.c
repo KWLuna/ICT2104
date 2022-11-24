@@ -15,9 +15,9 @@ int carPrevY = CAR_START_Y;
 int main()
 {
     // Initialise Nodes prevX and prevY to 100
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < MAPPING_GRID_SIZE_X; i++)
     {
-        for (int p = 0; p < 9; p++)
+        for (int p = 0; p < MAPPING_GRID_SIZE_Y; p++)
         {
             grid.gridArray[i][p].prevX = 100;
             grid.gridArray[i][p].prevY = 100;
@@ -165,34 +165,34 @@ void Backtrack()
 // push element to top of stack
 void Push(int x, int y)
 {
-    // if (stackTop == NUMBER_OF_NODES - 1)
-    //     printf("Stack is full!\n");
-    // else
-    // {
+    if (stackTop == NUMBER_OF_NODES - 1)
+        printf("Stack is full!\n");
+    else
+    {
         stackTop++;
         dfsStack[stackTop].x = x;
         dfsStack[stackTop].y = y;
-    //}
+    }
 }
 
 // pop element from top of stack and return element
 Stack Pop()
 {
-    // if (stackTop == -1)
-    //     printf("Stack is empty!\n");
-    // else
-    // {
+    if (stackTop == -1)
+        printf("Stack is empty!\n");
+    else
+    {
         stackTop--;
         return dfsStack[stackTop-1];
-    //}
+    }
 }
 
 // view element at top of stack
 Stack Peek()
 {
-    // if (stackTop == -1)
-    //     printf("Stack is empty!");
-    // else
+    if (stackTop == -1)
+        printf("Stack is empty!");
+    else
         return dfsStack[stackTop];
 }
 

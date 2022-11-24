@@ -5,6 +5,8 @@
 #include "pico/stdlib.h"
 
 #define NUMBER_OF_NODES 20
+#define MAPPING_GRID_SIZE_X 7
+#define MAPPING_GRID_SIZE_Y 9
 #define CAR_START_X 3
 #define CAR_START_Y 4
 
@@ -28,7 +30,7 @@ typedef struct Node
 // Grid contains all Node information
 typedef struct Grid
 {
-    Node gridArray[7][9];
+    Node gridArray[MAPPING_GRID_SIZE_X][MAPPING_GRID_SIZE_Y];
 } Grid;
 
 typedef enum Direction
