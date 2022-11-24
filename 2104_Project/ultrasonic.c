@@ -66,7 +66,7 @@ void init_ultrasonic() {
         setupUltrasonicPins(trigPin[i], echoPin[i]); // set up pins
 }
 
-int ultrasonicPulse(trigPin, echoPin) {
+int ultrasonicPulse(int trigPin, int echoPin) {
     int mean;
 
     for (int i = 0; i < numOfPins; i++)

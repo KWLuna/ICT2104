@@ -1,14 +1,7 @@
 /* Includes */
 #include <stdio.h>
 #include "pico/stdlib.h"
-
-/* UART settings */
-#define UART_BAUD_RATE 115200
-
-/* Global variables */
-uint8_t coords[2];
-uint8_t x;
-uint8_t y;
+#include "comms.h"
 
 /* Configure UART pins */
 void uart_start()

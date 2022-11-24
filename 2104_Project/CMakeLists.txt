@@ -2,8 +2,8 @@ add_executable(${PROJECT_NAME}
         main.c
         mapping.c
         Nav_Map.c
-        uart.c
-        i2c.c
+        comms_uart.c
+        comms_i2c.c
         encoder.c
         motor.c
         ultrasonic.c

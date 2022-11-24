@@ -3,20 +3,12 @@
 #include "pico/stdlib.h"
 #include "pico/binary_info.h"
 #include "hardware/i2c.h"
-
-/* I2C settings */
-#define M5_SLAVE 8           // Slave address of M5StickC Plus
-#define BAUD_RATE 100 * 1000 // 100KHz
-
-/* Global variables */
-uint8_t coords[2];
-uint8_t x;
-uint8_t y;
+#include "comms.h"
 
 /* Configure I2C pins */
 void i2c_start()
 {
-    i2c_init(i2c0, BAUD_RATE); // Use I2C0 instance with baud rate of 100kHz
+    i2c_init(i2c0, I2C_BAUD_RATE); // Use I2C0 instance with baud rate of 100kHz
 
     // Configure GP4 and GP5 for I2C comms (with pull-up resistors)
     gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C); // I2C0 SDA
