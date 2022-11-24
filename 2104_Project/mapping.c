@@ -247,34 +247,34 @@ void Backtrack()
 // push element to top of stack
 void Push(int x, int y)
 {
-    if (stackTop == NUMBER_OF_NODES - 1)
-        printf("Stack is full!\n");
-    else
-    {
+    // if (stackTop == NUMBER_OF_NODES - 1)
+    //     printf("Stack is full!\n");
+    // else
+    // {
         stackTop++;
         dfsStack[stackTop].x = x;
         dfsStack[stackTop].y = y;
-    }
+    //}
 }
 
 // pop element from top of stack and return element
 Stack Pop()
 {
-    if (stackTop == -1)
-        printf("Stack is empty!\n");
-    else
-    {
+    // if (stackTop == -1)
+    //     printf("Stack is empty!\n");
+    // else
+    // {
         stackTop--;
         return dfsStack[stackTop-1];
-    }
+    //}
 }
 
 // view element at top of stack
 Stack Peek()
 {
-    if (stackTop == -1)
-        printf("Stack is empty!");
-    else
+    // if (stackTop == -1)
+    //     printf("Stack is empty!");
+    // else
         return dfsStack[stackTop];
 }
 
@@ -506,7 +506,7 @@ void SetCar(Car *car, int xPos, int yPos, Direction direction)
     car->yCoord = yPos;
     car->directionFacing = direction;
 
-    printf("x:%d, y:%d\n", car->xCoord, car->yCoord);
+    //printf("x:%d, y:%d\n", car->xCoord, car->yCoord);
 }
 
 void SetCarWallPointers()
