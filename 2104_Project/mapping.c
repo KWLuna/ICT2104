@@ -58,62 +58,6 @@ typedef struct Stack
     int y;
 } Stack;
 
-Direction GetLeftDirection(Direction frontDirection)
-{
-    switch(frontDirection)
-    {
-        case North:
-            return West;
-            break;
-        case East:
-            return North;
-            break;
-        case South:
-            return East;
-            break;
-        case West:
-            return South;
-            break;
-    }
-}
-
-Direction GetRightDirection(Direction frontDirection)
-{
-    switch(frontDirection)
-    {
-        case North:
-            return East;
-            break;
-        case East:
-            return South;
-            break;
-        case South:
-            return West;
-            break;
-        case West:
-            return North;
-            break;
-    }
-}
-
-Direction GetBackDirection(Direction frontDirection)
-{
-    switch(frontDirection)
-    {
-        case North:
-            return South;
-            break;
-        case East:
-            return West;
-            break;
-        case South:
-            return North;
-            break;
-        case West:
-            return East;
-            break;
-    }
-}
 
 //array used by navigation code
 int navigationArray[9][11];
@@ -142,6 +86,11 @@ void CheckUltrasonic();
 void SetCar(Car *car, int xPos, int yPos, Direction direction);
 void SetCarWallPointers();
 void AddDirectionToStack(Direction directionToCheck);
+Direction CheckDirectionOfNode(int nodeXPos, int nodeYPos);
+void ChangeCarDirection(Direction directionToGo, int xPosToGo, int yPosToGo);
+Direction GetLeftDirection(Direction frontDirection);
+Direction GetRightDirection(Direction frontDirection);
+Direction GetBackDirection(Direction frontDirection);
 void conversionConstructor(Node gridArray[4][5]);
 
 int main()
@@ -200,46 +149,6 @@ void CheckCurrentNode()
             // add node at front to stack
             AddDirectionToStack(car.directionFacing);
         }
-    }
-}
-
-Direction CheckDirectionOfNode(int nodeXPos, int nodeYPos)
-{
-    // Save Car Current Node Position
-    int carX = car.xCoord;
-    int carY = car.yCoord;
-
-    if (carX - 1 == nodeXPos)
-        return North;
-    else if (carX + 1 == nodeXPos)
-        return South;
-    else if (carY + 1 == nodeYPos)
-        return East;
-    else if (carY - 1 == nodeYPos)
-        return West;
-}
-
-void ChangeCarDirection(Direction directionToGo, int xPosToGo, int yPosToGo)
-{
-    if(directionToGo == car.directionFacing)
-    {
-        // Travel Forward
-        SetCar(&car, xPosToGo, yPosToGo, car.directionFacing);
-    }
-    else if (GetBackDirection(directionToGo) == car.directionFacing)
-    {
-        // Reverse
-        SetCar(&car, xPosToGo, yPosToGo, car.directionFacing);
-    }
-    else if (directionToGo == GetRightDirection(car.directionFacing))
-    {
-        // Turn Right
-        SetCar(&car, xPosToGo, yPosToGo, GetRightDirection(car.directionFacing));
-    }
-    else if (directionToGo == GetLeftDirection(car.directionFacing))
-    {
-        // Turn Left
-        SetCar(&car, xPosToGo, yPosToGo, GetLeftDirection(car.directionFacing));
     }
 }
 
@@ -302,27 +211,6 @@ void MoveCarToStackPos()
             // check current direction car facing
             ChangeCarDirection(East, carPrevX, carPrevY + 1);
             
-            // Pop dfsStack[]
-            Pop();
-        }
-        else
-        {
-            // BackTrack!
-            int nodePrevX = grid.gridArray[carPrevX][carPrevY].prevX;
-            int nodePrevY = grid.gridArray[carPrevX][carPrevY].prevY;
-
-            // Check the node location Whether it is north, south, east, west of the car
-            Direction directionOfNode = CheckDirectionOfNode(nodePrevX, nodePrevY);
-            ChangeCarDirection(directionOfNode, nodePrevX, nodePrevY);
-        }
-    }
-    // Checking West
-    else if (carPrevX  == Peek().x && carPrevY + 1 == Peek().y)
-    {
-        Node tempNode = grid.gridArray[carPrevX][carPrevY - 1];
-        if(tempNode.westIsWall == 1) // Checking if West Wall is a Gap
-        {
-            ChangeCarDirection(West, carPrevX, carPrevY - 1);
             // Pop dfsStack[]
             Pop();
         }
@@ -571,6 +459,103 @@ void AddDirectionToStack(Direction directionToCheck)
     // if node has not been visited
     if (nodePtr.isVisited == 0)
         AddStackIfNotExist(nodeX, nodeY); // add to stack
+}
+
+Direction CheckDirectionOfNode(int nodeXPos, int nodeYPos)
+{
+    // Save Car Current Node Position
+    int carX = car.xCoord;
+    int carY = car.yCoord;
+
+    if (carX - 1 == nodeXPos)
+        return North;
+    else if (carX + 1 == nodeXPos)
+        return South;
+    else if (carY + 1 == nodeYPos)
+        return East;
+    else if (carY - 1 == nodeYPos)
+        return West;
+}
+
+void ChangeCarDirection(Direction directionToGo, int xPosToGo, int yPosToGo)
+{
+    if(directionToGo == car.directionFacing)
+    {
+        // Travel Forward
+        SetCar(&car, xPosToGo, yPosToGo, car.directionFacing);
+    }
+    else if (GetBackDirection(directionToGo) == car.directionFacing)
+    {
+        // Reverse
+        SetCar(&car, xPosToGo, yPosToGo, car.directionFacing);
+    }
+    else if (directionToGo == GetRightDirection(car.directionFacing))
+    {
+        // Turn Right
+        SetCar(&car, xPosToGo, yPosToGo, GetRightDirection(car.directionFacing));
+    }
+    else if (directionToGo == GetLeftDirection(car.directionFacing))
+    {
+        // Turn Left
+        SetCar(&car, xPosToGo, yPosToGo, GetLeftDirection(car.directionFacing));
+    }
+}
+
+Direction GetLeftDirection(Direction frontDirection)
+{
+    switch(frontDirection)
+    {
+        case North:
+            return West;
+            break;
+        case East:
+            return North;
+            break;
+        case South:
+            return East;
+            break;
+        case West:
+            return South;
+            break;
+    }
+}
+
+Direction GetRightDirection(Direction frontDirection)
+{
+    switch(frontDirection)
+    {
+        case North:
+            return East;
+            break;
+        case East:
+            return South;
+            break;
+        case South:
+            return West;
+            break;
+        case West:
+            return North;
+            break;
+    }
+}
+
+Direction GetBackDirection(Direction frontDirection)
+{
+    switch(frontDirection)
+    {
+        case North:
+            return South;
+            break;
+        case East:
+            return West;
+            break;
+        case South:
+            return North;
+            break;
+        case West:
+            return East;
+            break;
+    }
 }
 
 //convert 4x5 into 9x11 
