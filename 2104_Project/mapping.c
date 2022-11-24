@@ -120,7 +120,9 @@ Grid grid;  // The Map
 Car car;    // Our Car
 int numNodeVisited = 0; // counter for number of nodes visited
 int stackTop = -1;  // to track the top element of stack array
-Stack dfsStack[NUMBER_OF_NODES];  // max 20 as there are 20 nodes
+
+// Stack Stores a max of 20 as there are 20 nodes
+Stack dfsStack[NUMBER_OF_NODES]; // Store Node to of where the stack can travel to but has not visited
 int carPrevX = CAR_START_X;
 int carPrevY = CAR_START_Y;
 
@@ -159,179 +161,165 @@ int main()
     }
 }
 
-int OldMain()
-{
-    // Initialising Objects
-    Car car;    // Our Car
-
-    //Set Car Starting Position
-    SetCar(&car, 3, 4, North);
-
-    while (numNodeVisited < 20)
-    {
-        CheckNode(car.xCoord, car.yCoord, grid.gridArray, car.directionFacing); // mark current node
-        
-        Node *node = &grid.gridArray[car.xCoord][car.yCoord];   // pointer of current node
-
-        //int *forward, *right, *left, *back;
-        Direction currLeft, currRight, currBack;
-        switch (car.directionFacing)
-        {
-        case North:
-            car.forward = &node->northIsWall;
-            car.right = &node->eastIsWall;
-            car.left = &node->westIsWall;
-            car.back = &node->southIsWall;
-            currRight = East;
-            currLeft = West;
-            currBack = South;
-            break;
-        case East:
-            car.forward = &node->eastIsWall;
-            car.right = &node->southIsWall;
-            car.left = &node->northIsWall;
-            car.back = &node->westIsWall;
-            currRight = South;
-            currLeft = North;
-            currBack = West;
-            break;
-        case West:
-            car.forward = &node->westIsWall;
-            car.right = &node->northIsWall;
-            car.left = &node->southIsWall;
-            car.back = &node->eastIsWall;
-            currRight = North;
-            currLeft = South;
-            currBack = East;
-            break;
-        case South:
-            car.forward = &node->southIsWall;
-            car.right = &node->westIsWall;
-            car.left = &node->eastIsWall;
-            car.back = &node->northIsWall;
-            currRight = West;
-            currLeft = East;
-            currBack = North;
-            break;
-        default:
-            break;
-        }
-
-        if (*car.forward == 1)
-        {
-            *car.forward = 2;   // set to isTravelled
-
-            // Travel Forward <to be done>
-            
-
-            // update grid x y
-            switch(car.directionFacing)
-            {
-                case North:
-                    car.yCoord++;
-                    break;
-                case East:
-                    car.xCoord++;
-                    break;
-                case West:
-                    car.xCoord--;
-                    break;
-                case South:
-                    car.yCoord--;
-                    break;
-            }    
-        }
-        else if (*car.right == 1)
-        {
-            *car.right = 2;   // set to isTravelled
-
-            // Travel Right <to be done>
-
-
-            // update grid x y
-            switch(car.directionFacing)
-            {
-                case North:
-                    car.xCoord++;
-                    break;
-                case East:
-                    car.yCoord--;
-                    break;
-                case West:
-                    car.yCoord++;
-                    break;
-                case South:
-                    car.xCoord--;
-                    break;
-            }
-            // update car direction
-            SetCar(&car, car.xCoord, car.yCoord, currRight);
-        }
-        else if (*car.left == 1)
-        {
-            *car.left = 2;   // set to isTravelled
-
-            // Travel Left <to be done>
-
-
-            // update grid x y
-            switch(car.directionFacing)
-            {
-                case North:
-                    car.xCoord--;
-                    break;
-                case East:
-                    car.yCoord++;
-                    break;
-                case West:
-                    car.yCoord--;
-                    break;
-                case South:
-                    car.xCoord++;
-                    break;
-            }
-            // update car direction
-            SetCar(&car, car.xCoord, car.yCoord, currLeft);
-        }
-        else if (*car.back == 1)
-        {
-            *car.back = 2;   // set to isTravelled
-
-            // reverse 1 Node <to be Done>
-
-
-            // update grid x y
-            switch(car.directionFacing)
-            {
-                case North:
-                    car.yCoord--;
-                    break;
-                case East:
-                    car.xCoord--;
-                    break;
-                case West:
-                    car.xCoord++;
-                    break;
-                case South:
-                    car.yCoord++;
-                    break;
-            }
-            // no need update car direction cuz reversing
-            // SetCar(&car, car.xCoord, car.yCoord, currBack);
-        }
-    }
-
-    return 0;
-}
-
 void CheckCurrentNode()
 {
 
 }
 
+Direction CheckDirectionOfNode(int nodeXPos, int nodeYPos)
+{
+    // Save Car Current Node Position
+    int carX = car.xCoord;
+    int carY = car.yCoord;
+
+    if (carX - 1 == nodeXPos)
+        return North;
+    else if (carX + 1 == nodeXPos)
+        return South;
+    else if (carY + 1 == nodeYPos)
+        return East;
+    else if (carY - 1 == nodeYPos)
+        return West;
+}
+
+void ChangeCarDirection(Direction directionToGo, int xPosToGo, int yPosToGo)
+{
+    if(directionToGo == car.directionFacing)
+    {
+        // Travel Forward
+        SetCar(&car, xPosToGo, yPosToGo, car.directionFacing);
+    }
+    else if (GetBackDirection(directionToGo) == car.directionFacing)
+    {
+        // Reverse
+        SetCar(&car, xPosToGo, yPosToGo, car.directionFacing);
+    }
+    else if (directionToGo == GetRightDirection(car.directionFacing))
+    {
+        // Turn Right
+        SetCar(&car, xPosToGo, yPosToGo, GetRightDirection(car.directionFacing));
+    }
+    else if (directionToGo == GetLeftDirection(car.directionFacing))
+    {
+        // Turn Left
+        SetCar(&car, xPosToGo, yPosToGo, GetLeftDirection(car.directionFacing));
+    }
+}
+
 void MoveCarToStackPos()
 {
+    // Save Car Current Node Position
+    carPrevX = car.xCoord;
+    carPrevY = car.yCoord;
 
+    // Check for Last Stack Position in dfsStack
+    // Checking North
+    if (carPrevX - 1 == Peek().x && carPrevY == Peek().y)
+    {
+        Node tempNode = grid.gridArray[carPrevX - 1][carPrevY];
+        if(tempNode.northIsWall == 1) // Checking if North Wall is a Gap
+        {
+            ChangeCarDirection(North, carPrevX - 1, carPrevY);
+            // Pop from dfsStack[]
+            Pop();
+        }
+        else
+        {
+            // BackTrack!
+            int nodePrevX = grid.gridArray[carPrevX][carPrevY].prevX;
+            int nodePrevY = grid.gridArray[carPrevX][carPrevY].prevY;
+
+            // Check the node location Whether it is north, south, east, west of the car
+
+            Direction directionOfNode = CheckDirectionOfNode(nodePrevX, nodePrevY);
+            ChangeCarDirection(directionOfNode, nodePrevX, nodePrevY);
+        }
+    }
+    // Checking South
+    else if (carPrevX + 1 == Peek().x && carPrevY == Peek().y)
+    {
+        Node tempNode = grid.gridArray[carPrevX + 1][carPrevY];
+        if(tempNode.southIsWall == 1) // Checking if North Wall is a Gap
+        {
+            ChangeCarDirection(South, carPrevX + 1, carPrevY);
+            // Pop dfsStack[]
+            Pop();
+        }
+        else
+        {
+            // BackTrack!
+            int nodePrevX = grid.gridArray[carPrevX][carPrevY].prevX;
+            int nodePrevY = grid.gridArray[carPrevX][carPrevY].prevY;
+
+            // Check the node location Whether it is north, south, east, west of the car
+            Direction directionOfNode = CheckDirectionOfNode(nodePrevX, nodePrevY);
+            ChangeCarDirection(directionOfNode, nodePrevX, nodePrevY);
+        }
+    }
+    // Checking East
+    else if (carPrevX  == Peek().x && carPrevY + 1 == Peek().y)
+    {
+        Node tempNode = grid.gridArray[carPrevX][carPrevY + 1];
+        if(tempNode.eastIsWall == 1) // Checking if North Wall is a Gap
+        {
+            // check current direction car facing
+            ChangeCarDirection(East, carPrevX, carPrevY + 1);
+            
+            // Pop dfsStack[]
+            Pop();
+        }
+        else
+        {
+            // BackTrack!
+            int nodePrevX = grid.gridArray[carPrevX][carPrevY].prevX;
+            int nodePrevY = grid.gridArray[carPrevX][carPrevY].prevY;
+
+            // Check the node location Whether it is north, south, east, west of the car
+            Direction directionOfNode = CheckDirectionOfNode(nodePrevX, nodePrevY);
+            ChangeCarDirection(directionOfNode, nodePrevX, nodePrevY);
+        }
+    }
+    // Checking West
+    else if (carPrevX  == Peek().x && carPrevY + 1 == Peek().y)
+    {
+        Node tempNode = grid.gridArray[carPrevX][carPrevY - 1];
+        if(tempNode.westIsWall == 1) // Checking if West Wall is a Gap
+        {
+            ChangeCarDirection(West, carPrevX, carPrevY - 1);
+            // Pop dfsStack[]
+            Pop();
+        }
+        else
+        {
+            // BackTrack!
+            int nodePrevX = grid.gridArray[carPrevX][carPrevY].prevX;
+            int nodePrevY = grid.gridArray[carPrevX][carPrevY].prevY;
+
+            // Check the node location Whether it is north, south, east, west of the car
+            Direction directionOfNode = CheckDirectionOfNode(nodePrevX, nodePrevY);
+            ChangeCarDirection(directionOfNode, nodePrevX, nodePrevY);
+        }
+    }
+    // Checking West
+    else if (carPrevX == Peek().x && carPrevY - 1 == Peek().y)
+    {
+        Node tempNode = grid.gridArray[carPrevX][carPrevY - 1];
+        if(tempNode.westIsWall == 1) // Checking if North Wall is a Gap
+        {
+            // check current direction car facing
+            Pop();
+        }
+        else
+        {
+            // BackTrack!
+            int nodePrevX = grid.gridArray[carPrevX][carPrevY].prevX;
+            int nodePrevY = grid.gridArray[carPrevX][carPrevY].prevY;
+
+            // Check the node location Whether it is north, south, east, west of the car
+            Direction directionOfNode = CheckDirectionOfNode(nodePrevX, nodePrevY);
+            ChangeCarDirection(directionOfNode, nodePrevX, nodePrevY);
+        }
+    }
 }
 
 void SavePrevXYToCurrentNode()
