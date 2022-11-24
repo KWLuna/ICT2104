@@ -18,7 +18,7 @@ AsyncWebServer server(80);
 
 
 /* Global variables */
-const char* ssid = "M5StickC_Plus_AP";
+const char* ssid = "A3_M5StickC_Plus";
 const char* password = "12345678";
 const char* paramX = "coordinatesX";
 const char* paramY = "coordinatesY";
@@ -31,20 +31,19 @@ uint8_t map_data = 0;
 int x = -1;
 int y = -1;
 
-
 /* Web form*/
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html><head>
     <title>ICT2104 A3</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="refresh" content="5" >
+    <meta http-equiv="refresh" content="5">
     <style>
       body { text-align: center; font-family: 'Trebuchet MS', 'Arial';}
       table {border-collapse: collapse; width: 35%%; margin-left: auto; margin-right: auto; margin-bottom: 50px;}
       th {padding: 12px; background-color: #0043af; color: white;}
       tr {border: 1px solid #ddd ;padding: 12px;}
       tr:hover {background-color: #bcbcbc;}
-      td {border: none; padding: 12px;}
+      td {border: none; padding: 18px;}
     </style>
   </head>
   <body>
@@ -68,22 +67,14 @@ const char index_html[] PROGMEM = R"rawliteral(
       </tr>
 
       <tr>
-        <td>Coordinates <br>X & Y:</td>
+        <td>Input Coordinates X & Y <br> To Move Car:</td>
           <td>
           <form action="/get">
-            <input type="text" name="coordinatesX"/>
-            <input type="text" name="coordinatesY"/>
+            <input type="text" name="coordinatesX"/><br>
+            <input type="text" name="coordinatesY"/><br><br>
             <input type="submit" value="Submit"/>
           </form>
         </td>
-      </tr>
-    </table>
-    <table>
-      <tr>
-        <th>MAZE MAP</th>
-      </tr>
-      <tr>
-        <td>print map here?</td>
       </tr>
     </table>
   </body></html>)rawliteral";
@@ -133,10 +124,14 @@ void setup() {
     if (request->hasParam(paramX) && request->hasParam(paramY)) {
       coordinateX = request->getParam(paramX)->value();
       coordinateY = request->getParam(paramY)->value();
+      M5.Lcd.setCursor(25, 100);
       M5.Lcd.print(coordinateX);
       M5.Lcd.print(coordinateY);
+      Serial.println(coordinateX);
+      Serial.println(coordinateX);
+
     }
-    request->send(200, "text/html", "Coordinates X: " + coordinateX + " Coordinates Y: " + coordinateY + " has been sent to the car.<br><a href=\"/\">Return to Home Page</a>");
+    request->send(200, "text/html", "Coordinate X: " + coordinateX + " Coordinate Y: " + coordinateY + "<br><a href=\"/\">Return to Home Page</a>");
   });
 
   server.begin();
@@ -164,15 +159,14 @@ void loop() {
         map_data = Serial2.read();
         break;
       default:
-        Serial.println("CHECK");
+        Serial.println("No data");
         break;
     }
   }
 
   // M5 test display
-  M5.Lcd.setCursor(25, 100);
-  M5.Lcd.print("Test data: ");
-  M5.Lcd.print(inst);
+  // M5.Lcd.print("Test data: ");
+  // M5.Lcd.print(inst);
 
   // // App display
   // WiFiClient client = server.available();
