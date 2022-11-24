@@ -77,6 +77,7 @@ int carPrevY = CAR_START_Y;
 void CheckCurrentNode();
 void MoveCarToStackPos();
 void SavePrevXYToCurrentNode();
+void Backtrack();
 void Push(int x, int y);
 Stack Pop();
 Stack Peek();
@@ -106,14 +107,19 @@ int main()
     }
 
     //Set Car Starting Position and Direction
-    SetCar(&car, 2, 0, North);
-    //SetCar(&car, CAR_START_X, CAR_START_Y, North);
+    SetCar(&car, CAR_START_X, CAR_START_Y, North);
+    //SetCar(&car, 2, 0, North);    // for testing
 
-    while (numNodeVisited < 20)
+    while (1)
     {
         CheckCurrentNode();
-        MoveCarToStackPos();
-        SavePrevXYToCurrentNode();
+        if (numNodeVisited < 20)
+        {
+            MoveCarToStackPos();
+            SavePrevXYToCurrentNode();
+        }
+        else
+            break;
     }
 }
 
@@ -163,51 +169,34 @@ void MoveCarToStackPos()
     // Checking North
     if (carPrevX - 1 == Peek().x && carPrevY == Peek().y)
     {
-        Node tempNode = grid.gridArray[carPrevX - 1][carPrevY];
-        if(tempNode.northIsWall == 1) // Checking if North Wall is a Gap
+        //Node tempNode = grid.gridArray[carPrevX - 1][carPrevY];
+        if (grid.gridArray[carPrevX][carPrevY].northIsWall == 1) // Checking if North Wall is a Gap
         {
             ChangeCarDirection(North, carPrevX - 1, carPrevY);
             // Pop from dfsStack[]
             Pop();
         }
         else
-        {
-            // BackTrack!
-            int nodePrevX = grid.gridArray[carPrevX][carPrevY].prevX;
-            int nodePrevY = grid.gridArray[carPrevX][carPrevY].prevY;
-
-            // Check the node location Whether it is north, south, east, west of the car
-
-            Direction directionOfNode = CheckDirectionOfNode(nodePrevX, nodePrevY);
-            ChangeCarDirection(directionOfNode, nodePrevX, nodePrevY);
-        }
+            Backtrack();
     }
     // Checking South
     else if (carPrevX + 1 == Peek().x && carPrevY == Peek().y)
     {
-        Node tempNode = grid.gridArray[carPrevX + 1][carPrevY];
-        if(tempNode.southIsWall == 1) // Checking if North Wall is a Gap
+        //Node tempNode = grid.gridArray[carPrevX + 1][carPrevY];
+        if(grid.gridArray[carPrevX][carPrevY].southIsWall == 1) // Checking if North Wall is a Gap
         {
             ChangeCarDirection(South, carPrevX + 1, carPrevY);
             // Pop dfsStack[]
             Pop();
         }
         else
-        {
-            // BackTrack!
-            int nodePrevX = grid.gridArray[carPrevX][carPrevY].prevX;
-            int nodePrevY = grid.gridArray[carPrevX][carPrevY].prevY;
-
-            // Check the node location Whether it is north, south, east, west of the car
-            Direction directionOfNode = CheckDirectionOfNode(nodePrevX, nodePrevY);
-            ChangeCarDirection(directionOfNode, nodePrevX, nodePrevY);
-        }
+            Backtrack();
     }
     // Checking East
     else if (carPrevX  == Peek().x && carPrevY + 1 == Peek().y)
     {
-        Node tempNode = grid.gridArray[carPrevX][carPrevY + 1];
-        if(tempNode.eastIsWall == 1) // Checking if North Wall is a Gap
+        //Node tempNode = grid.gridArray[carPrevX][carPrevY + 1];
+        if (grid.gridArray[carPrevX][carPrevY].eastIsWall == 1) // Checking if North Wall is a Gap
         {
             // check current direction car facing
             ChangeCarDirection(East, carPrevX, carPrevY + 1);
@@ -216,36 +205,25 @@ void MoveCarToStackPos()
             Pop();
         }
         else
-        {
-            // BackTrack!
-            int nodePrevX = grid.gridArray[carPrevX][carPrevY].prevX;
-            int nodePrevY = grid.gridArray[carPrevX][carPrevY].prevY;
-
-            // Check the node location Whether it is north, south, east, west of the car
-            Direction directionOfNode = CheckDirectionOfNode(nodePrevX, nodePrevY);
-            ChangeCarDirection(directionOfNode, nodePrevX, nodePrevY);
-        }
+            Backtrack();
     }
     // Checking West
     else if (carPrevX == Peek().x && carPrevY - 1 == Peek().y)
     {
-        Node tempNode = grid.gridArray[carPrevX][carPrevY - 1];
-        if(tempNode.westIsWall == 1) // Checking if North Wall is a Gap
+        //Node tempNode = grid.gridArray[carPrevX][carPrevY - 1];
+        if (grid.gridArray[carPrevX][carPrevY].westIsWall == 1) // Checking if North Wall is a Gap
         {
             // check current direction car facing
+            ChangeCarDirection(West, carPrevX, carPrevY - 1);
+            
+            // Pop dfsStack[]
             Pop();
         }
         else
-        {
-            // BackTrack!
-            int nodePrevX = grid.gridArray[carPrevX][carPrevY].prevX;
-            int nodePrevY = grid.gridArray[carPrevX][carPrevY].prevY;
-
-            // Check the node location Whether it is north, south, east, west of the car
-            Direction directionOfNode = CheckDirectionOfNode(nodePrevX, nodePrevY);
-            ChangeCarDirection(directionOfNode, nodePrevX, nodePrevY);
-        }
+            Backtrack();
     }
+    else
+        Backtrack();
 }
 
 void SavePrevXYToCurrentNode()
@@ -258,11 +236,19 @@ void SavePrevXYToCurrentNode()
     }
 }
 
+void Backtrack()
+{
+    // BackTrack!
+    // Check the node location Whether it is north, south, east, west of the car
+    Direction directionOfNode = CheckDirectionOfNode(grid.gridArray[carPrevX][carPrevY].prevX, grid.gridArray[carPrevX][carPrevY].prevY);
+    ChangeCarDirection(directionOfNode, grid.gridArray[carPrevX][carPrevY].prevX, grid.gridArray[carPrevX][carPrevY].prevY);
+}
+
 // push element to top of stack
 void Push(int x, int y)
 {
     if (stackTop == NUMBER_OF_NODES - 1)
-        printf("Stack is full!");
+        printf("Stack is full!\n");
     else
     {
         stackTop++;
@@ -275,7 +261,7 @@ void Push(int x, int y)
 Stack Pop()
 {
     if (stackTop == -1)
-        printf("Stack is empty!");
+        printf("Stack is empty!\n");
     else
     {
         stackTop--;
@@ -312,149 +298,149 @@ void AddStackIfNotExist(int x, int y)
         Push(x, y);
 }
 
-void TempMarkWall(float ultrasonicDistance, Direction ultrasonicDirection)
-{
-    if (car.xCoord == 0 && car.yCoord == 0)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
-    }
-    else if (car.xCoord == 0 && car.yCoord == 1)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
-    }
-    else if (car.xCoord == 0 && car.yCoord == 2)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
-    }
-    else if (car.xCoord == 0 && car.yCoord == 3)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
-    }
-    else if (car.xCoord == 0 && car.yCoord == 4)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
-    }
-    else if (car.xCoord == 1 && car.yCoord == 0)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
-    }
-    else if (car.xCoord == 1 && car.yCoord == 1)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
-    }
-    else if (car.xCoord == 1 && car.yCoord == 2)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
-    }
-    else if (car.xCoord == 1 && car.yCoord == 3)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
-    }
-    else if (car.xCoord == 1 && car.yCoord == 4)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
-    }
-    else if (car.xCoord == 2 && car.yCoord == 0)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
-    }
-    else if (car.xCoord == 2 && car.yCoord == 1)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
-    }
-    else if (car.xCoord == 2 && car.yCoord == 2)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
-    }
-    else if (car.xCoord == 2 && car.yCoord == 3)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
-    }
-    else if (car.xCoord == 2 && car.yCoord == 4)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
-    }
-    else if (car.xCoord == 3 && car.yCoord == 0)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
-    }
-    else if (car.xCoord == 3 && car.yCoord == 1)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
-    }
-    else if (car.xCoord == 3 && car.yCoord == 2)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
-    }
-    else if (car.xCoord == 3 && car.yCoord == 3)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
-    }
-    else if (car.xCoord == 3 && car.yCoord == 4)
-    {
-        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
-        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
-        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
-    }
-}
+// void TempMarkWall(float ultrasonicDistance, Direction ultrasonicDirection)
+// {
+//     if (car.xCoord == 0 && car.yCoord == 0)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+//     }
+//     else if (car.xCoord == 0 && car.yCoord == 1)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+//     }
+//     else if (car.xCoord == 0 && car.yCoord == 2)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+//     }
+//     else if (car.xCoord == 0 && car.yCoord == 3)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+//     }
+//     else if (car.xCoord == 0 && car.yCoord == 4)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+//     }
+//     else if (car.xCoord == 1 && car.yCoord == 0)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+//     }
+//     else if (car.xCoord == 1 && car.yCoord == 1)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+//     }
+//     else if (car.xCoord == 1 && car.yCoord == 2)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+//     }
+//     else if (car.xCoord == 1 && car.yCoord == 3)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+//     }
+//     else if (car.xCoord == 1 && car.yCoord == 4)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+//     }
+//     else if (car.xCoord == 2 && car.yCoord == 0)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+//     }
+//     else if (car.xCoord == 2 && car.yCoord == 1)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+//     }
+//     else if (car.xCoord == 2 && car.yCoord == 2)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+//     }
+//     else if (car.xCoord == 2 && car.yCoord == 3)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+//     }
+//     else if (car.xCoord == 2 && car.yCoord == 4)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+//     }
+//     else if (car.xCoord == 3 && car.yCoord == 0)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+//     }
+//     else if (car.xCoord == 3 && car.yCoord == 1)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+//     }
+//     else if (car.xCoord == 3 && car.yCoord == 2)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+//     }
+//     else if (car.xCoord == 3 && car.yCoord == 3)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+//     }
+//     else if (car.xCoord == 3 && car.yCoord == 4)
+//     {
+//         grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+//         grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+//         grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+//     }
+// }
 
 void MarkWall(float ultrasonicDistance, Direction ultrasonicDirection)
 {
@@ -508,10 +494,10 @@ void CheckUltrasonic()
     float leftUltrasonicDist = 20.f; // call function to get left ultrasonic distance <to be done>
     float backUltrasonicDist = 20.f; // call function to get back ultrasonic distance <to be done>
 
-    TempMarkWall(frontUltrasonicDist, car.directionFacing);
-    TempMarkWall(rightUltrasonicDist, GetRightDirection(car.directionFacing));
-    TempMarkWall(leftUltrasonicDist, GetLeftDirection(car.directionFacing));
-    TempMarkWall(backUltrasonicDist, GetBackDirection(car.directionFacing));
+    MarkWall(frontUltrasonicDist, car.directionFacing);
+    MarkWall(rightUltrasonicDist, GetRightDirection(car.directionFacing));
+    MarkWall(leftUltrasonicDist, GetLeftDirection(car.directionFacing));
+    MarkWall(backUltrasonicDist, GetBackDirection(car.directionFacing));
 }
 
 void SetCar(Car *car, int xPos, int yPos, Direction direction)
@@ -525,43 +511,41 @@ void SetCar(Car *car, int xPos, int yPos, Direction direction)
 
 void SetCarWallPointers()
 {
-    Node currNode = grid.gridArray[car.xCoord][car.yCoord];
-
     // set car forward, right, left and back pointers to the node's wall
     switch (car.directionFacing)
         {
         case North:
-            car.forward = &currNode.northIsWall;
-            car.right = &currNode.eastIsWall;
-            car.left = &currNode.westIsWall;
-            car.back = &currNode.southIsWall;
+            car.forward = &grid.gridArray[car.xCoord][car.yCoord].northIsWall;
+            car.right = &grid.gridArray[car.xCoord][car.yCoord].eastIsWall;
+            car.left = &grid.gridArray[car.xCoord][car.yCoord].westIsWall;
+            car.back = &grid.gridArray[car.xCoord][car.yCoord].southIsWall;
             car.directionRight = East;
             car.directionLeft = West;
             car.directionBack = South;
             break;
         case East:
-            car.forward = &currNode.eastIsWall;
-            car.right = &currNode.southIsWall;
-            car.left = &currNode.northIsWall;
-            car.back = &currNode.westIsWall;
+            car.forward = &grid.gridArray[car.xCoord][car.yCoord].eastIsWall;
+            car.right = &grid.gridArray[car.xCoord][car.yCoord].southIsWall;
+            car.left = &grid.gridArray[car.xCoord][car.yCoord].northIsWall;
+            car.back = &grid.gridArray[car.xCoord][car.yCoord].westIsWall;
             car.directionRight = South;
             car.directionLeft = North;
             car.directionBack = West;
             break;
         case West:
-            car.forward = &currNode.westIsWall;
-            car.right = &currNode.northIsWall;
-            car.left = &currNode.southIsWall;
-            car.back = &currNode.eastIsWall;
+            car.forward = &grid.gridArray[car.xCoord][car.yCoord].westIsWall;
+            car.right = &grid.gridArray[car.xCoord][car.yCoord].northIsWall;
+            car.left = &grid.gridArray[car.xCoord][car.yCoord].southIsWall;
+            car.back = &grid.gridArray[car.xCoord][car.yCoord].eastIsWall;
             car.directionRight = North;
             car.directionLeft = South;
             car.directionBack = East;
             break;
         case South:
-            car.forward = &currNode.southIsWall;
-            car.right = &currNode.westIsWall;
-            car.left = &currNode.eastIsWall;
-            car.back = &currNode.northIsWall;
+            car.forward = &grid.gridArray[car.xCoord][car.yCoord].southIsWall;
+            car.right = &grid.gridArray[car.xCoord][car.yCoord].westIsWall;
+            car.left = &grid.gridArray[car.xCoord][car.yCoord].eastIsWall;
+            car.back = &grid.gridArray[car.xCoord][car.yCoord].northIsWall;
             car.directionRight = West;
             car.directionLeft = East;
             car.directionBack = North;
@@ -575,8 +559,8 @@ void SetCarWallPointers()
 void AddDirectionToStack(Direction directionToCheck)
 {
     Node nodePtr;
-    int nodeX;
-    int nodeY;
+    int nodeX = 0;
+    int nodeY = 0;
 
     // get the node at back of car
     switch (directionToCheck)
@@ -626,7 +610,7 @@ Direction CheckDirectionOfNode(int nodeXPos, int nodeYPos)
 
 void ChangeCarDirection(Direction directionToGo, int xPosToGo, int yPosToGo)
 {
-    if(directionToGo == car.directionFacing)
+    if (directionToGo == car.directionFacing)
     {
         // Travel Forward
         SetCar(&car, xPosToGo, yPosToGo, car.directionFacing);
