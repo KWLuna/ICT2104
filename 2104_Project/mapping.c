@@ -44,9 +44,12 @@ typedef struct Car
     int *forward;
     int *right;
     int *left;
-    int *back; 
+    int *back;
     
     Direction directionFacing;
+    Direction directionLeft;
+    Direction directionRight;
+    Direction directionBack;
 } Car;
 
 typedef struct Stack
@@ -131,9 +134,12 @@ void SavePrevXYToCurrentNode();
 void Push(int x, int y);
 Stack Pop();
 Stack Peek();
-void MarkWall(int x, int y, Node gridArray[][9], float ultrasonicDistance, Direction ultrasonicDirection);
-void CheckNode(int x, int y, Node gridArray[][9], Direction directionFacing);
+void AddStackIfNotExist(int x, int y);
+void MarkWall(float ultrasonicDistance, Direction ultrasonicDirection);
+void CheckUltrasonic();
 void SetCar(Car *car, int xPos, int yPos, Direction direction);
+void SetCarWallPointers();
+void AddDirectionToStack(Direction directionToCheck);
 void conversionConstructor(Node gridArray[4][5]);
 
 int main()
@@ -326,7 +332,38 @@ int OldMain()
 
 void CheckCurrentNode()
 {
+    // if not visited
+    if (grid.gridArray[car.xCoord][car.yCoord].isVisited == 0)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].isVisited = 1;
+        numNodeVisited++;
 
+        // mark out walls and gaps based on sensors
+        CheckUltrasonic();
+
+        SetCarWallPointers();   // set car's current node's wall pointers
+        // check if surrounding nodes of car has nodes that have not been visited
+        if (car.back == 1)   // if back isGap
+        {
+            // add node at back to stack
+            AddDirectionToStack(car.directionBack);
+        }
+        if (car.left == 1)   // if left isGap
+        {
+            // add node at left to stack
+            AddDirectionToStack(car.directionLeft);
+        }
+        if (car.right == 1)   // if right isGap
+        {
+            // add node at right to stack
+            AddDirectionToStack(car.directionRight);
+        }
+        if (car.forward == 1)   // if front isGap
+        {
+            // add node at front to stack
+            AddDirectionToStack(car.directionFacing);
+        }
+    }
 }
 
 void MoveCarToStackPos()
@@ -336,6 +373,7 @@ void MoveCarToStackPos()
 
 void SavePrevXYToCurrentNode()
 {
+    // if prevX and prevY has not been set before
     if (grid.gridArray[car.xCoord][car.yCoord].prevX == 100 && grid.gridArray[car.xCoord][car.yCoord].prevY == 100)
     {
         grid.gridArray[car.xCoord][car.yCoord].prevX = carPrevX;
@@ -377,7 +415,27 @@ Stack Peek()
         return dfsStack[stackTop];
 }
 
-void MarkWall(int x, int y, Node gridArray[][9], float ultrasonicDistance, Direction ultrasonicDirection)
+// Add node to stack if it does not exist in stack
+void AddStackIfNotExist(int x, int y)
+{
+    int isInStack = 0;
+    // check through stack for x y
+    for (int i = stackTop; i > -1; i--)
+    {
+        if (dfsStack[i].x == x && dfsStack[i].y == y)
+        {
+            // is in stack
+            isInStack = 1;
+            break;
+        }
+    }
+
+    // if not in stack, push
+    if (isInStack == 0)
+        Push(x, y);
+}
+
+void MarkWall(float ultrasonicDistance, Direction ultrasonicDirection)
 {
     // if ultrasonic value is more than distance, it is not a wall
     if (ultrasonicDistance > 13.5f) // check how many cm is wall from car (one grid is 27cm)
@@ -386,16 +444,16 @@ void MarkWall(int x, int y, Node gridArray[][9], float ultrasonicDistance, Direc
         switch(ultrasonicDirection)
         {
             case North:
-                gridArray[x][y].northIsWall = 1;
+                grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
                 break;
             case East:
-                gridArray[x][y].eastIsWall = 1;
+                grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
                 break;
             case South:
-                gridArray[x][y].southIsWall = 1;
+                grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
                 break;
             case West:
-                gridArray[x][y].westIsWall = 1;
+                grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
                 break;
         }
     }
@@ -405,45 +463,34 @@ void MarkWall(int x, int y, Node gridArray[][9], float ultrasonicDistance, Direc
         switch(ultrasonicDirection)
         {
             case North:
-                gridArray[x][y].northIsWall = 0;
+                grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
                 break;
             case East:
-                gridArray[x][y].eastIsWall = 0;
+                grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
                 break;
             case South:
-                gridArray[x][y].southIsWall = 0;
+                grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
                 break;
             case West:
-                gridArray[x][y].westIsWall = 0;
+                grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
                 break;
         }
     }
 }
 
 // checks current node's walls
-void CheckNode(int x, int y, Node gridArray[][9], Direction directionFacing)
+void CheckUltrasonic()
 {
-    // if current node has not been visted
-    if (gridArray[x][y].isVisited == 0)
-    {
-        // add 1 to number of nodes visited
-        numNodeVisited++;
+    // check front, left, right, back sides for wall
+    float frontUltrasonicDist = 2.f; // call function to get front ultrasonic distance <to be done>
+    float rightUltrasonicDist = 20.f; // call function to get right ultrasonic distance <to be done>
+    float leftUltrasonicDist = 20.f; // call function to get left ultrasonic distance <to be done>
+    float backUltrasonicDist = 20.f; // call function to get back ultrasonic distance <to be done>
 
-        // set node to visited
-        gridArray[x][y].isVisited = 1;
-
-        // check front, left, right sides for wall
-        float frontUltrasonicDist = 2.f; // call function to get front ultrasonic distance <to be done>
-        float leftUltrasonicDist = 20.f; // call function to get left ultrasonic distance <to be done>
-        float rightUltrasonicDist = 20.f; // call function to get right ultrasonic distance <to be done>
-
-        MarkWall(x, y, gridArray, frontUltrasonicDist, directionFacing);
-        MarkWall(x, y, gridArray, leftUltrasonicDist, GetLeftDirection(directionFacing));
-        MarkWall(x, y, gridArray, rightUltrasonicDist, GetRightDirection(directionFacing));
-
-        // set wall that car came from to isGap
-        MarkWall(x, y, gridArray, 100.f, GetBackDirection(directionFacing));
-    }
+    MarkWall(frontUltrasonicDist, car.directionFacing);
+    MarkWall(rightUltrasonicDist, GetRightDirection(car.directionFacing));
+    MarkWall(leftUltrasonicDist, GetLeftDirection(car.directionFacing));
+    MarkWall(backUltrasonicDist, GetBackDirection(car.directionFacing));
 }
 
 void SetCar(Car *car, int xPos, int yPos, Direction direction)
@@ -451,6 +498,91 @@ void SetCar(Car *car, int xPos, int yPos, Direction direction)
     car->xCoord = xPos;
     car->yCoord = yPos;
     car->directionFacing = direction;
+}
+
+void SetCarWallPointers()
+{
+    Node currNode = grid.gridArray[car.xCoord][car.yCoord];
+
+    // set car forward, right, left and back pointers to the node's wall
+    switch (car.directionFacing)
+        {
+        case North:
+            car.forward = currNode.northIsWall;
+            car.right = currNode.eastIsWall;
+            car.left = currNode.westIsWall;
+            car.back = currNode.southIsWall;
+            car.directionRight = East;
+            car.directionLeft = West;
+            car.directionBack = South;
+            break;
+        case East:
+            car.forward = currNode.eastIsWall;
+            car.right = currNode.southIsWall;
+            car.left = currNode.northIsWall;
+            car.back = currNode.westIsWall;
+            car.directionRight = South;
+            car.directionLeft = North;
+            car.directionBack = West;
+            break;
+        case West:
+            car.forward = currNode.westIsWall;
+            car.right = currNode.northIsWall;
+            car.left = currNode.southIsWall;
+            car.back = currNode.eastIsWall;
+            car.directionRight = North;
+            car.directionLeft = South;
+            car.directionBack = East;
+            break;
+        case South:
+            car.forward = currNode.southIsWall;
+            car.right = currNode.westIsWall;
+            car.left = currNode.eastIsWall;
+            car.back = currNode.northIsWall;
+            car.directionRight = West;
+            car.directionLeft = East;
+            car.directionBack = North;
+            break;
+        default:
+            break;
+        }
+}
+
+// add the node at a direction of car to stack
+void AddDirectionToStack(Direction directionToCheck)
+{
+    Node nodePtr;
+    int nodeX;
+    int nodeY;
+
+    // get the node at back of car
+    switch (directionToCheck)
+    {
+    case North:
+        nodeX = car.xCoord - 1;
+        nodeY = car.yCoord;
+        nodePtr = grid.gridArray[nodeX][nodeY];
+        break;
+    case South:
+        nodeX = car.xCoord + 1;
+        nodeY = car.yCoord;
+        nodePtr = grid.gridArray[nodeX][nodeY];
+        break;
+    case East:
+        nodeX = car.xCoord;
+        nodeY = car.yCoord + 1;
+        nodePtr = grid.gridArray[nodeX][nodeY];
+        break;
+    case West:
+        nodeX = car.xCoord;
+        nodeY = car.yCoord - 1;
+        nodePtr = grid.gridArray[nodeX][nodeY];
+        break;
+    }
+
+    // if node has not been visited
+    if (nodePtr.isVisited == 0)
+        AddStackIfNotExist(nodeX, nodeY); // add to stack
 }
 
 //convert 4x5 into 9x11 
