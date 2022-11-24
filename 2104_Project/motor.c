@@ -155,6 +155,8 @@ void moveForwardBY(float cm) {
         printf("notches: %f target: %f", notches, target_notches);
     }
     reset_notches();
+
+    stop();
 }
 
 //move backward by distance 
@@ -174,6 +176,8 @@ void moveBackwardBY(float cm) {
         printf("notches: %f target: %f", notches, target_notches);
     }
     reset_notches();
+    
+    stop();
 }
 
 //stop the car
@@ -210,7 +214,7 @@ void turnLeft180(){
     gpio_put(7, 0);
     init_pwmChanA(100);
     init_pwmChanB(0);
-    sleep_ms(1000);
+    sleep_ms(1200);
     stop();
 }
 
@@ -219,7 +223,7 @@ void turnRight180(){
     gpio_put(9, 0);
     init_pwmChanA(0);
     init_pwmChanB(100);
-    sleep_ms(1000);
+    sleep_ms(1200);
     stop();
 }
 
@@ -228,7 +232,7 @@ void turnLeft90(){
     gpio_put(7, 0);
     init_pwmChanA(100);
     init_pwmChanB(0);
-    sleep_ms(500);
+    sleep_ms(600);
     stop();
 }
 
@@ -237,7 +241,7 @@ void turnRight90(){
     gpio_put(9, 0);
     init_pwmChanA(0);
     init_pwmChanB(100);
-    sleep_ms(500);
+    sleep_ms(600);
     stop();
 }
 
@@ -246,7 +250,7 @@ void turnLeft45(){
     gpio_put(7, 0);
     init_pwmChanA(100);
     init_pwmChanB(0);
-    sleep_ms(250);
+    sleep_ms(350);
     stop();
 }
 
@@ -255,6 +259,25 @@ void turnRight45(){
     gpio_put(9, 0);
     init_pwmChanA(0);
     init_pwmChanB(100);
-    sleep_ms(250);
+    sleep_ms(350);
+    stop();
+}
+
+
+void turnLeft15(){
+    gpio_put(6, 0);
+    gpio_put(7, 0);
+    init_pwmChanA(100);
+    init_pwmChanB(0);
+    sleep_ms(200);
+    stop();
+}
+
+void turnRight15(){
+    gpio_put(8, 0);
+    gpio_put(9, 0);
+    init_pwmChanA(0);
+    init_pwmChanB(100);
+    sleep_ms(200);
     stop();
 }

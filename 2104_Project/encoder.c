@@ -49,7 +49,7 @@ void reset_notches(){
     current_notches = 0; 
 }
 //convert cm to steps
-float CMtoSteps(float cm){
+int CMtoSteps(float cm){
     int result;
     float circumference = 2 * PI * WHEEL_RADIUS; //in cm
     float cm_step = circumference / stepCount; //cm per steps

@@ -547,7 +547,7 @@ void ChangeCarDirection(Direction directionToGo, int xPosToGo, int yPosToGo)
     else if (directionToGo == GetRightDirection(car.directionFacing))
     {
         // Turn Right <to be done>
-        turnRight180();
+        turnRight90();
         moveForwardBY(27);
 
         SetCar(&car, xPosToGo, yPosToGo, GetRightDirection(car.directionFacing));
@@ -555,7 +555,7 @@ void ChangeCarDirection(Direction directionToGo, int xPosToGo, int yPosToGo)
     else if (directionToGo == GetLeftDirection(car.directionFacing))
     {
         // Turn Left <to be done>
-        turnLeft180();
+        turnLeft90();
         moveForwardBY(27);
 
         SetCar(&car, xPosToGo, yPosToGo, GetLeftDirection(car.directionFacing));

@@ -29,13 +29,10 @@ int main()
     init_pins();       // initialize pins for encoder
     init_ultrasonic(); // initialize pins for ultrasonic
     struct repeating_timer timer;
-    add_repeating_timer_ms(500, ISR_timer, NULL, &timer); // set timer to calculate rotation
     add_repeating_timer_ms(100, ISR_PID, NULL, &timer);   // set pid timer for every 100ms
     gpio_set_irq_enabled_with_callback(RIGHT_ENCODER_PIN, GPIO_IRQ_EDGE_RISE, true, gpio_callback);
     gpio_set_irq_enabled_with_callback(LEFT_ENCODER_PIN, GPIO_IRQ_EDGE_RISE, true, gpio_callback);
 
-    // moveForwardBY(27);
-    // stop();
 
     MappingMain();
 
