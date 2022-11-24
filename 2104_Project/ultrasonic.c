@@ -2,6 +2,7 @@
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
 #include "hardware/timer.h"
+#include "ultrasonic.h"
 
 int timeOut = 26100; // unknown reason for number
 int timeLoop = 500;  // sample every few (milliseconds)

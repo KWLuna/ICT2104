@@ -2,14 +2,6 @@
 #include <stdbool.h>
 #include "mapping.h"
 
-//typedefs
-
-typedef struct
-{
-    int row;
-    int col;
-}Coordinate;
-
 
 //variables
 Node visitGrid[4][5];

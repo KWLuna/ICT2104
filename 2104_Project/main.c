@@ -5,21 +5,18 @@
 #include "hardware/clocks.h"
 #include "hardware/pwm.h"
 #include "motor.h"
+#include "barcode.h"
 #include "encoder.h"
 #include "mapping.h"
-#include "ultrasonic.c"
-#include "Nav_Map.c"
+#include "ultrasonic.h"
 #include "comms.h"
 
 #define LEFT_ENCODER_PIN 15
 #define RIGHT_ENCODER_PIN 14
 
 // Mapping
-Grid grid;                       // The Map
-Car car;                         // Our Car
 int numNodeVisited = 0;          // counter for number of nodes visited
 int stackTop = -1;               // to track the top element of stack array
-Stack dfsStack[NUMBER_OF_NODES]; // Store Node to of where the stack can travel to but has not visited
 int carPrevX = CAR_START_X;
 int carPrevY = CAR_START_Y;
 

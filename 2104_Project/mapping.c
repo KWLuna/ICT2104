@@ -1,4 +1,5 @@
 #include "mapping.h"
+#include "ultrasonic.h"
 
 void MappingMain()
 {
@@ -607,50 +608,50 @@ Direction GetBackDirection(Direction frontDirection)
 
 //convert 4x5 into 9x11 
 //conversion guide: (lengthx2) + 1
-void conversionConstructor(Node gridArray[4][5])
-{
-    //initialization node centers
-    //0 = wall, 1 = space
+// void conversionConstructor(Node gridArray[4][5])
+// {
+//     //initialization node centers
+//     //0 = wall, 1 = space
     
-    for(int x=0; x<9;x++)
-    {
-        for(int y=0; y<11; y++)
-        {
-            navigationArray[x][y]=0;
-        }
-    }
+//     for(int x=0; x<9;x++)
+//     {
+//         for(int y=0; y<11; y++)
+//         {
+//             navigationArray[x][y]=0;
+//         }
+//     }
 
-    //constructing navigation array map
-    for(int i=0; i<4; i++)
-    {
-        for(int j=0; j<5; j++)
-        {
-            int refRow = (i*2)+1;
-            int refCol = (j*2)+1;
+//     //constructing navigation array map
+//     for(int i=0; i<4; i++)
+//     {
+//         for(int j=0; j<5; j++)
+//         {
+//             int refRow = (i*2)+1;
+//             int refCol = (j*2)+1;
 
-            //blocking out diagonals for each node
-            navigationArray[refRow-1][refCol-1]=1;
-            navigationArray[refRow-1][refCol+1]=1;
-            navigationArray[refRow+1][refCol-1]=1;
-            navigationArray[refRow+1][refCol+1]=1;
+//             //blocking out diagonals for each node
+//             navigationArray[refRow-1][refCol-1]=1;
+//             navigationArray[refRow-1][refCol+1]=1;
+//             navigationArray[refRow+1][refCol-1]=1;
+//             navigationArray[refRow+1][refCol+1]=1;
 
-            //creating blocked off walls
-            if(gridArray[i][j].northIsWall == 0)
-            {
-               navigationArray[refRow-1][refCol]=1;
-            }
-            if(gridArray[i][j].southIsWall == 0)
-            {
-               navigationArray[refRow+1][refCol]=1;
-            }
-            if(gridArray[i][j].eastIsWall == 0)
-            {
-               navigationArray[refRow][refCol-1]=1;
-            }
-            if(gridArray[i][j].westIsWall == 0)
-            {
-               navigationArray[refRow][refCol+1]=1;
-            }
-        }
-    }
-}
+//             //creating blocked off walls
+//             if(gridArray[i][j].northIsWall == 0)
+//             {
+//                navigationArray[refRow-1][refCol]=1;
+//             }
+//             if(gridArray[i][j].southIsWall == 0)
+//             {
+//                navigationArray[refRow+1][refCol]=1;
+//             }
+//             if(gridArray[i][j].eastIsWall == 0)
+//             {
+//                navigationArray[refRow][refCol-1]=1;
+//             }
+//             if(gridArray[i][j].westIsWall == 0)
+//             {
+//                navigationArray[refRow][refCol+1]=1;
+//             }
+//         }
+//     }
+// }

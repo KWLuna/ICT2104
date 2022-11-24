@@ -11,10 +11,16 @@
 #define CAR_START_X 3
 #define CAR_START_Y 4
 
+typedef struct
+{
+    int row;
+    int col;
+} Coordinate;
+
 // Node is used by Grid
 typedef struct Node
 {
-    // unsigned int used to save space, only 1 bit used. 
+    // unsigned int used to save space, only 1 bit used.
     unsigned int isVisited : 1; // 0 = false, 1 = true
 
     // 0 = isWall, 1 = isGap, 2 = isTravelledGap
@@ -52,7 +58,7 @@ typedef struct Car
     int *right;
     int *left;
     int *back;
-    
+
     Direction directionFacing;
     Direction directionLeft;
     Direction directionRight;
@@ -67,13 +73,23 @@ typedef struct Stack
 
 // extern
 extern int navigationArray[9][11];
-extern Grid grid;  // The Map 
-extern Car car;    // Our Car
-extern int numNodeVisited; // counter for number of nodes visited
-extern int stackTop;  // to track the top element of stack array
+extern Grid grid;                       // The Map
+extern Car car;                         // Our Car
+extern int numNodeVisited;              // counter for number of nodes visited
+extern int stackTop;                    // to track the top element of stack array
 extern Stack dfsStack[NUMBER_OF_NODES]; // Store Node to of where the stack can travel to but has not visited
 extern int carPrevX;
 extern int carPrevY;
+extern Node visitGrid[4][5];
+extern int navigationArray[9][11];
+extern bool visitedArray[9][11];
+extern Coordinate movementList[90];
+extern bool found;
+extern int carRow;
+extern int carCol;
+extern int destRow;
+extern int destCol;
+extern int backfill; // number of total movements taken by algo
 
 // declare functions
 void MappingMain();
@@ -96,5 +112,9 @@ Direction GetLeftDirection(Direction frontDirection);
 Direction GetRightDirection(Direction frontDirection);
 Direction GetBackDirection(Direction frontDirection);
 void conversionConstructor(Node gridArray[4][5]);
+void setCoord(int carrow, int carcol, int destrow, int destcol);
+void conversionConstructor(Node gridArray[4][5]);
+bool validMove(int navigationArray[9][11], bool visitedArray[9][11], int newRow, int newCol);
+bool navigateTo(int navigationArray[9][11], bool visitedArray[9][11], int currRow, int currCol);
 
 #endif
