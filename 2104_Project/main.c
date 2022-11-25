@@ -33,7 +33,7 @@ int main()
     gpio_set_irq_enabled_with_callback(RIGHT_ENCODER_PIN, GPIO_IRQ_EDGE_RISE, true, gpio_callback);
     gpio_set_irq_enabled_with_callback(LEFT_ENCODER_PIN, GPIO_IRQ_EDGE_RISE, true, gpio_callback);
 
-    moveForward();
+    moveBackwardBY(60);
 
     // MappingMain();
 

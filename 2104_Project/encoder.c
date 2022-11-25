@@ -48,6 +48,12 @@ float get_current_notches(){
 void reset_notches(){
     current_notches = 0; 
 }
+void reset_RightCounter(){
+    rightCounter = 0; 
+}
+void reset_LeftCounter(){
+    leftCounter = 0; 
+}
 //convert cm to steps
 int CMtoSteps(float cm){
     int result;

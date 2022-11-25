@@ -14,5 +14,7 @@ void init_pins();
 bool ISR_timer(struct repeating_timer *t);
 float get_current_notches();
 void reset_notches();
+void reset_RightCounter();
+void reset_LeftCounter();
 
 #endif /* ENCODER_H_*/
