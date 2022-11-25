@@ -82,6 +82,7 @@ extern int stackTop;                    // to track the top element of stack arr
 extern Stack dfsStack[NUMBER_OF_NODES]; // Store Node to of where the stack can travel to but has not visited
 extern int carPrevX;
 extern int carPrevY;
+extern Node finalMapArray[4][5];
 
 //navigation
 extern int carRow;
@@ -115,6 +116,7 @@ void ChangeCarDirection(Direction directionToGo, int xPosToGo, int yPosToGo);
 Direction GetLeftDirection(Direction frontDirection);
 Direction GetRightDirection(Direction frontDirection);
 Direction GetBackDirection(Direction frontDirection);
+void ConvertMappedGrid();
 
 //navigation
 void setCoord(int carrow, int carcol, int destrow, int destcol);

@@ -8,6 +8,7 @@ int stackTop = -1;  // to track the top element of stack array
 Stack dfsStack[NUMBER_OF_NODES]; // Store Node to of where the stack can travel to but has not visited
 int carPrevX = CAR_START_X;
 int carPrevY = CAR_START_Y;
+Node finalMapArray[4][5];
 
 //Navigation
 int carRow;
@@ -630,6 +631,41 @@ Direction GetBackDirection(Direction frontDirection)
     }
 }
 
+// converts 7x9 grid to 4x5 grid
+void ConvertMappedGrid()
+{
+    // find x and y boundaries on 7x9 grid
+    int startX, startY;
+    // find far left node of car that is not visited
+    for (int x = car.xCoord - 1; x >= 0; x--)
+    {
+        if (grid.gridArray[x][car.yCoord].isVisited == 0)   // if grid not visited
+        {
+            startX = x + 1; // starting x is the previous x
+            break;
+        }
+    }
+    for (int y = car.yCoord - 1; y >= 0; y--)
+    {
+        if (grid.gridArray[car.xCoord][y].isVisited == 0)   // if grid not visited
+        {
+            startY = y + 1; // starting y is the previous y
+            break;
+        }
+    }
+
+    // put 7x9 node content into 4x5 node content
+    for (int x = 0; x < 4; x++)
+    {
+        for (int y = 0; y < 5; y++)
+            finalMapArray[x][y] = grid.gridArray[x + startX][y + startY];   // copy content into 4x5 small grid
+    }
+
+    // change car pos
+    car.xCoord -= startX;
+    car.yCoord -= startY;
+}
+
 //function call sequence for navigation
 //receive coordinate from signal team
 //-> call setCoord with current car coord and dest row/col with ref to [9][11]
@@ -898,7 +934,7 @@ void targetLocator(bool exitFound, Coordinate movementList[90], int backfill)
                 }
                 else if(car.directionFacing==East)
                 {
-                    turnLeft180()
+                    turnLeft180();
                     moveForwardBY(13.5);
                 }
                 car.directionFacing=West;
