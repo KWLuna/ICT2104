@@ -4,20 +4,10 @@
 #include "hardware/timer.h"
 #include "ultrasonic.h"
 
-int timeOut = 26100; // unknown reason for number
-int timeLoop = 500;  // sample every few (milliseconds)
-
-const int numOfPins = 4;
-const int filterPoints = 10;
-
-// set up pins for ultrasound
-void setupUltrasonicPins(int trigPin, int echoPin)
-{
-    gpio_init(trigPin);
-    gpio_init(echoPin);
-    gpio_set_dir(trigPin, GPIO_OUT);
-    gpio_set_dir(echoPin, GPIO_IN);
-}
+#define timeOut 26100   // unknown reason for number
+#define timeLoop 500    // sample every few (milliseconds)
+#define numOfPins 4
+#define filterPoints 10
 
 int getPulse(int trigPin, int echoPin)
 {
@@ -41,40 +31,23 @@ int getPulse(int trigPin, int echoPin)
     return (int)absolute_time_diff_us(startTime, endTime);
 }
 
-int checkDistance(int trigPin, int echoPin)
-{
-    int meanDist = 0;
-    for (int i = 0; i < filterPoints; i++)
-    {
-        meanDist = meanDist + (getPulse(trigPin, echoPin) / 58);
-    }
-    meanDist = meanDist / filterPoints;
-
-    return meanDist;
-}
-
 void init_ultrasonic() {
     // pin number assignment
-    int trigPin[numOfPins];
-    int echoPin[numOfPins];
     for (int i = 0; i < numOfPins; i++)
     {
-        trigPin[i] = i + 10;
-        echoPin[i] = i + 16;
+        gpio_init(i + 10);
+        gpio_init(i + 16); 
+        gpio_set_dir(i + 10, GPIO_OUT);
+        gpio_set_dir(i + 16, GPIO_IN); 
     }
-
-    for (int i = 0; i < numOfPins; i++)
-        setupUltrasonicPins(trigPin[i], echoPin[i]); // set up pins
 }
 
 int ultrasonicPulse(int trigPin, int echoPin) {
-    int mean;
-
-    for (int i = 0; i < numOfPins; i++)
+    int mean = 0;
+    for (int i = 0; i < filterPoints; i++)
     {
-        mean = checkDistance(trigPin, echoPin);
-        //printf(" Sensor is %d cm away\n", mean);
-        sleep_ms(timeLoop);
+        mean = mean + (getPulse(trigPin, echoPin) / 58);
     }
+    mean /= filterPoints;
     return mean;
 }
