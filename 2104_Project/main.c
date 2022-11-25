@@ -23,6 +23,9 @@
 /* Main program */
 int main()
 {
+
+    sleep_ms(500);     // necessary for unknown reasons
+
     stdio_init_all(); // Enable UART so we can print status output
 
     init_motor();      // initialize motor

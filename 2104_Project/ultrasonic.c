@@ -7,9 +7,9 @@
 #define timeOut 26100   // unknown reason for number
 #define timeLoop 500    // sample every few (milliseconds)
 #define numOfPins 4
-#define filterPoints 10
+#define filterPoints 10.0
 
-int getPulse(int trigPin, int echoPin)
+float getPulse(int trigPin, int echoPin)
 {
     gpio_put(trigPin, 1); // start of trigger signal
     sleep_us(10);         // duration of trigger signal
@@ -28,7 +28,7 @@ int getPulse(int trigPin, int echoPin)
             return 0;
     }
     absolute_time_t endTime = get_absolute_time(); // record end time
-    return (int)absolute_time_diff_us(startTime, endTime);
+    return (float)absolute_time_diff_us(startTime, endTime);
 }
 
 void init_ultrasonic() {
@@ -42,12 +42,13 @@ void init_ultrasonic() {
     }
 }
 
-int ultrasonicPulse(int trigPin, int echoPin) {
-    int mean = 0;
+float ultrasonicPulse(int trigPin, int echoPin) {
+    float mean = 0.0;
     for (int i = 0; i < filterPoints; i++)
     {
         mean = mean + (getPulse(trigPin, echoPin) / 58);
     }
     mean /= filterPoints;
+    printf("value is %f\n", mean);
     return mean;
 }
