@@ -9,8 +9,8 @@
 #define NUMBER_OF_NODES 20
 #define MAPPING_GRID_SIZE_X 7
 #define MAPPING_GRID_SIZE_Y 9
-#define CAR_START_X 2
-#define CAR_START_Y 0
+#define CAR_START_X 3
+#define CAR_START_Y 4
 
 // Node is used by Grid
 typedef struct Node
