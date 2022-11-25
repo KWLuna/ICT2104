@@ -781,13 +781,8 @@ void targetLocator(bool exitFound, Coordinate movementList[90], int backfill)
     {
         printf("\nEXIT FOUND!");
         printf("\nTOTAL STEPS: %d", backfill - 1);
-    }
-    else
-        printf("\nNO ROUTE POSSIBLE!");
-
-
-    for (int i = 0; i < backfill; i++)
-    {
+        for (int i = 0; i < backfill; i++)
+    
         if (i == 0)
         {
             printf("\nStarting location: X:%d, Y:%d", movementList[backfill - 1].col, movementList[backfill - 1].row);
@@ -819,5 +814,11 @@ void targetLocator(bool exitFound, Coordinate movementList[90], int backfill)
             // move car IRL westwards half a grid worth of distance
             printf("\nLEFT");
         }
+    
     }
+    else
+        printf("\nNO ROUTE POSSIBLE!");
+
+
+    
 }
