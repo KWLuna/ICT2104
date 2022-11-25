@@ -630,6 +630,15 @@ Direction GetBackDirection(Direction frontDirection)
     }
 }
 
+//function call sequence for navigation
+//receive coordinate from signal team
+//-> call setCoord with current car coord and dest row/col with ref to [9][11]
+//-> call conversionConstructor with a [4][5] array from mapping to create navigation array
+//-> call navigateTo with the navigation array, visited array
+//-> print out movement list
+//-> TODO-DONE: replace movement list print instructions with movement calls to car movement
+//-> TODO: send signal once destination reach to signal team to keep polling for more inputs
+//-> TODO: send a signal if no route possible to reach target dest 
 //convert 4x5 into 9x11 
 //conversion guide: (lengthx2) + 1
 void conversionConstructor(Node gridArray[4][5])
@@ -782,43 +791,121 @@ void targetLocator(bool exitFound, Coordinate movementList[90], int backfill)
         printf("\nEXIT FOUND!");
         printf("\nTOTAL STEPS: %d", backfill - 1);
         for (int i = 0; i < backfill; i++)
-    
-        if (i == 0)
         {
-            printf("\nStarting location: X:%d, Y:%d", movementList[backfill - 1].col, movementList[backfill - 1].row);
-            printf("\nTarget Location: X:%d, Y:%d", destCol, destRow);
-            continue;
-        }
+            if (i == 0)
+            {
+                printf("\nStarting location: X:%d, Y:%d", movementList[backfill - 1].col, movementList[backfill - 1].row);
+                printf("\nTarget Location: X:%d, Y:%d", destCol, destRow);
+                continue;
+            }
 
-        // this means that the row increased by one, aka the coordinate moved down
-        if (movementList[backfill - i - 1].row == movementList[backfill - i].row + 1)
-        {
-            // move car IRL southwards half a grid worth of distance
-            printf("\nDOWN");
+            // this means that the row increased by one, aka the coordinate moved down
+            if (movementList[backfill - i - 1].row == movementList[backfill - i].row + 1)
+            {
+                // move car IRL southwards half a grid worth of distance
+                printf("\nDOWN");
+                if(car.directionFacing==North)
+                {
+                    turnLeft180();
+                    moveForwardBY(13.5);
+                }
+                else if(car.directionFacing==South)
+                {
+                    moveForwardBY(13.5);
+                }
+                else if(car.directionFacing==West)
+                {
+                    turnLeft90();
+                    moveForwardBY(13.5);
+                }
+                else if(car.directionFacing==East)
+                {
+                    turnRight90();
+                    moveForwardBY(13.5);
+                }
+                car.directionFacing=South;
+            }
+            // this means that the row decreased by one, aka the coordinate moved up
+            else if (movementList[backfill - i - 1].row == movementList[backfill - i].row - 1)
+            {
+                // move car IRL northwards half a grid worth of distance
+                printf("\nUP");
+                if(car.directionFacing==North)
+                {
+                    moveForwardBY(13.5);
+                }
+                else if(car.directionFacing==South)
+                {
+                    turnLeft180();
+                    moveForwardBY(13.5);
+                }
+                else if(car.directionFacing==West)
+                {
+                    turnRight90();
+                    moveForwardBY(13.5);
+                }
+                else if(car.directionFacing==East)
+                {
+                    turnLeft90();
+                    moveForwardBY(13.5);
+                }
+                car.directionFacing=North;
+            }
+            // this means that the col increased by one, aka the coordinate moved right
+            else if (movementList[backfill - i - 1].col == movementList[backfill - i].col + 1)
+            {
+                // move car IRL eastwards half a grid worth of distance
+                printf("\nRIGHT");
+                if(car.directionFacing==North)
+                {
+                    turnRight90();
+                    moveForwardBY(13.5);
+                }
+                else if(car.directionFacing==South)
+                {
+                    turnLeft90();
+                    moveForwardBY(13.5);
+                }
+                else if(car.directionFacing==West)
+                {
+                    turnLeft180();
+                    moveForwardBY(13.5);
+                }
+                else if(car.directionFacing==East)
+                {
+                    moveForwardBY(13.5);
+                }
+                car.directionFacing=East;
+            }
+            // this means that the col decreased by one, aka the coordinate moved left
+            else if (movementList[backfill - i - 1].col == movementList[backfill - i].col - 1)
+            {
+                // move car IRL westwards half a grid worth of distance
+                printf("\nLEFT");
+                if(car.directionFacing==North)
+                {
+                    turnLeft90();
+                    moveForwardBY(13.5);
+                }
+                else if(car.directionFacing==South)
+                {
+                    turnRight90();
+                    moveForwardBY(13.5);
+                }
+                else if(car.directionFacing==West)
+                {
+                    moveForwardBY(13.5);
+                }
+                else if(car.directionFacing==East)
+                {
+                    turnLeft180()
+                    moveForwardBY(13.5);
+                }
+                car.directionFacing=West;
+            }
         }
-        // this means that the row decreased by one, aka the coordinate moved up
-        else if (movementList[backfill - i - 1].row == movementList[backfill - i].row - 1)
-        {
-            // move car IRL northwards half a grid worth of distance
-            printf("\nUP");
-        }
-        // this means that the col increased by one, aka the coordinate moved right
-        else if (movementList[backfill - i - 1].col == movementList[backfill - i].col + 1)
-        {
-            // move car IRL eastwards half a grid worth of distance
-            printf("\nRIGHT");
-        }
-        // this means that the col decreased by one, aka the coordinate moved left
-        else if (movementList[backfill - i - 1].col == movementList[backfill - i].col - 1)
-        {
-            // move car IRL westwards half a grid worth of distance
-            printf("\nLEFT");
-        }
-    
     }
     else
         printf("\nNO ROUTE POSSIBLE!");
 
-
-    
 }
