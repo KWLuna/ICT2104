@@ -23,35 +23,30 @@ float target_notches;
 
 //Timer ISR for PID every 100ms
 bool ISR_PID(struct repeating_timer *t){  
-    float target_notches = CMtoSteps(60);
-    float notches = get_current_notches();
     float right = get_RightCounter();
     float left = get_LeftCounter();
-    printf("Right: %f, left: %f, notches: %f, target: %f\n", right, left, notches, target_notches);
-    
+   
     float rightRotation = (right / 20) * 60.00; //calculate RPM for right motor
-    //printf("Right motor speed: %f RPM \n", rightRotation);
     reset_RightCounter();//reset counter to 0
 
     float leftRotation = (left / 20) * 60.00;
-    //printf("Left motor speed: %f RPM \n", leftRotation);
     reset_LeftCounter();//reset counter to 0
     
-
+    //PID values
     float kp = 0.17; 
     float ki = 0.95;
     float kd = 0.2; 
     float lasterror; 
-
+ 
+    //PID Calculation 
     float target_position = rightRotation; 
     float error = target_position - leftRotation;
     float integral = ki + error; 
     float derivative = error - lasterror; 
-
+    
+    //error correction 
     float pwm = (kp * error) + (ki * integral) + (kd * derivative);
     //printf("Error: %f, target: %f\n", error, target_position);
-    //printf("Right: %f, left: %f, notches: %f, target: %f\n", right, left, notches, target_notches);
-
     float new_duty_cycle = set_duty_cycle + pwm;
     init_pwmChanB(new_duty_cycle);
     lasterror = error;
@@ -60,74 +55,72 @@ bool ISR_PID(struct repeating_timer *t){
 }
 
 void init_motor() {
-    // initialise gpio pins for IN1, IN2, IN3 & IN4
-    gpio_init(6); 
-    gpio_init(7);
-    gpio_init(8);
-    gpio_init(9);
-
-    gpio_set_dir(6, GPIO_OUT);
-    gpio_set_dir(7, GPIO_OUT);
-    gpio_set_dir(8, GPIO_OUT);
-    gpio_set_dir(9, GPIO_OUT);
+    //Initialise gpio pins for IN1, IN2, IN3 & IN4
+    gpio_init(IN4); 
+    gpio_init(IN3);
+    gpio_init(IN2);
+    gpio_init(IN1);
+    
+    //Set pins as output 
+    gpio_set_dir(IN4, GPIO_OUT);
+    gpio_set_dir(IN3, GPIO_OUT);
+    gpio_set_dir(IN2, GPIO_OUT);
+    gpio_set_dir(IN1, GPIO_OUT);
 
 }
 
+//Motor configuration 
 void init_pwmChanA(uint16_t duty) {
-    // set your desired inputs here
-	const uint32_t freq_pwm = 1000; // frequency we want to generate, in Hz
-    set_duty_cycle = duty; // duty cycle, in percent
+	const uint32_t freq_pwm = 1000; //Frequency we want to generate, in Hz
+    set_duty_cycle = duty; //Duty cycle, in percent
 
-    // Tell GPIO 0 and 1 they are allocated to the PWM
-	gpio_set_function(0, GPIO_FUNC_PWM); 
+    // Tell GPIO 0 that they are allocated to the PWM
+	gpio_set_function(PWM0A, GPIO_FUNC_PWM); 
+    //Get PWM slice for GPIO 0 (it's slice 0)
+	uint slice_num = pwm_gpio_to_slice_num(0); 
 
-	uint slice_num = pwm_gpio_to_slice_num(0); // get PWM slice for GPIO 0 & 1 (it's slice 0)
-
-	// set frequency
-	// determine top given Hz - assumes free-running counter rather than phase-correct
-	uint32_t f_sys = clock_get_hz(clk_sys); // typically 125'000'000 Hz
-	float divider = f_sys / 1000000UL;  // let's arbitrarily choose to run pwm clock at 1MHz
-	pwm_set_clkdiv(slice_num, divider); // pwm clock should now be running at 1MHz
-	uint32_t top =  1000000UL/freq_pwm - 1; // TOP is u16 has a max of 65535, being 65536 cycles
+	//Set frequency
+	//Determine top given Hz - assumes free-running counter rather than phase-correct
+	uint32_t f_sys = clock_get_hz(clk_sys);     //typically 125'000'000 Hz
+	float divider = f_sys / 1000000UL;          //let's arbitrarily choose to run pwm clock at 1MHz
+	pwm_set_clkdiv(slice_num, divider);         //pwm clock should now be running at 1MHz
+	uint32_t top =  1000000UL/freq_pwm - 1;     //TOP is u16 has a max of 65535, being 65536 cycles
 	pwm_set_wrap(slice_num, top);
 
-	// set duty cycle
-	uint16_t level = (top + 1) * set_duty_cycle / 100 - 1; // calculate channel level from given duty cycle in %
-	pwm_set_chan_level(slice_num, PWM_CHAN_A, level);
-	
-	pwm_set_enabled(slice_num, true); // let's go!
+	//Set duty cycle
+	uint16_t level = (top + 1) * set_duty_cycle / 100 - 1; //Calculate channel level from given duty cycle in %
+	pwm_set_chan_level(slice_num, PWM_CHAN_A, level);	
+	pwm_set_enabled(slice_num, true); 
 
 }
+
+//Motor configuration 
 void init_pwmChanB(uint16_t duty) {
-    // set your desired inputs here
-	const uint32_t freq_pwm = 1000; // frequency we want to generate, in Hz
-    set_duty_cycle = duty; // duty cycle, in percent
+	const uint32_t freq_pwm = 1000; 
+    set_duty_cycle = duty; 
 
-    // Tell GPIO 0 and 1 they are allocated to the PWM
-    gpio_set_function(1, GPIO_FUNC_PWM);
+    gpio_set_function(PWM0B, GPIO_FUNC_PWM);
 
-	uint slice_num = pwm_gpio_to_slice_num(0); // get PWM slice for GPIO 0 & 1 (it's slice 0)
-
-	// set frequency
-	// determine top given Hz - assumes free-running counter rather than phase-correct
-	uint32_t f_sys = clock_get_hz(clk_sys); // typically 125'000'000 Hz
-	float divider = f_sys / 1000000UL;  // let's arbitrarily choose to run pwm clock at 1MHz
-	pwm_set_clkdiv(slice_num, divider); // pwm clock should now be running at 1MHz
-	uint32_t top =  1000000UL/freq_pwm - 1; // TOP is u16 has a max of 65535, being 65536 cycles
+	uint slice_num = pwm_gpio_to_slice_num(0); 
+	uint32_t f_sys = clock_get_hz(clk_sys); 
+	float divider = f_sys / 1000000UL; 
+	pwm_set_clkdiv(slice_num, divider); 
+	uint32_t top =  1000000UL/freq_pwm - 1; 
 	pwm_set_wrap(slice_num, top); 
 
-	// set duty cycle
-	uint16_t level = (top + 1) * set_duty_cycle / 100 - 1; // calculate channel level from given duty cycle in %
-    pwm_set_chan_level(slice_num, PWM_CHAN_B, level);
-	
-	pwm_set_enabled(slice_num, true); // let's go!
+	uint16_t level = (top + 1) * set_duty_cycle / 100 - 1; 
+    pwm_set_chan_level(slice_num, PWM_CHAN_B, level);	
+	pwm_set_enabled(slice_num, true); 
 
 }
+
 
 void moveBackward() {
     set_duty_cycle = 70;
     init_pwmChanA(set_duty_cycle);
     init_pwmChanB(set_duty_cycle);
+
+    //Set pin direction 
     gpio_put(6, 1);
     gpio_put(7, 0);
 
@@ -139,6 +132,7 @@ void moveForward() {
     set_duty_cycle = 70;
     init_pwmChanA(set_duty_cycle);
     init_pwmChanB(set_duty_cycle);
+    //Set pin direction 
     gpio_put(6, 0);
     gpio_put(7, 1);
 
@@ -147,6 +141,7 @@ void moveForward() {
 }
 
 void stop() {
+    //Off all pins 
     gpio_put(6, 0);
     gpio_put(7, 0);
 
@@ -154,16 +149,24 @@ void stop() {
     gpio_put(9, 0);
 }
 
+//Increase duty cycle by 10 %
 void speedUp() {
-    set_duty_cycle = set_duty_cycle + 10;
-    init_pwmChanA(set_duty_cycle);
-    init_pwmChanB(set_duty_cycle);
-}
 
+    if (set_duty_cycle < 90){
+        set_duty_cycle = set_duty_cycle + 10;
+        init_pwmChanA(set_duty_cycle);
+        init_pwmChanB(set_duty_cycle);
+    }
+
+}
+//Decrease duty cycle by 10 %
 void slowDown() {
-     set_duty_cycle =  set_duty_cycle - 10;
-    init_pwmChanA(set_duty_cycle);
-    init_pwmChanB(set_duty_cycle);
+    if (set_duty_cycle > 10){
+        set_duty_cycle =  set_duty_cycle - 10;
+        init_pwmChanA(set_duty_cycle);
+        init_pwmChanB(set_duty_cycle);        
+    }
+
 }
 
 void turnLeft180(){
