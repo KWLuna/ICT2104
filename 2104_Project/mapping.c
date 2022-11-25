@@ -9,6 +9,17 @@ Stack dfsStack[NUMBER_OF_NODES]; // Store Node to of where the stack can travel 
 int carPrevX = CAR_START_X;
 int carPrevY = CAR_START_Y;
 
+//Navigation
+int carRow;
+int carCol;
+int destRow;
+int destCol;
+int backfill;
+int navigationArray[9][11];
+bool visitedArray[9][11];
+bool exitFound;
+Coordinate movementList[90];
+
 void MappingMain()
 {
     // Initialise Nodes prevX and prevY to 100
@@ -621,50 +632,192 @@ Direction GetBackDirection(Direction frontDirection)
 
 //convert 4x5 into 9x11 
 //conversion guide: (lengthx2) + 1
-// void conversionConstructor(Node gridArray[4][5])
-// {
-//     //initialization node centers
-//     //0 = wall, 1 = space
+void conversionConstructor(Node gridArray[4][5])
+{
+    //reset all variables
+    //initialization node centers
+    //0 = wall, 1 = space
     
-//     for(int x=0; x<9;x++)
-//     {
-//         for(int y=0; y<11; y++)
-//         {
-//             navigationArray[x][y]=0;
-//         }
-//     }
+    carRow=0;
+    carCol=0;
+    destRow=0;
+    destCol=0;
+    exitFound=false;
+    backfill=0;
 
-//     //constructing navigation array map
-//     for(int i=0; i<4; i++)
-//     {
-//         for(int j=0; j<5; j++)
-//         {
-//             int refRow = (i*2)+1;
-//             int refCol = (j*2)+1;
+    for(int x=0; x<9;x++)
+    {
+        for(int y=0; y<11; y++)
+        {
+            navigationArray[x][y]=0;
+            visitedArray[x][y]=false;
+        }
+    }
 
-//             //blocking out diagonals for each node
-//             navigationArray[refRow-1][refCol-1]=1;
-//             navigationArray[refRow-1][refCol+1]=1;
-//             navigationArray[refRow+1][refCol-1]=1;
-//             navigationArray[refRow+1][refCol+1]=1;
+    for(int x=0; x<90;x++)
+    {
+        movementList[x].col=0;
+        movementList[x].row=0;
+    }
 
-//             //creating blocked off walls
-//             if(gridArray[i][j].northIsWall == 0)
-//             {
-//                navigationArray[refRow-1][refCol]=1;
-//             }
-//             if(gridArray[i][j].southIsWall == 0)
-//             {
-//                navigationArray[refRow+1][refCol]=1;
-//             }
-//             if(gridArray[i][j].eastIsWall == 0)
-//             {
-//                navigationArray[refRow][refCol-1]=1;
-//             }
-//             if(gridArray[i][j].westIsWall == 0)
-//             {
-//                navigationArray[refRow][refCol+1]=1;
-//             }
-//         }
-//     }
-// }
+
+    //constructing navigation array map
+    for(int i=0; i<4; i++)
+    {
+        for(int j=0; j<5; j++)
+        {
+            int refRow = (i*2)+1;
+            int refCol = (j*2)+1;
+
+            //blocking out diagonals for each node
+            navigationArray[refRow-1][refCol-1]=1;
+            navigationArray[refRow-1][refCol+1]=1;
+            navigationArray[refRow+1][refCol-1]=1;
+            navigationArray[refRow+1][refCol+1]=1;
+
+            //creating blocked off walls
+            if(gridArray[i][j].northIsWall == 0)
+            {
+               navigationArray[refRow-1][refCol]=1;
+            }
+            if(gridArray[i][j].southIsWall == 0)
+            {
+               navigationArray[refRow+1][refCol]=1;
+            }
+            if(gridArray[i][j].eastIsWall == 0)
+            {
+               navigationArray[refRow][refCol-1]=1;
+            }
+            if(gridArray[i][j].westIsWall == 0)
+            {
+               navigationArray[refRow][refCol+1]=1;
+            }
+        }
+    }
+}
+
+void setCoord(int carrow, int carcol, int destrow, int destcol)
+{
+    carRow = carrow;
+    carCol = carcol;
+    destRow = destrow;
+    destCol = destcol;
+}
+
+bool validMove(int navigationArray[9][11],bool visitedArray[9][11],int newRow, int newCol)
+{
+    //doesnt exceed top/bottom boundaries
+    if (newRow < 0 || newRow >= 9)       
+        return false;
+    //doesnt exceed left/right boundaries
+    if (newCol < 0 || newCol >= 11)
+        return false;
+    //is not a wall
+    if (navigationArray[newRow][newCol]==1)
+        return false;
+    //has not been visited
+    if (visitedArray[newRow][newCol]==true)
+        return false;
+
+    return true;
+}
+
+//recursion code to search for path
+bool navigateTo(int navigationArray[9][11],bool visitedArray[9][11], int currRow, int currCol)
+{
+    bool foundExit;
+    
+
+    if((currRow==destRow) && (currCol==destCol))
+        {   
+            movementList[backfill].row=currRow;
+            movementList[backfill].col=currCol;
+            backfill+=1;
+            visitedArray[currRow][currCol]=true;
+            exitFound = true;
+            return true;
+        }
+
+    visitedArray[currRow][currCol]=true;
+
+
+    //recursion up(-1,0),down(+1,0),left(0,-1),right(0,+1)
+    //up
+    if(validMove(navigationArray,visitedArray,(currRow-1),(currCol)))
+    {   
+        foundExit = navigateTo(navigationArray,visitedArray,(currRow-1),(currCol));
+    }
+    //down
+    if(!foundExit && (validMove(navigationArray,visitedArray,(currRow+1),(currCol))))
+    {
+        foundExit = navigateTo(navigationArray,visitedArray,(currRow+1),(currCol));
+    }
+    //left
+    if(!foundExit && (validMove(navigationArray,visitedArray,(currRow),(currCol-1))))
+    {   
+        foundExit = navigateTo(navigationArray,visitedArray,(currRow),(currCol-1));
+    }
+    //right
+    if(!foundExit && (validMove(navigationArray,visitedArray,(currRow),(currCol+1))))
+    {
+        foundExit = navigateTo(navigationArray,visitedArray,(currRow),(currCol+1));
+    }
+
+    if(foundExit)
+    {
+        movementList[backfill].row=currRow;
+        movementList[backfill].col=currCol;
+        backfill+=1;
+        
+        return true;
+    }
+    return false;
+
+}
+
+void targetLocator(bool exitFound, Coordinate movementList[90], int backfill)
+{
+    if (exitFound)
+    {
+        printf("\nEXIT FOUND!");
+        printf("\nTOTAL STEPS: %d", backfill - 1);
+    }
+    else
+        printf("\nNO ROUTE POSSIBLE!");
+
+
+    for (int i = 0; i < backfill; i++)
+    {
+        if (i == 0)
+        {
+            printf("\nStarting location: X:%d, Y:%d", movementList[backfill - 1].col, movementList[backfill - 1].row);
+            printf("\nTarget Location: X:%d, Y:%d", destCol, destRow);
+            continue;
+        }
+
+        // this means that the row increased by one, aka the coordinate moved down
+        if (movementList[backfill - i - 1].row == movementList[backfill - i].row + 1)
+        {
+            // move car IRL southwards half a grid worth of distance
+            printf("\nDOWN");
+        }
+        // this means that the row decreased by one, aka the coordinate moved up
+        else if (movementList[backfill - i - 1].row == movementList[backfill - i].row - 1)
+        {
+            // move car IRL northwards half a grid worth of distance
+            printf("\nUP");
+        }
+        // this means that the col increased by one, aka the coordinate moved right
+        else if (movementList[backfill - i - 1].col == movementList[backfill - i].col + 1)
+        {
+            // move car IRL eastwards half a grid worth of distance
+            printf("\nRIGHT");
+        }
+        // this means that the col decreased by one, aka the coordinate moved left
+        else if (movementList[backfill - i - 1].col == movementList[backfill - i].col - 1)
+        {
+            // move car IRL westwards half a grid worth of distance
+            printf("\nLEFT");
+        }
+    }
+}
