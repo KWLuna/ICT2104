@@ -20,14 +20,33 @@ void i2c_start()
     bi_decl(bi_2pins_with_func(PICO_DEFAULT_I2C_SDA_PIN, PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C));
 }
 
-/* Send data to M5 for display purposes */
-void i2c_send_data(uint8_t inst, uint8_t data)
+/* Send uint8_t data to M5 */
+void i2c_send_uint8(uint8_t inst, uint8_t data)
 {
-    if (i2c_write_blocking(i2c0, M5_SLAVE, &inst, 1, true) != PICO_ERROR_GENERIC)
-    {
-        i2c_write_blocking(i2c0, M5_SLAVE, &data, 1, false);
+    uint8_t finalData[2];
+    finalData[0] = inst;
+    finalData[1] = data;
+
+    if (i2c_write_blocking(i2c0, M5_SLAVE, finalData, 2, false) != PICO_ERROR_GENERIC)
         printf("Instruction %d and data %d successfully sent\n", (inst, data));
-    }
+    else
+        printf("UINT8_T SEND ERROR\n");
+}
+
+/* Send float data (distance, etc.) to M5 */
+void i2c_send_float(uint8_t inst, float data)
+{
+    uint8_t finalData[3];
+    uint8_t left = (uint8_t)data;                   // Before d.p.
+    uint8_t right = (uint8_t)((data - left) * 100); // After d.p., cast to prevent errors if >2.
+    finalData[0] = inst;
+    finalData[1] = left;
+    finalData[2] = right;
+
+    if (i2c_write_blocking(i2c0, M5_SLAVE, finalData, 3, false) != PICO_ERROR_GENERIC)
+        printf("Instruction %d and data %.2f successfully sent\n", (inst, data));
+    else
+        printf("FLOAT SEND ERROR\n");
 }
 
 /* Read x and y coordinates from M5 */

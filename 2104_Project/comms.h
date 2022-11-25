@@ -2,10 +2,10 @@
  * Instructions to be passed as first parameter for send functions (comms)
  * Used by M5 to differentiate the data received
  */
-#define M5_BARCODE 97
-#define M5_DISTANCE 98
-#define M5_HUMP 99
-#define M5_MAP 100
+#define M5_BARCODE 97  // a
+#define M5_DISTANCE 98 // b
+#define M5_HUMP 99     // c
+#define M5_MAP 100     // d
 
 /* UART settings */
 #define UART_BAUD_RATE 115200
@@ -25,5 +25,6 @@ void uart_read_data();
 
 /* I2C functions */
 void i2c_start();
-void i2c_send_data(uint8_t inst, uint8_t data);
+void i2c_send_uint8(uint8_t inst, uint8_t data);
+void i2c_send_float(uint8_t inst, float data);
 void i2c_read_data();

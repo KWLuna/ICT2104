@@ -14,29 +14,33 @@ WiFiServer server(80);
 /* Global variables */
 const char *ssid = "M5StickC_Plus_Ap";
 const char *password = "12345678";
-uint8_t inst = 0;
-uint8_t barcode_data = 0;
-uint8_t distance_data = 0;
-uint8_t hump_data = 0;
-uint8_t map_data = 0;
+char inst = '\0';                 // Instruction
+char barcode_data = '\0';         // Alphabet read from barcode
+float distance_data = 0.00;       // Distance
+uint8_t hump_data = 0;            // Hump height
+uint8_t map_data = 0;             // Map
 int x = -1;
 int y = -1;
 
 /* Function to handle received data */
 void receiveData(int numBytes) {
+  uint8_t beforeDP = 0;
+  uint8_t afterDP = 0;
   if (Wire.available() >= 2) {
     inst = Wire.read();
     switch(inst) {
-      case 97:
+      case 'a':
         barcode_data = Wire.read();
         break;
-      case 98:
-        distance_data = Wire.read();
+      case 'b':
+        beforeDP = Wire.read();
+        afterDP = Wire.read();
+        distance_data = beforeDP + ((float)afterDP / 100);
         break;
-      case 99:
+      case 'c':
         hump_data = Wire.read();
         break;
-      case 100:
+      case 'd':
         map_data = Wire.read();
         break;
       default:
@@ -76,9 +80,9 @@ void loop() {
   // Test display
   M5.Lcd.setCursor(25, 100);
   M5.Lcd.print("TI: ");
-  M5.Lcd.print(i2c_inst);
+  M5.Lcd.print(inst);
   M5.Lcd.print(", TD: ");
-  M5.Lcd.print(barcode_data);
+  M5.Lcd.print(distance_data);
 
   // App display
   WiFiClient client = server.available();
@@ -117,7 +121,7 @@ void loop() {
             client.println("</td></tr>");
             
             // Distance
-            client.println("<tr><td>Distance Travelled : </td><td>");
+            client.println("<tr><td>Distance : </td><td>");
             client.println(distance_data);
             client.println(" cm</td></tr>");
              
