@@ -16,5 +16,8 @@ float get_current_notches();
 void reset_notches();
 void reset_RightCounter();
 void reset_LeftCounter();
-
+int get_RightNotches();
+int get_LeftNotches();
+int reset_RightNotches();
+int reset_LeftNotches();
 #endif /* ENCODER_H_*/

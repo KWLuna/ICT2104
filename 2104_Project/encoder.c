@@ -18,21 +18,32 @@ const float stepCount = 20.00;
 
 
 //Integers for pulse counters
-volatile int rightCounter = 0;
+volatile int rightCounter = 0; //For PID Control
 volatile int leftCounter = 0;
-volatile int current_notches = 0;
+volatile int current_notches = 0; // For Moving by distance
+volatile int rightNotches = 0;  // For Turning
+volatile int leftNotches = 0;
 
 //right encoder pulse count ISR
 void ISR_rightEncoder(){
     rightCounter++;
     current_notches++;
+    rightNotches++; 
 }
 
 //left encoder pulse count ISR
 void ISR_leftEncoder(){
     leftCounter++;
+    leftNotches++; 
 }
 
+int get_RightNotches(){
+    return rightNotches;
+}
+
+int get_LeftNotches(){
+    return leftNotches;
+}
 int get_RightCounter(){
     return rightCounter;
 }
@@ -40,7 +51,6 @@ int get_RightCounter(){
 int get_LeftCounter(){
     return leftCounter;
 }
-
 float get_current_notches(){
     return current_notches;
 }
@@ -52,6 +62,12 @@ void reset_RightCounter(){
     rightCounter = 0; 
 }
 void reset_LeftCounter(){
+    leftCounter = 0; 
+}
+void reset_RightNotches(){
+    rightCounter = 0; 
+}
+void reset_LeftNotches(){
     leftCounter = 0; 
 }
 //convert cm to steps

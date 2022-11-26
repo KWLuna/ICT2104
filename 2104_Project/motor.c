@@ -6,7 +6,7 @@
 #include "hardware/clocks.h"
 #include "hardware/pwm.h"
 
-// uint16_t duty_cycle;
+// uint1IN4_t duty_cycle;
 uint16_t set_duty_cycle;
 
 //Integers for pulse counters
@@ -46,7 +46,7 @@ bool ISR_PID(struct repeating_timer *t){
     
     //error correction 
     float pwm = (kp * error) + (ki * integral) + (kd * derivative);
-    //printf("Error: %f, target: %f\n", error, target_position);
+    printf("Error: %f, target: %f\n", error, target_position);
     float new_duty_cycle = set_duty_cycle + pwm;
     init_pwmChanB(new_duty_cycle);
     lasterror = error;
@@ -121,11 +121,11 @@ void moveBackward() {
     init_pwmChanB(set_duty_cycle);
 
     //Set pin direction 
-    gpio_put(6, 1);
-    gpio_put(7, 0);
+    gpio_put(IN4, 1);
+    gpio_put(IN3, 0);
 
-    gpio_put(8, 1);
-    gpio_put(9, 0);
+    gpio_put(IN2, 1);
+    gpio_put(IN1, 0);
 }
 
 void moveForward() {
@@ -133,20 +133,20 @@ void moveForward() {
     init_pwmChanA(set_duty_cycle);
     init_pwmChanB(set_duty_cycle);
     //Set pin direction 
-    gpio_put(6, 0);
-    gpio_put(7, 1);
+    gpio_put(IN4, 0);
+    gpio_put(IN3, 1);
 
-    gpio_put(8, 0);
-    gpio_put(9, 1);
+    gpio_put(IN2, 0);
+    gpio_put(IN1, 1);
 }
 
 void stop() {
     //Off all pins 
-    gpio_put(6, 0);
-    gpio_put(7, 0);
+    gpio_put(IN4, 0);
+    gpio_put(IN3, 0);
 
-    gpio_put(8, 0);
-    gpio_put(9, 0);
+    gpio_put(IN2, 0);
+    gpio_put(IN1, 0);
 }
 
 //Increase duty cycle by 10 %
@@ -170,90 +170,123 @@ void slowDown() {
 }
 
 void turnLeft180(){
-    gpio_put(6, 0);
-    gpio_put(7, 0);
-    gpio_put(8, 0);
-    gpio_put(9, 1);
-    init_pwmChanA(100);
+    // put all pins except for IN1 to low
+    gpio_put(IN4, 0);
+    gpio_put(IN3, 0);
+    gpio_put(IN2, 0);
+    gpio_put(IN1, 1);
     init_pwmChanB(0);
-    sleep_ms(1300);
+   float rightNotches = get_RightNotches();
+    while(rightNotches != 37){
+        rightNotches = get_RightNotches();
+    }
+    reset_RightNotches();
     stop();
 }
 
 void turnRight180(){
-    gpio_put(6, 0);
-    gpio_put(7, 1);
-    gpio_put(8, 0);
-    gpio_put(9, 0);
+    // put all pins except for IN3 to low
+    gpio_put(IN4, 0);
+    gpio_put(IN3, 1);
+    gpio_put(IN2, 0);
+    gpio_put(IN1, 0);
     init_pwmChanA(0);
-    init_pwmChanB(100);
-    sleep_ms(1300);
+    float leftNotches = get_LeftNotches();
+    while(leftNotches != 37){
+        leftNotches = get_LeftNotches();
+    }
+    reset_LeftNotches();
     stop();
 }
 
 void turnLeft90(){
-    gpio_put(6, 0);
-    gpio_put(7, 0);
-    gpio_put(8, 0);
-    gpio_put(9, 1);
-    init_pwmChanA(100);
+    // put all pins except for IN1 to low
+    gpio_put(IN4, 0);
+    gpio_put(IN3, 0);
+    gpio_put(IN2, 0);
+    gpio_put(IN1, 1);
     init_pwmChanB(0);
-    sleep_ms(650);
+    float rightNotches = get_RightNotches();
+    while(rightNotches != 20){
+        rightNotches = get_RightNotches();
+    }
+    reset_RightNotches();
     stop();
 }
 
 void turnRight90(){
-    gpio_put(6, 0);
-    gpio_put(7, 1);
-    gpio_put(8, 0);
-    gpio_put(9, 0);
+    // put all pins except for IN3 to low
+    gpio_put(IN4, 0);
+    gpio_put(IN3, 1);
+    gpio_put(IN2, 0);
+    gpio_put(IN1, 0);
     init_pwmChanA(0);
-    init_pwmChanB(100);
-    sleep_ms(650);
+    float leftNotches = get_LeftNotches();
+    while(leftNotches != 20){
+        leftNotches = get_LeftNotches();
+    }
+    reset_LeftNotches();
     stop();
 }
 
 void turnLeft45(){
-    gpio_put(6, 0);
-    gpio_put(7, 0);
-    gpio_put(8, 0);
-    gpio_put(9, 1);
-    init_pwmChanA(100);
+    // put all pins except for IN1 to low
+    gpio_put(IN4, 0);
+    gpio_put(IN3, 0);
+    gpio_put(IN2, 0);
+    gpio_put(IN1, 1);
     init_pwmChanB(0);
-    sleep_ms(350);
+    float rightNotches = get_RightNotches();
+    while(rightNotches != 9){
+        rightNotches = get_RightNotches();
+    }
+    reset_RightNotches();
     stop();
 }
+    
 
 void turnRight45(){
-    gpio_put(6, 0);
-    gpio_put(7, 1);
-    gpio_put(8, 0);
-    gpio_put(9, 0);
+    // put all pins except for IN3 to low
+    gpio_put(IN4, 0);
+    gpio_put(IN3, 1);
+    gpio_put(IN2, 0);
+    gpio_put(IN1, 0);
     init_pwmChanA(0);
-    init_pwmChanB(100);
-    sleep_ms(350);
+    float leftNotches = get_LeftNotches();
+    while(leftNotches != 9){
+        leftNotches = get_LeftNotches();
+    }
+    reset_LeftNotches();
     stop();
 }
 
 void turnLeft15(){
-    gpio_put(6, 0);
-    gpio_put(7, 0);
-    gpio_put(8, 0);
-    gpio_put(9, 1);
-    init_pwmChanA(100);
+    // put all pins except for IN1 to low
+    gpio_put(IN4, 0);
+    gpio_put(IN3, 0);
+    gpio_put(IN2, 0);
+    gpio_put(IN1, 1);
     init_pwmChanB(0);
-    sleep_ms(160);
+    float rightNotches = get_RightNotches();
+    while(rightNotches != 4){
+        rightNotches = get_RightNotches();
+    }
+    reset_RightNotches();
     stop();
 }
 
 void turnRight15(){
-    gpio_put(6, 0);
-    gpio_put(7, 1);
-    gpio_put(8, 0);
-    gpio_put(9, 0);
+    // put all pins except for IN3 to low
+    gpio_put(IN4, 0);
+    gpio_put(IN3, 1);
+    gpio_put(IN2, 0);
+    gpio_put(IN1, 0);
     init_pwmChanA(0);
-    init_pwmChanB(100);
-    sleep_ms(160);
+    float leftNotches = get_LeftNotches();
+    while(leftNotches != 4){
+        leftNotches = get_LeftNotches();
+    }
+    reset_LeftNotches();
     stop();
 }
 
@@ -263,11 +296,11 @@ void moveForwardBY(float cm) {
     set_duty_cycle = 70;
     init_pwmChanA(set_duty_cycle);
     init_pwmChanB(set_duty_cycle);
-    gpio_put(6, 0);
-    gpio_put(7, 1);
+    gpio_put(IN4, 0);
+    gpio_put(IN3, 1);
 
-    gpio_put(8, 0);
-    gpio_put(9, 1);
+    gpio_put(IN2, 0);
+    gpio_put(IN1, 1);
     float notches; 
     while (notches < target_notches){
         notches = get_current_notches();
@@ -283,11 +316,11 @@ void moveBackwardBY(float cm) {
     set_duty_cycle = 70;
     init_pwmChanA(set_duty_cycle);
     init_pwmChanB(set_duty_cycle);
-    gpio_put(6, 1);
-    gpio_put(7, 0);
+    gpio_put(IN4, 1);
+    gpio_put(IN3, 0);
 
-    gpio_put(8, 1);
-    gpio_put(9, 0);
+    gpio_put(IN2, 1);
+    gpio_put(IN1, 0);
     float notches; 
     while (notches < target_notches){
         notches = get_current_notches();
@@ -296,4 +329,3 @@ void moveBackwardBY(float cm) {
     reset_notches();
     stop();
 }
-
