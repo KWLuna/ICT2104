@@ -17,15 +17,13 @@
 #define PICO_MAP 'd'
 
 /* Server object */
-// WiFiServer server(80);
 AsyncWebServer server(80);
 
-
 /* Global variables */
-const char* ssid = "A3_M5StickC_Plus";
-const char* password = "12345678";
-const char* paramX = "coordinatesX";
-const char* paramY = "coordinatesY";
+const char *ssid = "A3_M5StickC_Plus";
+const char *password = "12345678";
+const char *paramX = "coordinatesX";
+const char *paramY = "coordinatesY";
 
 char inst = '\0';
 char barcode_data = '\0';
@@ -84,39 +82,44 @@ const char index_html[] PROGMEM = R"rawliteral(
   </body></html>)rawliteral";
 
 /* Function to read data from Pico */
-void readData() {
+void readData()
+{
   uint8_t beforeDP = 0;
   uint8_t afterDP = 0;
-  if (Serial2.available() >= 2) {
+  if (Serial2.available() >= 2)
+  {
     inst = Serial2.read();
-    switch (inst) {
-      case PICO_BARCODE:
-        barcode_data = Serial2.read();
-        break;
-      case PICO_DISTANCE:
-        beforeDP = Serial2.read();
-        afterDP = Serial2.read();
-        distance_data = beforeDP + ((float)afterDP / 100);
-        break;
-      case PICO_HUMP:
-        beforeDP = Serial2.read();
-        afterDP = Serial2.read();
-        hump_data = beforeDP + ((float)afterDP / 100);
-        break;
-      case PICO_MAP:
-        map_data = Serial2.read();
-        break;
-      default:
-        Serial.println("No data");
-        break;
+    switch (inst)
+    {
+    case PICO_BARCODE:
+      barcode_data = Serial2.read();
+      break;
+    case PICO_DISTANCE:
+      beforeDP = Serial2.read();
+      afterDP = Serial2.read();
+      distance_data = beforeDP + ((float)afterDP / 100);
+      break;
+    case PICO_HUMP:
+      beforeDP = Serial2.read();
+      afterDP = Serial2.read();
+      hump_data = beforeDP + ((float)afterDP / 100);
+      break;
+    case PICO_MAP:
+      map_data = Serial2.read();
+      break;
+    default:
+      Serial.println("No data");
+      break;
     }
   }
 }
 
 /* Function to send coordinates to Pico */
-void sendData(int x, int y) {
+void sendData(int x, int y)
+{
   // Considering to include conditional to check when car stops
-  if (x != -1 && y != -1) {
+  if (x != -1 && y != -1)
+  {
     Serial2.write(x);
     Serial2.write(y);
     x = -1;
@@ -124,33 +127,38 @@ void sendData(int x, int y) {
   }
 }
 
-
-String processor(const String& var) {
-  if (var == "barcode_data") {
+String processor(const String &var)
+{
+  if (var == "barcode_data")
+  {
     return String(barcode_data);
-  } else if (var == "distance_data") {
+  }
+  else if (var == "distance_data")
+  {
     return String(distance_data);
-  } else if (var == "hump_data") {
+  }
+  else if (var == "hump_data")
+  {
     return String(hump_data);
   }
   return String();
 }
 
 /* Runs only on first init */
-void setup() {
-  M5.begin();                   // M5
-  WiFi.softAP(ssid, password);  // Setting ssid and password for the access point
+void setup()
+{
+  M5.begin();                  // M5
+  WiFi.softAP(ssid, password); // Setting ssid and password for the access point
   // // server.begin();               // Starting server
 
   // UART
   Serial2.begin(BAUD_RATE, SERIAL_8N1, RX_PIN, TX_PIN);
 
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
-    request->send_P(200, "text/html", index_html, processor);
-  });
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send_P(200, "text/html", index_html, processor); });
 
   // // Send a GET request to <ESP_IP>/get?input1=<inputMessage>
-  server.on("/get", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request){
     String coordinateX;
     String coordinateY;
 
@@ -163,94 +171,15 @@ void setup() {
       M5.Lcd.print(coordinateY);
       Serial.println(coordinateX);
       Serial.println(coordinateX);
-
     }
-    request->send(200, "text/html", "Coordinate X: " + coordinateX + " Coordinate Y: " + coordinateY + "<br><a href=\"/\">Return to Home Page</a>");
-  });
+    request->send(200, "text/html", "Coordinate X: " + coordinateX + " Coordinate Y: " + coordinateY + "<br><a href=\"/\">Return to Home Page</a>"); });
 
   server.begin();
 }
 
-
 /* Main program */
-void loop() {
-  // server.handleClient();
-  
+void loop()
+{
   // Read data from buffer
   readData();
-
-  // M5 test display
-  // M5.Lcd.print("Test data: ");
-  // M5.Lcd.print(inst);
-
-  // // App display
-  // WiFiClient client = server.available();
-  // if (client) {
-  //   String currentLine = "";
-  //   while (client.connected()) {
-  //     if (client.available()) {
-  //       char c = client.read();
-
-  //       if (c == '\n') {
-  //         if (currentLine.length() == 0) {
-  //           client.println("HTTP/1.1 200 OK");
-  //           client.println("Content-type:text/html");
-  //           client.println();  //Blank line before request content
-
-  //           client.println("<!DOCTYPE html><html>");
-  //           client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-  //           client.println("<link rel=\"icon\" href=\"data:,\">");
-
-  //           // Styling
-  //           client.println("<style>body { text-align: center; font-family: \"Trebuchet MS\", Arial;}");
-  //           client.println("table { border-collapse: collapse; width:35%; margin-left:auto; margin-right:auto; margin-bottom:50px; }");
-  //           client.println("th { padding: 12px; background-color: #0043af; color: white; }");
-  //           client.println("tr { border: 1px solid #ddd; padding: 12px; }");
-  //           client.println("tr:hover { background-color: #bcbcbc; }");
-  //           client.println("td { border: none; padding: 12px; }");
-  //           client.println(".sensor { color:white; font-weight: bold; background-color: #bcbcbc; padding: 1px; }");
-
-  //           // Heading
-  //           client.println("</style></head><body><h1>ICT2104 Robot Car</h1>");
-  //           client.println("<table><tr><th>MEASUREMENT</th><th>VALUE</th></tr>");
-
-  //           // Barcode
-  //           client.println("<tr><td>Barcode Data : </td><td>");
-  //           client.println(uart_data);
-  //           client.println("</td></tr>");
-
-  //           // Distance
-  //           client.println("<tr><td>Distance Travelled : </td><td>");
-  //           client.println(uart_data);
-  //           client.println(" cm</td></tr>");
-
-  //           // Hump Height
-  //           client.println("<tr><td>Hump Height Detected : </td><td>");
-  //           client.println(uart_data);
-  //           client.println(" cm</td></tr>");
-
-  //           client.println("<tr><td>");
-  //           client.println("<form action='/get'>Coordinates: <input type='text' name='coordinates'><input type='submit' value='Submit'></form></td></tr>");
-  //           client.println("</table>");
-
-  //           // Mapping
-  //           client.println("<table><tr><th>MAZE MAP</th></tr>");
-  //           client.println("<tr><td>print map here?</td></tr></table>");
-
-  //           client.println("</body></html>");
-
-  //           client.println();  // Blank line for end of request
-  //           break;
-  //         } else {
-  //           currentLine = "";
-  //         }
-  //       } else if (c != '\r') {
-  //         currentLine += c;
-  //       }
-  //       M5.Lcd.setCursor(50, 100);
-  //       M5.Lcd.print(currentLine);
-  //     }
-  //   }
-  // }
-  // client.stop();
 }
