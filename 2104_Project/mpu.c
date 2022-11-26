@@ -197,7 +197,7 @@ bool checkBumpISR(struct repeating_timer *t)
     if (bumpDataReady)
     {
         // comms(); to send to comms
-        i2c_send_float(M5_DISTANCE, highestHeight);
+        i2c_send_float(M5_HUMP, highestHeight);
         // printf("Sending to comms: %.2f cm\n", highestHeight);
 
         // reset bump height & bump flag

@@ -1,16 +1,17 @@
 #include "mapping.h"
+#include "comms.h"
 
 // Mapping
-Grid grid;  // The Map 
-Car car;    // Our Car
-int numNodeVisited = 0; // counter for number of nodes visited
-int stackTop = -1;  // to track the top element of stack array
+Grid grid;                       // The Map
+Car car;                         // Our Car
+int numNodeVisited = 0;          // counter for number of nodes visited
+int stackTop = -1;               // to track the top element of stack array
 Stack dfsStack[NUMBER_OF_NODES]; // Store Node to of where the stack can travel to but has not visited
 int carPrevX = CAR_START_X;
 int carPrevY = CAR_START_Y;
 Node finalMapArray[4][5];
 
-//Navigation
+// Navigation
 int carRow;
 int carCol;
 int destRow;
@@ -33,9 +34,9 @@ void MappingMain()
         }
     }
 
-    //Set Car Starting Position and Direction
+    // Set Car Starting Position and Direction
     SetCar(&car, CAR_START_X, CAR_START_Y, North);
-    //SetCar(&car, 2, 0, North);    // for testing
+    // SetCar(&car, 2, 0, North);    // for testing
 
     while (1)
     {
@@ -61,24 +62,24 @@ void CheckCurrentNode()
         // mark out walls and gaps based on sensors
         CheckUltrasonic();
 
-        SetCarWallPointers();   // set car's current node's wall pointers
+        SetCarWallPointers(); // set car's current node's wall pointers
         // check if surrounding nodes of car has nodes that have not been visited
-        if (*car.back == 1)   // if back isGap
+        if (*car.back == 1) // if back isGap
         {
             // add node at back to stack
             AddDirectionToStack(car.directionBack);
         }
-        if (*car.left == 1)   // if left isGap
+        if (*car.left == 1) // if left isGap
         {
             // add node at left to stack
             AddDirectionToStack(car.directionLeft);
         }
-        if (*car.right == 1)   // if right isGap
+        if (*car.right == 1) // if right isGap
         {
             // add node at right to stack
             AddDirectionToStack(car.directionRight);
         }
-        if (*car.forward == 1)   // if front isGap
+        if (*car.forward == 1) // if front isGap
         {
             // add node at front to stack
             AddDirectionToStack(car.directionFacing);
@@ -96,7 +97,7 @@ void MoveCarToStackPos()
     // Checking North
     if (carPrevX - 1 == Peek().x && carPrevY == Peek().y)
     {
-        //Node tempNode = grid.gridArray[carPrevX - 1][carPrevY];
+        // Node tempNode = grid.gridArray[carPrevX - 1][carPrevY];
         if (grid.gridArray[carPrevX][carPrevY].northIsWall == 1) // Checking if North Wall is a Gap
         {
             ChangeCarDirection(North, carPrevX - 1, carPrevY);
@@ -109,8 +110,8 @@ void MoveCarToStackPos()
     // Checking South
     else if (carPrevX + 1 == Peek().x && carPrevY == Peek().y)
     {
-        //Node tempNode = grid.gridArray[carPrevX + 1][carPrevY];
-        if(grid.gridArray[carPrevX][carPrevY].southIsWall == 1) // Checking if North Wall is a Gap
+        // Node tempNode = grid.gridArray[carPrevX + 1][carPrevY];
+        if (grid.gridArray[carPrevX][carPrevY].southIsWall == 1) // Checking if North Wall is a Gap
         {
             ChangeCarDirection(South, carPrevX + 1, carPrevY);
             // Pop dfsStack[]
@@ -120,14 +121,14 @@ void MoveCarToStackPos()
             Backtrack();
     }
     // Checking East
-    else if (carPrevX  == Peek().x && carPrevY + 1 == Peek().y)
+    else if (carPrevX == Peek().x && carPrevY + 1 == Peek().y)
     {
-        //Node tempNode = grid.gridArray[carPrevX][carPrevY + 1];
+        // Node tempNode = grid.gridArray[carPrevX][carPrevY + 1];
         if (grid.gridArray[carPrevX][carPrevY].eastIsWall == 1) // Checking if North Wall is a Gap
         {
             // check current direction car facing
             ChangeCarDirection(East, carPrevX, carPrevY + 1);
-            
+
             // Pop dfsStack[]
             Pop();
         }
@@ -137,12 +138,12 @@ void MoveCarToStackPos()
     // Checking West
     else if (carPrevX == Peek().x && carPrevY - 1 == Peek().y)
     {
-        //Node tempNode = grid.gridArray[carPrevX][carPrevY - 1];
+        // Node tempNode = grid.gridArray[carPrevX][carPrevY - 1];
         if (grid.gridArray[carPrevX][carPrevY].westIsWall == 1) // Checking if North Wall is a Gap
         {
             // check current direction car facing
             ChangeCarDirection(West, carPrevX, carPrevY - 1);
-            
+
             // Pop dfsStack[]
             Pop();
         }
@@ -192,7 +193,7 @@ Stack Pop()
     else
     {
         stackTop--;
-        return dfsStack[stackTop-1];
+        return dfsStack[stackTop - 1];
     }
 }
 
@@ -375,39 +376,39 @@ void MarkWall(float ultrasonicDistance, Direction ultrasonicDirection)
     if (ultrasonicDistance > 13.5f) // check how many cm is wall from car (one grid is 27cm)
     {
         // mark ultrasonic direction as gap
-        switch(ultrasonicDirection)
+        switch (ultrasonicDirection)
         {
-            case North:
-                grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
-                break;
-            case East:
-                grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
-                break;
-            case South:
-                grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
-                break;
-            case West:
-                grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
-                break;
+        case North:
+            grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+            break;
+        case East:
+            grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+            break;
+        case South:
+            grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+            break;
+        case West:
+            grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+            break;
         }
     }
-    else    // it is a wall
+    else // it is a wall
     {
         // mark ultrasonic direction as wall
-        switch(ultrasonicDirection)
+        switch (ultrasonicDirection)
         {
-            case North:
-                grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
-                break;
-            case East:
-                grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
-                break;
-            case South:
-                grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
-                break;
-            case West:
-                grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
-                break;
+        case North:
+            grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+            break;
+        case East:
+            grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+            break;
+        case South:
+            grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+            break;
+        case West:
+            grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+            break;
         }
     }
 }
@@ -418,13 +419,15 @@ void CheckUltrasonic()
     // check front, left, right, back sides for wall
     float frontUltrasonicDist = ultrasonicPulse(10, 16); // call function to get front ultrasonic distance <to be done>
     float rightUltrasonicDist = ultrasonicPulse(11, 17); // call function to get right ultrasonic distance <to be done>
-    float leftUltrasonicDist = ultrasonicPulse(13, 19); // call function to get left ultrasonic distance <to be done>
-    float backUltrasonicDist = ultrasonicPulse(12, 18); // call function to get back ultrasonic distance <to be done>
+    float leftUltrasonicDist = ultrasonicPulse(13, 19);  // call function to get left ultrasonic distance <to be done>
+    float backUltrasonicDist = ultrasonicPulse(12, 18);  // call function to get back ultrasonic distance <to be done>
     // float frontUltrasonicDist = 0.0f; // call function to get front ultrasonic distance <to be done>
     // float rightUltrasonicDist = 0.0f; // call function to get right ultrasonic distance <to be done>
     // float leftUltrasonicDist = 0.0f; // call function to get left ultrasonic distance <to be done>
     // float backUltrasonicDist = 0.0f; // call function to get back ultrasonic distance <to be done>
-    
+
+    i2c_send_float(M5_DISTANCE, frontUltrasonicDist);
+
     MarkWall(frontUltrasonicDist, car.directionFacing);
     MarkWall(rightUltrasonicDist, GetRightDirection(car.directionFacing));
     MarkWall(leftUltrasonicDist, GetLeftDirection(car.directionFacing));
@@ -444,46 +447,46 @@ void SetCarWallPointers()
 {
     // set car forward, right, left and back pointers to the node's wall
     switch (car.directionFacing)
-        {
-        case North:
-            car.forward = &grid.gridArray[car.xCoord][car.yCoord].northIsWall;
-            car.right = &grid.gridArray[car.xCoord][car.yCoord].eastIsWall;
-            car.left = &grid.gridArray[car.xCoord][car.yCoord].westIsWall;
-            car.back = &grid.gridArray[car.xCoord][car.yCoord].southIsWall;
-            car.directionRight = East;
-            car.directionLeft = West;
-            car.directionBack = South;
-            break;
-        case East:
-            car.forward = &grid.gridArray[car.xCoord][car.yCoord].eastIsWall;
-            car.right = &grid.gridArray[car.xCoord][car.yCoord].southIsWall;
-            car.left = &grid.gridArray[car.xCoord][car.yCoord].northIsWall;
-            car.back = &grid.gridArray[car.xCoord][car.yCoord].westIsWall;
-            car.directionRight = South;
-            car.directionLeft = North;
-            car.directionBack = West;
-            break;
-        case West:
-            car.forward = &grid.gridArray[car.xCoord][car.yCoord].westIsWall;
-            car.right = &grid.gridArray[car.xCoord][car.yCoord].northIsWall;
-            car.left = &grid.gridArray[car.xCoord][car.yCoord].southIsWall;
-            car.back = &grid.gridArray[car.xCoord][car.yCoord].eastIsWall;
-            car.directionRight = North;
-            car.directionLeft = South;
-            car.directionBack = East;
-            break;
-        case South:
-            car.forward = &grid.gridArray[car.xCoord][car.yCoord].southIsWall;
-            car.right = &grid.gridArray[car.xCoord][car.yCoord].westIsWall;
-            car.left = &grid.gridArray[car.xCoord][car.yCoord].eastIsWall;
-            car.back = &grid.gridArray[car.xCoord][car.yCoord].northIsWall;
-            car.directionRight = West;
-            car.directionLeft = East;
-            car.directionBack = North;
-            break;
-        default:
-            break;
-        }
+    {
+    case North:
+        car.forward = &grid.gridArray[car.xCoord][car.yCoord].northIsWall;
+        car.right = &grid.gridArray[car.xCoord][car.yCoord].eastIsWall;
+        car.left = &grid.gridArray[car.xCoord][car.yCoord].westIsWall;
+        car.back = &grid.gridArray[car.xCoord][car.yCoord].southIsWall;
+        car.directionRight = East;
+        car.directionLeft = West;
+        car.directionBack = South;
+        break;
+    case East:
+        car.forward = &grid.gridArray[car.xCoord][car.yCoord].eastIsWall;
+        car.right = &grid.gridArray[car.xCoord][car.yCoord].southIsWall;
+        car.left = &grid.gridArray[car.xCoord][car.yCoord].northIsWall;
+        car.back = &grid.gridArray[car.xCoord][car.yCoord].westIsWall;
+        car.directionRight = South;
+        car.directionLeft = North;
+        car.directionBack = West;
+        break;
+    case West:
+        car.forward = &grid.gridArray[car.xCoord][car.yCoord].westIsWall;
+        car.right = &grid.gridArray[car.xCoord][car.yCoord].northIsWall;
+        car.left = &grid.gridArray[car.xCoord][car.yCoord].southIsWall;
+        car.back = &grid.gridArray[car.xCoord][car.yCoord].eastIsWall;
+        car.directionRight = North;
+        car.directionLeft = South;
+        car.directionBack = East;
+        break;
+    case South:
+        car.forward = &grid.gridArray[car.xCoord][car.yCoord].southIsWall;
+        car.right = &grid.gridArray[car.xCoord][car.yCoord].westIsWall;
+        car.left = &grid.gridArray[car.xCoord][car.yCoord].eastIsWall;
+        car.back = &grid.gridArray[car.xCoord][car.yCoord].northIsWall;
+        car.directionRight = West;
+        car.directionLeft = East;
+        car.directionBack = North;
+        break;
+    default:
+        break;
+    }
 }
 
 // add the node at a direction of car to stack
@@ -575,58 +578,58 @@ void ChangeCarDirection(Direction directionToGo, int xPosToGo, int yPosToGo)
 
 Direction GetLeftDirection(Direction frontDirection)
 {
-    switch(frontDirection)
+    switch (frontDirection)
     {
-        case North:
-            return West;
-            break;
-        case East:
-            return North;
-            break;
-        case South:
-            return East;
-            break;
-        case West:
-            return South;
-            break;
+    case North:
+        return West;
+        break;
+    case East:
+        return North;
+        break;
+    case South:
+        return East;
+        break;
+    case West:
+        return South;
+        break;
     }
 }
 
 Direction GetRightDirection(Direction frontDirection)
 {
-    switch(frontDirection)
+    switch (frontDirection)
     {
-        case North:
-            return East;
-            break;
-        case East:
-            return South;
-            break;
-        case South:
-            return West;
-            break;
-        case West:
-            return North;
-            break;
+    case North:
+        return East;
+        break;
+    case East:
+        return South;
+        break;
+    case South:
+        return West;
+        break;
+    case West:
+        return North;
+        break;
     }
 }
 
 Direction GetBackDirection(Direction frontDirection)
 {
-    switch(frontDirection)
+    switch (frontDirection)
     {
-        case North:
-            return South;
-            break;
-        case East:
-            return West;
-            break;
-        case South:
-            return North;
-            break;
-        case West:
-            return East;
-            break;
+    case North:
+        return South;
+        break;
+    case East:
+        return West;
+        break;
+    case South:
+        return North;
+        break;
+    case West:
+        return East;
+        break;
     }
 }
 
@@ -638,7 +641,7 @@ void ConvertMappedGrid()
     // find far left node of car that is not visited
     for (int x = car.xCoord - 1; x >= -1; x--)
     {
-        if (x == -1 || grid.gridArray[x][car.yCoord].isVisited == 0)   // if grid not visited
+        if (x == -1 || grid.gridArray[x][car.yCoord].isVisited == 0) // if grid not visited
         {
             startX = x + 1; // starting x is the previous x
             break;
@@ -646,7 +649,7 @@ void ConvertMappedGrid()
     }
     for (int y = car.yCoord - 1; y >= -1; y--)
     {
-        if (y == -1 || grid.gridArray[car.xCoord][y].isVisited == 0)   // if grid not visited
+        if (y == -1 || grid.gridArray[car.xCoord][y].isVisited == 0) // if grid not visited
         {
             startY = y + 1; // starting y is the previous y
             break;
@@ -657,7 +660,7 @@ void ConvertMappedGrid()
     for (int x = 0; x < 4; x++)
     {
         for (int y = 0; y < 5; y++)
-            finalMapArray[x][y] = grid.gridArray[x + startX][y + startY];   // copy content into 4x5 small grid
+            finalMapArray[x][y] = grid.gridArray[x + startX][y + startY]; // copy content into 4x5 small grid
     }
 
     // change car pos
@@ -665,78 +668,76 @@ void ConvertMappedGrid()
     car.yCoord -= startY;
 }
 
-//function call sequence for navigation
-//receive coordinate from signal team
+// function call sequence for navigation
+// receive coordinate from signal team
 //-> call setCoord with current car coord and dest row/col, function will convert into 9x11 usable coordinate
 //-> call conversionConstructor with the [4][5] array from mapping to create navigation array
 //-> call navigateTo with the navigation array, visited array, carRow, carCol
 //-> print out movement list
 //-> TODO-DONE: replace movement list print instructions with movement calls to car movement
 //-> TODO: send signal once destination reach to signal team to keep polling for more inputs
-//-> TODO: send a signal if no route possible to reach target dest 
+//-> TODO: send a signal if no route possible to reach target dest
 
-
-//convert 4x5 into 9x11 
-//conversion guide: (lengthx2) + 1
+// convert 4x5 into 9x11
+// conversion guide: (lengthx2) + 1
 void conversionConstructor(Node gridArray[4][5])
 {
-    //reset all variables
-    //initialization node centers
-    //0 = wall, 1 = space
-    
-    carRow=0;
-    carCol=0;
-    destRow=0;
-    destCol=0;
-    exitFound=false;
-    backfill=0;
+    // reset all variables
+    // initialization node centers
+    // 0 = wall, 1 = space
 
-    for(int x=0; x<9;x++)
+    carRow = 0;
+    carCol = 0;
+    destRow = 0;
+    destCol = 0;
+    exitFound = false;
+    backfill = 0;
+
+    for (int x = 0; x < 9; x++)
     {
-        for(int y=0; y<11; y++)
+        for (int y = 0; y < 11; y++)
         {
-            navigationArray[x][y]=0;
-            visitedArray[x][y]=false;
+            navigationArray[x][y] = 0;
+            visitedArray[x][y] = false;
         }
     }
 
-    for(int x=0; x<90;x++)
+    for (int x = 0; x < 90; x++)
     {
-        movementList[x].col=0;
-        movementList[x].row=0;
+        movementList[x].col = 0;
+        movementList[x].row = 0;
     }
 
-
-    //constructing navigation array map
-    for(int i=0; i<4; i++)
+    // constructing navigation array map
+    for (int i = 0; i < 4; i++)
     {
-        for(int j=0; j<5; j++)
+        for (int j = 0; j < 5; j++)
         {
-            int refRow = (i*2)+1;
-            int refCol = (j*2)+1;
+            int refRow = (i * 2) + 1;
+            int refCol = (j * 2) + 1;
 
-            //blocking out diagonals for each node
-            navigationArray[refRow-1][refCol-1]=1;
-            navigationArray[refRow-1][refCol+1]=1;
-            navigationArray[refRow+1][refCol-1]=1;
-            navigationArray[refRow+1][refCol+1]=1;
+            // blocking out diagonals for each node
+            navigationArray[refRow - 1][refCol - 1] = 1;
+            navigationArray[refRow - 1][refCol + 1] = 1;
+            navigationArray[refRow + 1][refCol - 1] = 1;
+            navigationArray[refRow + 1][refCol + 1] = 1;
 
-            //creating blocked off walls
-            if(gridArray[i][j].northIsWall == 0)
+            // creating blocked off walls
+            if (gridArray[i][j].northIsWall == 0)
             {
-               navigationArray[refRow-1][refCol]=1;
+                navigationArray[refRow - 1][refCol] = 1;
             }
-            if(gridArray[i][j].southIsWall == 0)
+            if (gridArray[i][j].southIsWall == 0)
             {
-               navigationArray[refRow+1][refCol]=1;
+                navigationArray[refRow + 1][refCol] = 1;
             }
-            if(gridArray[i][j].eastIsWall == 0)
+            if (gridArray[i][j].eastIsWall == 0)
             {
-               navigationArray[refRow][refCol-1]=1;
+                navigationArray[refRow][refCol - 1] = 1;
             }
-            if(gridArray[i][j].westIsWall == 0)
+            if (gridArray[i][j].westIsWall == 0)
             {
-               navigationArray[refRow][refCol+1]=1;
+                navigationArray[refRow][refCol + 1] = 1;
             }
         }
     }
@@ -744,81 +745,78 @@ void conversionConstructor(Node gridArray[4][5])
 
 void setCoord(int carrow, int carcol, int destrow, int destcol)
 {
-    carRow = (carrow*2)+1;
-    carCol = (carcol*2)+1;
-    destRow = (destrow*2)+1;
-    destCol = (destcol*2)+1;
+    carRow = (carrow * 2) + 1;
+    carCol = (carcol * 2) + 1;
+    destRow = (destrow * 2) + 1;
+    destCol = (destcol * 2) + 1;
 }
 
-bool validMove(int navigationArray[9][11],bool visitedArray[9][11],int newRow, int newCol)
+bool validMove(int navigationArray[9][11], bool visitedArray[9][11], int newRow, int newCol)
 {
-    //doesnt exceed top/bottom boundaries
-    if (newRow < 0 || newRow >= 9)       
+    // doesnt exceed top/bottom boundaries
+    if (newRow < 0 || newRow >= 9)
         return false;
-    //doesnt exceed left/right boundaries
+    // doesnt exceed left/right boundaries
     if (newCol < 0 || newCol >= 11)
         return false;
-    //is not a wall
-    if (navigationArray[newRow][newCol]==1)
+    // is not a wall
+    if (navigationArray[newRow][newCol] == 1)
         return false;
-    //has not been visited
-    if (visitedArray[newRow][newCol]==true)
+    // has not been visited
+    if (visitedArray[newRow][newCol] == true)
         return false;
 
     return true;
 }
 
-//recursion code to search for path
-bool navigateTo(int navigationArray[9][11],bool visitedArray[9][11], int currRow, int currCol)
+// recursion code to search for path
+bool navigateTo(int navigationArray[9][11], bool visitedArray[9][11], int currRow, int currCol)
 {
     bool foundExit;
-    
 
-    if((currRow==destRow) && (currCol==destCol))
-        {   
-            movementList[backfill].row=currRow;
-            movementList[backfill].col=currCol;
-            backfill+=1;
-            visitedArray[currRow][currCol]=true;
-            exitFound = true;
-            return true;
-        }
-
-    visitedArray[currRow][currCol]=true;
-
-
-    //recursion up(-1,0),down(+1,0),left(0,-1),right(0,+1)
-    //up
-    if(validMove(navigationArray,visitedArray,(currRow-1),(currCol)))
-    {   
-        foundExit = navigateTo(navigationArray,visitedArray,(currRow-1),(currCol));
-    }
-    //down
-    if(!foundExit && (validMove(navigationArray,visitedArray,(currRow+1),(currCol))))
+    if ((currRow == destRow) && (currCol == destCol))
     {
-        foundExit = navigateTo(navigationArray,visitedArray,(currRow+1),(currCol));
-    }
-    //left
-    if(!foundExit && (validMove(navigationArray,visitedArray,(currRow),(currCol-1))))
-    {   
-        foundExit = navigateTo(navigationArray,visitedArray,(currRow),(currCol-1));
-    }
-    //right
-    if(!foundExit && (validMove(navigationArray,visitedArray,(currRow),(currCol+1))))
-    {
-        foundExit = navigateTo(navigationArray,visitedArray,(currRow),(currCol+1));
+        movementList[backfill].row = currRow;
+        movementList[backfill].col = currCol;
+        backfill += 1;
+        visitedArray[currRow][currCol] = true;
+        exitFound = true;
+        return true;
     }
 
-    if(foundExit)
+    visitedArray[currRow][currCol] = true;
+
+    // recursion up(-1,0),down(+1,0),left(0,-1),right(0,+1)
+    // up
+    if (validMove(navigationArray, visitedArray, (currRow - 1), (currCol)))
     {
-        movementList[backfill].row=currRow;
-        movementList[backfill].col=currCol;
-        backfill+=1;
-        
+        foundExit = navigateTo(navigationArray, visitedArray, (currRow - 1), (currCol));
+    }
+    // down
+    if (!foundExit && (validMove(navigationArray, visitedArray, (currRow + 1), (currCol))))
+    {
+        foundExit = navigateTo(navigationArray, visitedArray, (currRow + 1), (currCol));
+    }
+    // left
+    if (!foundExit && (validMove(navigationArray, visitedArray, (currRow), (currCol - 1))))
+    {
+        foundExit = navigateTo(navigationArray, visitedArray, (currRow), (currCol - 1));
+    }
+    // right
+    if (!foundExit && (validMove(navigationArray, visitedArray, (currRow), (currCol + 1))))
+    {
+        foundExit = navigateTo(navigationArray, visitedArray, (currRow), (currCol + 1));
+    }
+
+    if (foundExit)
+    {
+        movementList[backfill].row = currRow;
+        movementList[backfill].col = currCol;
+        backfill += 1;
+
         return true;
     }
     return false;
-
 }
 
 void targetLocator(bool exitFound, Coordinate movementList[90], int backfill)
@@ -841,108 +839,107 @@ void targetLocator(bool exitFound, Coordinate movementList[90], int backfill)
             {
                 // move car IRL southwards half a grid worth of distance
                 printf("\nDOWN");
-                if(car.directionFacing==North)
+                if (car.directionFacing == North)
                 {
                     turnLeft180();
                     moveForwardBY(13.5);
                 }
-                else if(car.directionFacing==South)
+                else if (car.directionFacing == South)
                 {
                     moveForwardBY(13.5);
                 }
-                else if(car.directionFacing==West)
+                else if (car.directionFacing == West)
                 {
                     turnLeft90();
                     moveForwardBY(13.5);
                 }
-                else if(car.directionFacing==East)
+                else if (car.directionFacing == East)
                 {
                     turnRight90();
                     moveForwardBY(13.5);
                 }
-                car.directionFacing=South;
+                car.directionFacing = South;
             }
             // this means that the row decreased by one, aka the coordinate moved up
             else if (movementList[backfill - i - 1].row == movementList[backfill - i].row - 1)
             {
                 // move car IRL northwards half a grid worth of distance
                 printf("\nUP");
-                if(car.directionFacing==North)
+                if (car.directionFacing == North)
                 {
                     moveForwardBY(13.5);
                 }
-                else if(car.directionFacing==South)
+                else if (car.directionFacing == South)
                 {
                     turnLeft180();
                     moveForwardBY(13.5);
                 }
-                else if(car.directionFacing==West)
+                else if (car.directionFacing == West)
                 {
                     turnRight90();
                     moveForwardBY(13.5);
                 }
-                else if(car.directionFacing==East)
+                else if (car.directionFacing == East)
                 {
                     turnLeft90();
                     moveForwardBY(13.5);
                 }
-                car.directionFacing=North;
+                car.directionFacing = North;
             }
             // this means that the col increased by one, aka the coordinate moved right
             else if (movementList[backfill - i - 1].col == movementList[backfill - i].col + 1)
             {
                 // move car IRL eastwards half a grid worth of distance
                 printf("\nRIGHT");
-                if(car.directionFacing==North)
+                if (car.directionFacing == North)
                 {
                     turnRight90();
                     moveForwardBY(13.5);
                 }
-                else if(car.directionFacing==South)
+                else if (car.directionFacing == South)
                 {
                     turnLeft90();
                     moveForwardBY(13.5);
                 }
-                else if(car.directionFacing==West)
+                else if (car.directionFacing == West)
                 {
                     turnLeft180();
                     moveForwardBY(13.5);
                 }
-                else if(car.directionFacing==East)
+                else if (car.directionFacing == East)
                 {
                     moveForwardBY(13.5);
                 }
-                car.directionFacing=East;
+                car.directionFacing = East;
             }
             // this means that the col decreased by one, aka the coordinate moved left
             else if (movementList[backfill - i - 1].col == movementList[backfill - i].col - 1)
             {
                 // move car IRL westwards half a grid worth of distance
                 printf("\nLEFT");
-                if(car.directionFacing==North)
+                if (car.directionFacing == North)
                 {
                     turnLeft90();
                     moveForwardBY(13.5);
                 }
-                else if(car.directionFacing==South)
+                else if (car.directionFacing == South)
                 {
                     turnRight90();
                     moveForwardBY(13.5);
                 }
-                else if(car.directionFacing==West)
+                else if (car.directionFacing == West)
                 {
                     moveForwardBY(13.5);
                 }
-                else if(car.directionFacing==East)
+                else if (car.directionFacing == East)
                 {
                     turnLeft180();
                     moveForwardBY(13.5);
                 }
-                car.directionFacing=West;
+                car.directionFacing = West;
             }
         }
     }
     else
         printf("\nNO ROUTE POSSIBLE!");
-
 }
