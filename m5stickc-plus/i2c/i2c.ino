@@ -7,17 +7,21 @@
 
 /* Preprocessor directives */
 #define SLAVE_ADDR 8
+#define PICO_BARCODE 'a'
+#define PICO_DISTANCE 'b'
+#define PICO_HUMP 'c'
+#define PICO_MAP 'd'
 
 /* Server object */
 WiFiServer server(80);
 
 /* Global variables */
-const char *ssid = "M5StickC_Plus_Ap";
+const char *ssid = "A3_M5StickC_Plus";
 const char *password = "12345678";
 char inst = '\0';                 // Instruction
 char barcode_data = '\0';         // Alphabet read from barcode
 float distance_data = 0.00;       // Distance
-uint8_t hump_data = 0;            // Hump height
+float hump_data = 0.00;           // Hump height
 uint8_t map_data = 0;             // Map
 int x = -1;
 int y = -1;
@@ -29,18 +33,20 @@ void receiveData(int numBytes) {
   if (Wire.available() >= 2) {
     inst = Wire.read();
     switch(inst) {
-      case 'a':
+      case PICO_BARCODE:
         barcode_data = Wire.read();
         break;
-      case 'b':
+      case PICO_DISTANCE:
         beforeDP = Wire.read();
         afterDP = Wire.read();
         distance_data = beforeDP + ((float)afterDP / 100);
         break;
-      case 'c':
-        hump_data = Wire.read();
+      case PICO_HUMP:
+        beforeDP = Wire.read();
+        afterDP = Wire.read();
+        distance_data = beforeDP + ((float)afterDP / 100);
         break;
-      case 'd':
+      case PICO_MAP:
         map_data = Wire.read();
         break;
       default:
