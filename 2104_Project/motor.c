@@ -177,7 +177,7 @@ void turnLeft180(){
     gpio_put(IN1, 1);
     init_pwmChanB(0);
    float rightNotches = get_RightNotches();
-    while(rightNotches != 37){
+    while(rightNotches < 38){
         rightNotches = get_RightNotches();
     }
     reset_RightNotches();
@@ -192,7 +192,7 @@ void turnRight180(){
     gpio_put(IN1, 0);
     init_pwmChanA(0);
     float leftNotches = get_LeftNotches();
-    while(leftNotches != 37){
+    while(leftNotches < 38){
         leftNotches = get_LeftNotches();
     }
     reset_LeftNotches();
@@ -207,7 +207,7 @@ void turnLeft90(){
     gpio_put(IN1, 1);
     init_pwmChanB(0);
     float rightNotches = get_RightNotches();
-    while(rightNotches != 20){
+    while(rightNotches < 21){
         rightNotches = get_RightNotches();
     }
     reset_RightNotches();
@@ -222,7 +222,7 @@ void turnRight90(){
     gpio_put(IN1, 0);
     init_pwmChanA(0);
     float leftNotches = get_LeftNotches();
-    while(leftNotches != 20){
+    while(leftNotches < 21){
         leftNotches = get_LeftNotches();
     }
     reset_LeftNotches();
@@ -237,7 +237,7 @@ void turnLeft45(){
     gpio_put(IN1, 1);
     init_pwmChanB(0);
     float rightNotches = get_RightNotches();
-    while(rightNotches != 9){
+    while(rightNotches < 10){
         rightNotches = get_RightNotches();
     }
     reset_RightNotches();
@@ -253,7 +253,7 @@ void turnRight45(){
     gpio_put(IN1, 0);
     init_pwmChanA(0);
     float leftNotches = get_LeftNotches();
-    while(leftNotches != 9){
+    while(leftNotches < 10){
         leftNotches = get_LeftNotches();
     }
     reset_LeftNotches();
@@ -268,7 +268,7 @@ void turnLeft15(){
     gpio_put(IN1, 1);
     init_pwmChanB(0);
     float rightNotches = get_RightNotches();
-    while(rightNotches != 4){
+    while(rightNotches < 5){
         rightNotches = get_RightNotches();
     }
     reset_RightNotches();
@@ -283,7 +283,7 @@ void turnRight15(){
     gpio_put(IN1, 0);
     init_pwmChanA(0);
     float leftNotches = get_LeftNotches();
-    while(leftNotches != 4){
+    while(leftNotches < 5){
         leftNotches = get_LeftNotches();
     }
     reset_LeftNotches();
