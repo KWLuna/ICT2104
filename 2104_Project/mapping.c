@@ -704,6 +704,10 @@ void receiveCoordinate()
         //-> TODO-DONE: replace movement list print instructions with movement calls to car movement
         //-> TODO: send signal once destination reach to signal team to keep polling for more inputs
         //-> TODO: send a signal if no route possible to reach target dest
+        setCoord(car.yCoord,car.xCoord,y,x);
+        conversionConstructor(finalMapArray);
+        navigateTo(navigationArray,visitedArray,destRow,destCol);
+        targetLocator(exitFound, movementList,backfill);
     }
 }
 
