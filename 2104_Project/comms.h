@@ -20,7 +20,8 @@ extern uint8_t x, y;
 
 /* UART functions */
 void uart_start();
-void uart_send_data(uint8_t inst, uint8_t data);
+void uart_send_uint8(uint8_t inst, uint8_t data);
+void uart_send_float(uint8_t inst, float data);
 void uart_read_data();
 
 /* I2C functions */

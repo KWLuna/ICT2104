@@ -11,6 +11,10 @@
 #define BAUD_RATE 115200
 #define RX_PIN 32
 #define TX_PIN 33
+#define PICO_BARCODE 'a'
+#define PICO_DISTANCE 'b'
+#define PICO_HUMP 'c'
+#define PICO_MAP 'd'
 
 /* Server object */
 // WiFiServer server(80);
@@ -23,10 +27,10 @@ const char* password = "12345678";
 const char* paramX = "coordinatesX";
 const char* paramY = "coordinatesY";
 
-uint8_t inst = 0;
-uint8_t barcode_data = 0;
-uint8_t distance_data = 0;
-uint8_t hump_data = 0;
+char inst = '\0';
+char barcode_data = '\0';
+float distance_data = 0.00;
+float hump_data = 0.00;
 uint8_t map_data = 0;
 int x = -1;
 int y = -1;
@@ -79,6 +83,36 @@ const char index_html[] PROGMEM = R"rawliteral(
     </table>
   </body></html>)rawliteral";
 
+/* Function to read data from Pico */
+void readData() {
+  uint8_t beforeDP = 0;
+  uint8_t afterDP = 0;
+  if (Serial2.available() >= 2) {
+    inst = Serial2.read();
+    switch (inst) {
+      case PICO_BARCODE:
+        barcode_data = Serial2.read();
+        break;
+      case PICO_DISTANCE:
+        beforeDP = Serial2.read();
+        afterDP = Serial2.read();
+        distance_data = beforeDP + ((float)afterDP / 100);
+        break;
+      case PICO_HUMP:
+        beforeDP = Serial2.read();
+        afterDP = Serial2.read();
+        hump_data = beforeDP + ((float)afterDP / 100);
+        break;
+      case PICO_MAP:
+        map_data = Serial2.read();
+        break;
+      default:
+        Serial.println("No data");
+        break;
+    }
+  }
+}
+
 /* Function to send coordinates to Pico */
 void sendData(int x, int y) {
   // Considering to include conditional to check when car stops
@@ -108,7 +142,7 @@ void setup() {
   WiFi.softAP(ssid, password);  // Setting ssid and password for the access point
   // // server.begin();               // Starting server
 
-  // // UART
+  // UART
   Serial2.begin(BAUD_RATE, SERIAL_8N1, RX_PIN, TX_PIN);
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
@@ -141,28 +175,9 @@ void setup() {
 /* Main program */
 void loop() {
   // server.handleClient();
+  
   // Read data from buffer
-
-  if (Serial2.available()) {
-    inst = Serial2.read();
-    switch (inst) {
-      case 97:
-        barcode_data = Serial2.read();
-        break;
-      case 98:
-        distance_data = Serial2.read();
-        break;
-      case 99:
-        hump_data = Serial2.read();
-        break;
-      case 100:
-        map_data = Serial2.read();
-        break;
-      default:
-        Serial.println("No data");
-        break;
-    }
-  }
+  readData();
 
   // M5 test display
   // M5.Lcd.print("Test data: ");
