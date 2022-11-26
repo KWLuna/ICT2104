@@ -4,7 +4,7 @@ Our Project is made using Raspberry Pi Pico.
 Modules used: 
 
 # Team A3 - Team Members
-## PMW Motor
+## PWM Motor
 1. Jodie
 2. Fathima
 3. Sarah
