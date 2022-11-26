@@ -53,7 +53,7 @@ int main()
     // NOTE: convert array coordinate to grid based because coordinate is x,y while array is y,x
     // there is also absolute and relative coordinates to consider with reference to google sheets
 
-    // // grid instantiation on startup
+    // grid instantiation on startup
     // for (int i = 0; i < 4; i++)
     //     for (int j = 0; j < 5; j++)
     //     {
@@ -76,10 +76,10 @@ int main()
     // visitGrid[0][4].northIsWall = 0;
     // visitGrid[0][4].eastIsWall = 0;
 
-    // // uncomment this line and comment away the preconstructed array below when mapping is confirm a-go
-    // // conversionConstructor(visitGrid);
+    // uncomment this line and comment away the preconstructed array below when mapping is confirm a-go
+    // conversionConstructor(visitGrid);
 
-    // int navigationArray[9][11] =
+    // uint8_t navigationArray[9][11] =
     //     {
     //         // sample map, go from 1,1 to 1,9
     //         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -91,6 +91,7 @@ int main()
     //         1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1,
     //         1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
     //         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+
 
     // // visualization of navmap
     // for (int x = 0; x < 9; x++)

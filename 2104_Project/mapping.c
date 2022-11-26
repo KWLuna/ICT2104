@@ -17,13 +17,20 @@ int carCol;
 int destRow;
 int destCol;
 int backfill;
-int navigationArray[9][11];
+uint8_t navigationArray[9][11];
 bool visitedArray[9][11];
 bool exitFound;
 Coordinate movementList[90];
 
+// Comms
+bool dataAvailable = false; // data is read from buffer
+uint8_t coords[2];          // store 2 bytes from buffer
+uint8_t x, y;               // separate coords array
+
 void MappingMain()
 {
+    bool mapDataSent = false;
+
     // Initialise Nodes prevX and prevY to 100
     for (int i = 0; i < MAPPING_GRID_SIZE_X; i++)
     {
@@ -46,8 +53,16 @@ void MappingMain()
             MoveCarToStackPos();
             SavePrevXYToCurrentNode();
         }
-        else
-            break;
+        else // car stopped?
+        {
+            if (mapDataSent == false)
+            {
+                uart_send_map(navigationArray);
+                mapDataSent = true;
+            }
+            else
+                receiveCoordinate();
+        }
     }
 }
 
@@ -432,6 +447,7 @@ void CheckUltrasonic()
     printf("Left dist: %.2f", leftUltrasonicDist);
     printf("Back dist: %.2f", backUltrasonicDist);
 
+    // Send front ultrasonic distance to M5
     uart_send_float(M5_DISTANCE, frontUltrasonicDist);
 
     MarkWall(frontUltrasonicDist, car.directionFacing);
@@ -676,13 +692,20 @@ void ConvertMappedGrid()
 
 // function call sequence for navigation
 // receive coordinate from signal team
-//-> call setCoord with current car coord and dest row/col, function will convert into 9x11 usable coordinate
-//-> call conversionConstructor with the [4][5] array from mapping to create navigation array
-//-> call navigateTo with the navigation array, visited array, carRow, carCol
-//-> print out movement list
-//-> TODO-DONE: replace movement list print instructions with movement calls to car movement
-//-> TODO: send signal once destination reach to signal team to keep polling for more inputs
-//-> TODO: send a signal if no route possible to reach target dest
+void receiveCoordinate()
+{
+    uart_read_data();
+    if (dataAvailable) // variables: x for x-coordinate, y for y-coordinate
+    {
+        //-> call setCoord with current car coord and dest row/col, function will convert into 9x11 usable coordinate
+        //-> call conversionConstructor with the [4][5] array from mapping to create navigation array
+        //-> call navigateTo with the navigation array, visited array, carRow, carCol
+        //-> print out movement list
+        //-> TODO-DONE: replace movement list print instructions with movement calls to car movement
+        //-> TODO: send signal once destination reach to signal team to keep polling for more inputs
+        //-> TODO: send a signal if no route possible to reach target dest
+    }
+}
 
 // convert 4x5 into 9x11
 // conversion guide: (lengthx2) + 1
@@ -757,7 +780,7 @@ void setCoord(int carrow, int carcol, int destrow, int destcol)
     destCol = (destcol * 2) + 1;
 }
 
-bool validMove(int navigationArray[9][11], bool visitedArray[9][11], int newRow, int newCol)
+bool validMove(uint8_t navigationArray[9][11], bool visitedArray[9][11], int newRow, int newCol)
 {
     // doesnt exceed top/bottom boundaries
     if (newRow < 0 || newRow >= 9)
@@ -776,7 +799,7 @@ bool validMove(int navigationArray[9][11], bool visitedArray[9][11], int newRow,
 }
 
 // recursion code to search for path
-bool navigateTo(int navigationArray[9][11], bool visitedArray[9][11], int currRow, int currCol)
+bool navigateTo(uint8_t navigationArray[9][11], bool visitedArray[9][11], int currRow, int currCol)
 {
     bool foundExit;
 

@@ -57,6 +57,7 @@ void i2c_read_data()
     x = coords[0];                                       // Retrieve x-coordinate
     y = coords[1];                                       // Retrieve y-coordinate
 
+    dataAvailable = true;
     printf("x: %d\n", x);
     printf("y: %d\n", y);
 }

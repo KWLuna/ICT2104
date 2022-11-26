@@ -33,7 +33,14 @@ void uart_send_float(uint8_t inst, float data)
     finalData[1] = left;
     finalData[2] = right;
     uart_write_blocking(uart1, finalData, 3);
-    printf("%d",inst);
+}
+
+/* Send map data */
+void uart_send_map(uint8_t mapArr[9][11])
+{
+    uart_putc_raw(uart1, (char)M5_MAP); // Instruction for M5
+    for (int i = 0; i < 9; i++)
+        uart_write_blocking(uart1, mapArr[i], 11);
 }
 
 /* Read x and y coordinates from M5 */
@@ -45,6 +52,7 @@ void uart_read_data()
         x = coords[0];                        // Retrieve x-coordinate
         y = coords[1];                        // Retrieve y-coordinate
 
+        dataAvailable = true;
         printf("x: %d\n", x);
         printf("y: %d\n", y);
     }

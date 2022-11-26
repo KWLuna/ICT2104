@@ -74,7 +74,6 @@ typedef struct Coordinate
 } Coordinate;
 
 // extern
-
 extern Grid grid;                       // The Map
 extern Car car;                         // Our Car
 extern int numNodeVisited;              // counter for number of nodes visited
@@ -84,17 +83,16 @@ extern int carPrevX;
 extern int carPrevY;
 extern Node finalMapArray[4][5];
 
-//navigation
+// navigation
 extern int carRow;
 extern int carCol;
 extern int destRow;
 extern int destCol;
 extern int backfill;
-extern int navigationArray[9][11];
+extern uint8_t navigationArray[9][11];
 extern bool visitedArray[9][11];
 extern bool exitFound;
 extern Coordinate movementList[90];
-
 
 // declare functions
 void MappingMain();
@@ -118,11 +116,14 @@ Direction GetRightDirection(Direction frontDirection);
 Direction GetBackDirection(Direction frontDirection);
 void ConvertMappedGrid();
 
-//navigation
+// navigation
 void setCoord(int carrow, int carcol, int destrow, int destcol);
 void conversionConstructor(Node gridArray[4][5]);
-bool validMove(int navigationArray[9][11], bool visitedArray[9][11], int newRow, int newCol);
-bool navigateTo(int navigationArray[9][11], bool visitedArray[9][11], int currRow, int currCol);
+bool validMove(uint8_t navigationArray[9][11], bool visitedArray[9][11], int newRow, int newCol);
+bool navigateTo(uint8_t navigationArray[9][11], bool visitedArray[9][11], int currRow, int currCol);
 void targetLocator(bool exitFound, Coordinate movementList[90], int backfill);
+
+// comms
+void receiveCoordinate();
 
 #endif

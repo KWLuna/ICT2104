@@ -15,6 +15,7 @@
 #define I2C_BAUD_RATE 100 * 1000 // 100KHz
 
 // Coordinates received from M5
+extern bool dataAvailable;
 extern uint8_t coords[2];
 extern uint8_t x, y;
 
@@ -22,6 +23,7 @@ extern uint8_t x, y;
 void uart_start();
 void uart_send_uint8(uint8_t inst, uint8_t data);
 void uart_send_float(uint8_t inst, float data);
+void uart_send_map(uint8_t mapArr[9][11]);
 void uart_read_data();
 
 /* I2C functions */
