@@ -667,13 +667,15 @@ void ConvertMappedGrid()
 
 //function call sequence for navigation
 //receive coordinate from signal team
-//-> call setCoord with current car coord and dest row/col with ref to [9][11]
-//-> call conversionConstructor with a [4][5] array from mapping to create navigation array
-//-> call navigateTo with the navigation array, visited array
+//-> call setCoord with current car coord and dest row/col, function will convert into 9x11 usable coordinate
+//-> call conversionConstructor with the [4][5] array from mapping to create navigation array
+//-> call navigateTo with the navigation array, visited array, carRow, carCol
 //-> print out movement list
 //-> TODO-DONE: replace movement list print instructions with movement calls to car movement
 //-> TODO: send signal once destination reach to signal team to keep polling for more inputs
 //-> TODO: send a signal if no route possible to reach target dest 
+
+
 //convert 4x5 into 9x11 
 //conversion guide: (lengthx2) + 1
 void conversionConstructor(Node gridArray[4][5])
@@ -742,10 +744,10 @@ void conversionConstructor(Node gridArray[4][5])
 
 void setCoord(int carrow, int carcol, int destrow, int destcol)
 {
-    carRow = carrow;
-    carCol = carcol;
-    destRow = destrow;
-    destCol = destcol;
+    carRow = (carrow*2)+1;
+    carCol = (carcol*2)+1;
+    destRow = (destrow*2)+1;
+    destCol = (destcol*2)+1;
 }
 
 bool validMove(int navigationArray[9][11],bool visitedArray[9][11],int newRow, int newCol)
