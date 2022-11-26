@@ -2,41 +2,44 @@
 #include <math.h>
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
-#include "pico/multicore.h"
-#include "hardware/pio.h"
-#include "time.h"
+#include "hardware/timer.h"
+#include "hardware/irq.h"
+#include "hardware/dma.h"
+#include "hardware/clocks.h"
 
-// line sensor
 #define ADC_NUM 0
-#define ADC_PIN (26 + ADC_NUM) // GPIO pin 26 ADC0
+#define BARCODE_PIN 26 // GPIO pin 26 ADC0
 #define ADC_VREF 3.3
 #define ADC_RANGE (1 << 12)                      // 2^12
 #define ADC_CONVERT (ADC_VREF / (ADC_RANGE - 1)) // 3.3/4097
+#define N_SAMPLES 100000
 
-/*Bar code variables*/
-long currentMillis = 0;  // current timing for black and white bar
-long previousMillis = 0; // previous timing for black and white bar
-const uint delay = 10; // 1s delay 1000ms = 1s
-char barcode[9];         // to store decoded letter
+// set boolean to indidcate thats the barcode
+// detect the white, next is a black bar
+// set a benchmark to indicate that that the thick bar from asterisk
 
-//line sensor
+/* Global variables */
+const uint delay = 500; // 1s delay 1000ms = 1s
+char barcode[9];        // to store decoded letter
+int timeLoop = 500;     // sample every few (milliseconds)
+volatile int lineCount = 0;
+
+/* line sensor */
 void init_barcode()
 {
-    stdio_init_all();
-
-    // line sensor adc pins initialise
-    adc_gpio_init(ADC_PIN);
     adc_init();
+    adc_gpio_init(BARCODE_PIN);
     adc_select_input(ADC_NUM);
+    adc_set_temp_sensor_enabled(false);
+    adc_fifo_setup(true, true, 1, false, false);
 }
 
-// function to print array element
+/* To print array element */
 void printArray(char arr[], int size)
 {
     int i = 0;
 
     printf("\nElements are : ");
-
     for (i = 0; i < size; i++)
     {
         printf("\n\tarr[%d] : %d", i, arr[i]);
@@ -44,7 +47,7 @@ void printArray(char arr[], int size)
     printf("\n");
 }
 
-// function to compare array elements
+/* To compare array elements */
 char compareArray(char a[], char b[], int size)
 {
     int i;
@@ -56,19 +59,9 @@ char compareArray(char a[], char b[], int size)
     return 0;
 }
 
-// function to decode barcode
+/* To decode barcode */
 void decodeBarcode()
 {
-    char zero[9] = {0, 0, 0, 1, 1, 0, 1, 0, 0};
-    char one[9] = {1, 0, 0, 1, 0, 0, 0, 0, 1};
-    char two[9] = {0, 0, 1, 1, 0, 0, 0, 0, 1};
-    char three[9] = {1, 0, 1, 1, 0, 0, 0, 0, 0};
-    char four[9] = {0, 0, 0, 1, 1, 0, 0, 0, 1};
-    char five[9] = {1, 0, 0, 1, 1, 0, 0, 0, 0};
-    char six[9] = {0, 0, 1, 1, 1, 0, 0, 0, 0};
-    char seven[9] = {0, 0, 0, 1, 0, 0, 1, 0, 1};
-    char eight[9] = {1, 0, 0, 1, 0, 0, 1, 0, 0};
-    char nine[9] = {0, 0, 1, 1, 0, 0, 1, 0, 0};
     char A[9] = {1, 0, 0, 0, 0, 1, 0, 0, 1};
     char B[9] = {0, 0, 1, 0, 0, 1, 0, 0, 1};
     char C[9] = {1, 0, 1, 0, 0, 1, 0, 0, 0};
@@ -95,76 +88,9 @@ void decodeBarcode()
     char X[9] = {0, 1, 0, 0, 1, 0, 0, 0, 1};
     char Y[9] = {1, 1, 0, 0, 1, 0, 0, 0, 0};
     char Z[9] = {0, 1, 1, 0, 1, 0, 0, 0, 0};
-    char hyphen[9] = {0, 1, 0, 0, 0, 0, 1, 0, 1};
-    char dot[9] = {1, 1, 0, 0, 0, 0, 1, 0, 0};
-    char space[9] = {0, 1, 1, 0, 0, 0, 1, 0, 0};
-    char dollar[9] = {0, 1, 0, 1, 0, 1, 0, 0, 0};
-    char slash[9] = {0, 1, 0, 1, 0, 0, 0, 1, 0};
-    char plus[9] = {0, 1, 0, 0, 0, 1, 0, 1, 0};
-    char percent[9] = {0, 0, 0, 1, 0, 1, 0, 1, 0};
     char asterisk[9] = {0, 1, 0, 0, 1, 0, 1, 0, 0};
 
-    if (compareArray(zero, barcode, 9) == 0)
-    {
-        printArray(zero, 9);
-        printArray(barcode, 9);
-        printf("Character identified is 0\n");
-    }
-    else if (compareArray(one, barcode, 9) == 0)
-    {
-        printArray(one, 9);
-        printArray(barcode, 9);
-        printf("Character identified is 1\n");
-    }
-    else if (compareArray(two, barcode, 9) == 0)
-    {
-        printArray(two, 9);
-        printArray(barcode, 9);
-        printf("Character identified is 2\n");
-    }
-    else if (compareArray(three, barcode, 9) == 0)
-    {
-        printArray(three, 9);
-        printArray(barcode, 9);
-        printf("Character identified is 3\n");
-    }
-    else if (compareArray(four, barcode, 9) == 0)
-    {
-        printArray(four, 9);
-        printArray(barcode, 9);
-        printf("Character identified is 4\n");
-    }
-    else if (compareArray(five, barcode, 9) == 0)
-    {
-        printArray(five, 9);
-        printArray(barcode, 9);
-        printf("Character identified is 5\n");
-    }
-    else if (compareArray(six, barcode, 9) == 0)
-    {
-        printArray(six, 9);
-        printArray(barcode, 9);
-        printf("Character identified is 6\n");
-    }
-    else if (compareArray(seven, barcode, 9) == 0)
-    {
-        printArray(seven, 9);
-        printArray(barcode, 9);
-        printf("Character identified is 7\n");
-    }
-    else if (compareArray(eight, barcode, 9) == 0)
-    {
-        printArray(eight, 9);
-        printArray(barcode, 9);
-        printf("Character identified is 8\n");
-    }
-    else if (compareArray(nine, barcode, 9) == 0)
-    {
-        printArray(nine, 9);
-        printArray(barcode, 9);
-        printf("Character identified is 9\n");
-    }
-    else if (compareArray(A, barcode, 9) == 0)
+    if (compareArray(A, barcode, 9) == 0)
     {
         printArray(A, 9);
         printArray(barcode, 9);
@@ -320,48 +246,7 @@ void decodeBarcode()
         printArray(barcode, 9);
         printf("Character identified is Z\n");
     }
-    else if (compareArray(hyphen, barcode, 9) == 0)
-    {
-        printArray(hyphen, 9);
-        printArray(barcode, 9);
-        printf("Character identified is -\n");
-    }
-    else if (compareArray(dot, barcode, 9) == 0)
-    {
-        printArray(dot, 9);
-        printArray(barcode, 9);
-        printf("Character identified is .\n");
-    }
-    else if (compareArray(space, barcode, 9) == 0)
-    {
-        printArray(space, 9);
-        printArray(barcode, 9);
-        printf("Character identified is a space\n");
-    }
-    else if (compareArray(dollar, barcode, 9) == 0)
-    {
-        printArray(dollar, 9);
-        printArray(barcode, 9);
-        printf("Character identified is $\n");
-    }
-    else if (compareArray(slash, barcode, 9) == 0)
-    {
-        printArray(slash, 9);
-        printArray(barcode, 9);
-        printf("Character identified is /\n");
-    }
-    else if (compareArray(plus, barcode, 9) == 0)
-    {
-        printArray(plus, 9);
-        printArray(barcode, 9);
-        printf("Character identified is +\n");
-    }
-    else if (compareArray(percent, barcode, 9) == 0)
-    {
-        printArray(percent, 9);
-        printArray(barcode, 9);
-        printf("Character identified is %c\n", '%');
-    }
+
     else if (compareArray(asterisk, barcode, 9) == 0)
     {
         printArray(asterisk, 9);
@@ -374,9 +259,51 @@ void decodeBarcode()
     }
 }
 
-clock_t clock()
+static uint64_t get_time(void)
 {
-    return (clock_t)time_us_32() / 10000; // to milisecond
+    // Reading low latches the high value
+    uint32_t lo = timer_hw->timelr;
+    uint32_t hi = timer_hw->timehr;
+    return ((uint64_t)hi << 32u) | lo;
+}
+/// \end::get_time[]
+
+/// \tag::alarm_standalone[]
+// Use alarm 0
+#define ALARM_NUM 0
+#define ALARM_IRQ TIMER_IRQ_0
+
+// Alarm interrupt handler
+static volatile bool alarm_fired;
+
+static void alarm_irq(void)
+{
+    // Clear the alarm irq
+    hw_clear_bits(&timer_hw->intr, 1u << ALARM_NUM);
+
+    // Assume alarm 0 has fired
+    printf("Interrupt IRQ fired\n");
+    alarm_fired = true;
+}
+
+static void alarm_in_us(uint32_t delay_us)
+{
+    // Enable the interrupt for our alarm (the timer outputs 4 alarm irqs)
+    hw_set_bits(&timer_hw->inte, 1u << ALARM_NUM);
+    // Set irq handler for alarm irq
+    irq_set_exclusive_handler(ALARM_IRQ, alarm_irq);
+    // Enable the alarm irq
+    irq_set_enabled(ALARM_IRQ, true);
+    // Enable interrupt in block and at processor
+
+    // Alarm is only 32 bits so if trying to delay more
+    // than that need to be careful and keep track of the upper
+    // bits
+    uint64_t target = timer_hw->timerawl + delay_us;
+
+    // Write the lower 32 bits of the target time to the alarm which
+    // will arm it
+    timer_hw->alarm[ALARM_NUM] = (uint32_t)target;
 }
 
 void detectBar()
@@ -385,88 +312,107 @@ void detectBar()
     static volatile float normalizedADCRes;
     volatile int lineCount = 0;
     bool lineDetected = false;
-    int lineThreshold = 1200;
-    float totalTimeTaken = time_us_32();
+    int lineThreshold = 2000;
 
-    clock_t prevtime;
-    clock_t blackTime;
-    clock_t whiteTime;
-    double currentTimeWhite;
-    double currentTimeBlack;
+    absolute_time_t blackStartTime;
+    absolute_time_t whiteEndTime;
+    absolute_time_t blackEndTime;
+    absolute_time_t whiteStartTime;
+    int blackTime;
+    int whiteTime;
+    bool startOfBarcode = false;
 
     while (lineCount <= 9)
     {
         adc_raw = adc_read(); // raw voltage from ADC
         normalizedADCRes = adc_raw * ADC_CONVERT;
-        //printf("Raw value: %u, voltage: %f V\n", adc_raw, normalizedADCRes);
-        sleep_ms(delay);
+        printf("Raw value: %u, voltage: %.2f V\n", adc_raw, normalizedADCRes);
 
-        if (lineDetected == false)
-        {
-            if (adc_raw > lineThreshold) // black
-            {
-                blackTime = clock(); // keep running and capture it now
-                double currentTimeBlack = (double)(blackTime - prevtime) / CLOCKS_PER_SEC;
-                prevtime = blackTime;
-                printf("%.8f seconds\n", currentTimeBlack);
+        alarm_fired = false;      // Set alarm every 2 seconds
+        alarm_in_us(1000000 * 1); // alarm_in_us(1000);
+        while (!alarm_fired)
+            ; // Wait for alarm to fire
 
-                // add elements into array
-                for (int c = 9 - 1; c >= lineCount - 1; c--)
-                {
-                    barcode[c + 1] = barcode[c];
-                }
-
-                if (currentTimeWhite == 0)
-                {
-                
-                    barcode[lineCount] = 0; // thin
-                }
-                else
-                {
-                    barcode[lineCount] = 1; // thick
-                }
-
-                printf("Resultant array is\n");
-                printArray(barcode, 9);
-
-                lineCount++;
-                lineDetected = true;
-                printf("%i, black %d\n", lineCount, barcode[lineCount]);
-            }
-        }
-        else if (lineDetected == true)
+        if (startOfBarcode == false) // keep finding for the first white line
         {
             if (adc_raw < lineThreshold) // white
             {
-                whiteTime = clock(); // keep running and capture it now;
-                double currentTimeWhite = (double)(whiteTime - prevtime) / CLOCKS_PER_SEC;
-                prevtime = whiteTime;
-                printf("%.8f seconds\n", currentTimeWhite);
-
-                if (currentTimeWhite <= currentTimeBlack)
-                {
-                    barcode[lineCount] = 0; // thin
-                }
-                else
-                {
-                    barcode[lineCount] = 1; // thick
-                }
-
-                // add elements into array
-                for (int c = 9 - 1; c >= lineCount - 1; c--)
-                {
-                    barcode[c + 1] = barcode[c];
-                }
-
-                printf("Resultant array is\n");
-                printArray(barcode, 9);
-
-                lineCount++;
-                lineDetected = false;
-                printf("%i white %d\n", lineCount, barcode[lineCount]);
+                // start of the barcode
+                startOfBarcode = true;
+                printf("Next detect first black line\n");
             }
         }
-        decodeBarcode();
+        else if (startOfBarcode == true) // find for the first black line
+        {
+            printf("Start of barcode\n");           // first black line
+            blackStartTime = get_absolute_time(); // record black start time
+            whiteEndTime = get_absolute_time();   // record white end time
+            blackTime = absolute_time_diff_us(blackEndTime, blackStartTime);
+            printf("black %d microseconds\n", blackTime);
+
+            if (lineDetected == false)
+            {
+                printf("detect black\n");
+                if (adc_raw > lineThreshold) // black
+                {
+                    // add elements into array
+                    for (int c = 9 - 1; c >= lineCount - 1; c--)
+                    {
+                        barcode[c + 1] = barcode[c];
+                    }
+
+                    // detect thin or thick bar
+                    if (blackTime < whiteTime)
+                    {
+                        barcode[lineCount] = 0; // thin
+                    }
+                    else
+                    {
+                        barcode[lineCount] = 1; // thick
+                    }
+
+                    printf("Resultant array is\n");
+                    printArray(barcode, 9);
+
+                    lineCount++;
+                    lineDetected = true;
+                    printf("%i, black %d\n", lineCount, barcode[lineCount]);
+                }
+            }
+            else if (lineDetected == true)
+            {
+                if (adc_raw > 300 && adc_raw < lineThreshold) // white
+                {
+                    blackEndTime = get_absolute_time();
+                    whiteStartTime = get_absolute_time(); // record white start time
+                    whiteTime = absolute_time_diff_us(whiteEndTime, whiteStartTime);
+                    printf("white %d microseconds\n", whiteTime);
+
+                    // add elements into array
+                    for (int c = 9 - 1; c >= lineCount - 1; c--)
+                    {
+                        barcode[c + 1] = barcode[c];
+                    }
+
+                    // detect thin or thick bar
+                    if (whiteTime < blackTime)
+                    {
+                        barcode[lineCount] = 0; // thin
+                    }
+                    else
+                    {
+                        barcode[lineCount] = 1; // thick
+                    }
+
+                    printf("Resultant array is\n");
+                    printArray(barcode, 9);
+
+                    lineCount++;
+                    lineDetected = false;
+                    printf("%i white %d\n", lineCount, barcode[lineCount]);
+                }
+            }
+            decodeBarcode();
+        }
     }
-    printf("1 character detected\n"); // not execute until it is more than 9
 }
