@@ -29,7 +29,7 @@ int main()
 
     stdio_init_all(); // Enable UART so we can print status output
 
-    i2c_start();       // initialize comms
+    uart_start();       // initialize comms
     init_motor();      // initialize motor
     init_pins();       // initialize pins for encoder
     init_ultrasonic(); // initialize pins for ultrasonic
@@ -46,7 +46,7 @@ int main()
     // moveBackwardBY(60);
     moveForward();
 
-    // MappingMain();
+    MappingMain();
 
     // multidimensional array is defined row X column / vert X hori
     // in this case access goes from 0,0 to 9,8

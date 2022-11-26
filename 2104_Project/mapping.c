@@ -432,7 +432,7 @@ void CheckUltrasonic()
     printf("Left dist: %.2f", leftUltrasonicDist);
     printf("Back dist: %.2f", backUltrasonicDist);
 
-    i2c_send_float(M5_DISTANCE, frontUltrasonicDist);
+    uart_send_float(M5_DISTANCE, frontUltrasonicDist);
 
     MarkWall(frontUltrasonicDist, car.directionFacing);
     MarkWall(rightUltrasonicDist, GetRightDirection(car.directionFacing));

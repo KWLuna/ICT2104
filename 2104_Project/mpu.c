@@ -191,13 +191,8 @@ bool checkBumpISR(struct repeating_timer *t)
     // End of bump - back to flat ground
     if (detectedHeight < detection_threshold && highestHeight > 0)
     {
-        bumpDataReady = true;
-    }
-
-    if (bumpDataReady)
-    {
-        // comms(); to send to comms
-        i2c_send_float(M5_HUMP, highestHeight);
+        // i2c_send_float(M5_HUMP, highestHeight);
+        uart_send_float(M5_HUMP, highestHeight);
         // printf("Sending to comms: %.2f cm\n", highestHeight);
 
         // reset bump height & bump flag

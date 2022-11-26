@@ -37,9 +37,10 @@ void i2c_send_uint8(uint8_t inst, uint8_t data)
 void i2c_send_float(uint8_t inst, float data)
 {
     uint8_t finalData[3];
+    finalData[0] = inst;
+
     uint8_t left = (uint8_t)data;                   // Before d.p.
     uint8_t right = (uint8_t)((data - left) * 100); // After d.p., cast to prevent errors if >2.
-    finalData[0] = inst;
     finalData[1] = left;
     finalData[2] = right;
 

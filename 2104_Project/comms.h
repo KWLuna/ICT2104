@@ -2,10 +2,10 @@
  * Instructions to be passed as first parameter for send functions (comms)
  * Used by M5 to differentiate the data received
  */
-#define M5_BARCODE 97  // a
-#define M5_DISTANCE 98 // b
-#define M5_HUMP 99     // c
-#define M5_MAP 100     // d
+#define M5_BARCODE (uint8_t)97  // a
+#define M5_DISTANCE (uint8_t)98 // b
+#define M5_HUMP (uint8_t)99     // c
+#define M5_MAP (uint8_t)100     // d
 
 /* UART settings */
 #define UART_BAUD_RATE 115200
