@@ -7,6 +7,7 @@
 #include "hardware/i2c.h"
 #include "hardware/timer.h"
 #include "mpu.h"
+#include "comms.h"
 
 #define Pi 3.14159265
 #define RAD_TO_DEG 57.29577951308232
@@ -196,7 +197,8 @@ bool checkBumpISR(struct repeating_timer *t)
     if (bumpDataReady)
     {
         // comms(); to send to comms
-        printf("Sending to comms: %.2f cm\n", highestHeight);
+        i2c_send_float(M5_DISTANCE, highestHeight);
+        // printf("Sending to comms: %.2f cm\n", highestHeight);
 
         // reset bump height & bump flag
         highestHeight = 0.0;
@@ -207,7 +209,7 @@ bool checkBumpISR(struct repeating_timer *t)
         highestHeight = 0.0;
     }
 
-    printf("Height: %.2f cm\n", detectedHeight);
+    // printf("Height: %.2f cm\n", detectedHeight);
     // printf("Offset Height %.2f cm\n", offsetHeight);
 
     return true;
