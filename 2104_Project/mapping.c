@@ -426,6 +426,12 @@ void CheckUltrasonic()
     // float leftUltrasonicDist = 0.0f; // call function to get left ultrasonic distance <to be done>
     // float backUltrasonicDist = 0.0f; // call function to get back ultrasonic distance <to be done>
 
+    // Printing to debug for ultrasonic
+    printf("Front dist: %.2f", frontUltrasonicDist);
+    printf("Right dist: %.2f", rightUltrasonicDist);
+    printf("Left dist: %.2f", leftUltrasonicDist);
+    printf("Back dist: %.2f", backUltrasonicDist);
+
     i2c_send_float(M5_DISTANCE, frontUltrasonicDist);
 
     MarkWall(frontUltrasonicDist, car.directionFacing);
