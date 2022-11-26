@@ -636,17 +636,17 @@ void ConvertMappedGrid()
     // find x and y boundaries on 7x9 grid
     int startX, startY;
     // find far left node of car that is not visited
-    for (int x = car.xCoord - 1; x >= 0; x--)
+    for (int x = car.xCoord - 1; x >= -1; x--)
     {
-        if (grid.gridArray[x][car.yCoord].isVisited == 0)   // if grid not visited
+        if (x == -1 || grid.gridArray[x][car.yCoord].isVisited == 0)   // if grid not visited
         {
             startX = x + 1; // starting x is the previous x
             break;
         }
     }
-    for (int y = car.yCoord - 1; y >= 0; y--)
+    for (int y = car.yCoord - 1; y >= -1; y--)
     {
-        if (grid.gridArray[car.xCoord][y].isVisited == 0)   // if grid not visited
+        if (y == -1 || grid.gridArray[car.xCoord][y].isVisited == 0)   // if grid not visited
         {
             startY = y + 1; // starting y is the previous y
             break;
