@@ -13,11 +13,25 @@ void uart_start()
     gpio_set_function(5, GPIO_FUNC_UART); // UART RX
 }
 
-/* Send data to M5 for display purposes */
-void uart_send_data(uint8_t inst, uint8_t data)
+/* Send uint8_t data to M5 */
+void uart_send_uint8(uint8_t inst, uint8_t data)
 {
-    uint8_t finalData[2] = {inst, data};
+    uint8_t finalData[2];
+    finalData[0] = inst;
+    finalData[1] = data;
     uart_write_blocking(uart1, finalData, 2);
+}
+
+/* Send float data (distance, etc.) to M5 */
+void uart_send_float(uint8_t inst, float data)
+{
+    uint8_t finalData[3];
+    uint8_t left = (uint8_t)data;                   // Before d.p.
+    uint8_t right = (uint8_t)((data - left) * 100); // After d.p., cast to prevent errors if >2.
+    finalData[0] = inst;
+    finalData[1] = left;
+    finalData[2] = right;
+    uart_write_blocking(uart1, finalData, 3);
 }
 
 /* Read x and y coordinates from M5 */
