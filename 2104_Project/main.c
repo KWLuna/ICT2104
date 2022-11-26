@@ -29,6 +29,7 @@ int main()
 
     stdio_init_all(); // Enable UART so we can print status output
 
+    i2c_start();       // initialize comms
     init_motor();      // initialize motor
     init_pins();       // initialize pins for encoder
     init_ultrasonic(); // initialize pins for ultrasonic
