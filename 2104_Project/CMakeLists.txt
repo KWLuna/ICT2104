@@ -7,6 +7,7 @@ add_executable(${PROJECT_NAME}
         encoder.c
         motor.c
         ultrasonic.c
+        mpu.c
 )
 
 # Pull in common dependencies

@@ -10,6 +10,7 @@
 #include "mapping.h"
 #include "ultrasonic.h"
 #include "comms.h"
+#include "mpu.h"
 
 #define LEFT_ENCODER_PIN 15
 #define RIGHT_ENCODER_PIN 14
@@ -24,22 +25,27 @@
 int main()
 {
 
-    sleep_ms(500);     // necessary for unknown reasons
+    sleep_ms(500); // necessary for unknown reasons
 
     stdio_init_all(); // Enable UART so we can print status output
 
     init_motor();      // initialize motor
     init_pins();       // initialize pins for encoder
     init_ultrasonic(); // initialize pins for ultrasonic
+    init_accel();      // initialize for accelerometer
+
+    struct repeating_timer accel_timer;
+    add_repeating_timer_ms(150, checkBumpISR, NULL, &accel_timer);
+
     struct repeating_timer timer;
-    add_repeating_timer_ms(100, ISR_PID, NULL, &timer);   // set pid timer for every 100ms
+    add_repeating_timer_ms(100, ISR_PID, NULL, &timer); // set pid timer for every 100ms
     gpio_set_irq_enabled_with_callback(RIGHT_ENCODER_PIN, GPIO_IRQ_EDGE_RISE, true, gpio_callback);
     gpio_set_irq_enabled_with_callback(LEFT_ENCODER_PIN, GPIO_IRQ_EDGE_RISE, true, gpio_callback);
 
-    //moveBackwardBY(60);
+    // moveBackwardBY(60);
     moveForward();
 
-    //MappingMain();
+    // MappingMain();
 
     // multidimensional array is defined row X column / vert X hori
     // in this case access goes from 0,0 to 9,8
