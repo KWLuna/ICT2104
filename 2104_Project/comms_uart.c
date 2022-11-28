@@ -14,11 +14,11 @@ void uart_start()
 }
 
 /* Send uint8_t data to M5 */
-void uart_send_uint8(uint8_t inst, uint8_t data)
+void uart_send_barcode(uint8_t inst, char data)
 {
     uint8_t finalData[2];
     finalData[0] = inst;
-    finalData[1] = data;
+    finalData[1] = (uint8_t)data;
     uart_write_blocking(uart1, finalData, 2);
 }
 

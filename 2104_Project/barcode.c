@@ -6,6 +6,7 @@
 #include "hardware/irq.h"
 #include "hardware/dma.h"
 #include "hardware/clocks.h"
+#include "comms.h"
 
 #define ADC_NUM 0
 #define BARCODE_PIN 26 // GPIO pin 26 ADC0
@@ -94,156 +95,182 @@ void decodeBarcode()
     {
         printArray(A, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'A');
         printf("Character identified is A\n");
     }
     else if (compareArray(B, barcode, 9) == 0)
     {
         printArray(B, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'B');
         printf("Character identified is B\n");
     }
     else if (compareArray(C, barcode, 9) == 0)
     {
         printArray(C, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'C');
         printf("Character identified is C\n");
     }
     else if (compareArray(D, barcode, 9) == 0)
     {
         printArray(D, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'D');
         printf("Character identified is D\n");
     }
     else if (compareArray(E, barcode, 9) == 0)
     {
         printArray(E, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'E');
         printf("Character identified is E\n");
     }
     else if (compareArray(F, barcode, 9) == 0)
     {
         printArray(F, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'F');
         printf("Character identified is F\n");
     }
     else if (compareArray(G, barcode, 9) == 0)
     {
         printArray(G, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'G');
         printf("Character identified is G\n");
     }
     else if (compareArray(H, barcode, 9) == 0)
     {
         printArray(H, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'H');
         printf("Character identified is H\n");
     }
     else if (compareArray(I, barcode, 9) == 0)
     {
         printArray(I, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'I');
         printf("Character identified is I\n");
     }
     else if (compareArray(J, barcode, 9) == 0)
     {
         printArray(J, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'J');
         printf("Character identified is J\n");
     }
     else if (compareArray(K, barcode, 9) == 0)
     {
         printArray(K, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'K');
         printf("Character identified is K\n");
     }
     else if (compareArray(L, barcode, 9) == 0)
     {
         printArray(L, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'L');
         printf("Character identified is L\n");
     }
     else if (compareArray(M, barcode, 9) == 0)
     {
         printArray(M, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'M');
         printf("Character identified is M\n");
     }
     else if (compareArray(N, barcode, 9) == 0)
     {
         printArray(N, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'N');
         printf("Character identified is N\n");
     }
     else if (compareArray(O, barcode, 9) == 0)
     {
         printArray(O, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'O');
         printf("Character identified is O\n");
     }
     else if (compareArray(P, barcode, 9) == 0)
     {
         printArray(P, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'P');
         printf("Character identified is P\n");
     }
     else if (compareArray(Q, barcode, 9) == 0)
     {
         printArray(Q, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'Q');
         printf("Character identified is Q\n");
     }
     else if (compareArray(R, barcode, 9) == 0)
     {
         printArray(R, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'R');
         printf("Character identified is R\n");
     }
     else if (compareArray(S, barcode, 9) == 0)
     {
         printArray(S, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'S');
         printf("Character identified is S\n");
     }
     else if (compareArray(T, barcode, 9) == 0)
     {
         printArray(T, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'T');
         printf("Character identified is T\n");
     }
     else if (compareArray(U, barcode, 9) == 0)
     {
         printArray(U, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'U');
         printf("Character identified is U\n");
     }
     else if (compareArray(V, barcode, 9) == 0)
     {
         printArray(V, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'V');
         printf("Character identified is V\n");
     }
     else if (compareArray(W, barcode, 9) == 0)
     {
         printArray(W, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'W');
         printf("Character identified is W\n");
     }
     else if (compareArray(X, barcode, 9) == 0)
     {
         printArray(X, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'X');
         printf("Character identified is X\n");
     }
     else if (compareArray(Y, barcode, 9) == 0)
     {
         printArray(Y, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'Y');
         printf("Character identified is Y\n");
     }
     else if (compareArray(Z, barcode, 9) == 0)
     {
         printArray(Z, 9);
         printArray(barcode, 9);
+        uart_send_barcode(M5_BARCODE, 'Z');
         printf("Character identified is Z\n");
     }
 
@@ -255,6 +282,7 @@ void decodeBarcode()
     }
     else
     {
+        uart_send_barcode(M5_BARCODE, '\0');
         printf("Different elements, no matches\n");
     }
 }
@@ -344,7 +372,7 @@ void detectBar()
         }
         else if (startOfBarcode == true) // find for the first black line
         {
-            printf("Start of barcode\n");           // first black line
+            printf("Start of barcode\n");         // first black line
             blackStartTime = get_absolute_time(); // record black start time
             whiteEndTime = get_absolute_time();   // record white end time
             blackTime = absolute_time_diff_us(blackEndTime, blackStartTime);

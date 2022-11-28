@@ -21,11 +21,11 @@ void i2c_start()
 }
 
 /* Send uint8_t data to M5 */
-void i2c_send_uint8(uint8_t inst, uint8_t data)
+void i2c_send_barcode(uint8_t inst, char data)
 {
     uint8_t finalData[2];
     finalData[0] = inst;
-    finalData[1] = data;
+    finalData[1] = (uint8_t)data;
 
     if (i2c_write_blocking(i2c0, M5_SLAVE, finalData, 2, false) != PICO_ERROR_GENERIC)
         printf("Instruction %d and data %d successfully sent\n", (inst, data));
