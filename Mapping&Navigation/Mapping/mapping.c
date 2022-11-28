@@ -258,7 +258,146 @@ void AddStackIfNotExist(int x, int y)
 // Generates fake map in [4][5]
 void TempMarkWall()
 {
-    
+    if (car.xCoord == 0 && car.yCoord == 0)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+    }
+    else if (car.xCoord == 0 && car.yCoord == 1)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+    }
+    else if (car.xCoord == 0 && car.yCoord == 2)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+    }
+    else if (car.xCoord == 0 && car.yCoord == 3)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+    }
+    else if (car.xCoord == 0 && car.yCoord == 4)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+    }
+    else if (car.xCoord == 1 && car.yCoord == 0)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+    }
+    else if (car.xCoord == 1 && car.yCoord == 1)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+    }
+    else if (car.xCoord == 1 && car.yCoord == 2)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+    }
+    else if (car.xCoord == 1 && car.yCoord == 3)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+    }
+    else if (car.xCoord == 1 && car.yCoord == 4)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+    }
+    else if (car.xCoord == 2 && car.yCoord == 0)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+    }
+    else if (car.xCoord == 2 && car.yCoord == 1)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+    }
+    else if (car.xCoord == 2 && car.yCoord == 2)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+    }
+    else if (car.xCoord == 2 && car.yCoord == 3)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+    }
+    else if (car.xCoord == 2 && car.yCoord == 4)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+    }
+    else if (car.xCoord == 3 && car.yCoord == 0)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 0;
+    }
+    else if (car.xCoord == 3 && car.yCoord == 1)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+    }
+    else if (car.xCoord == 3 && car.yCoord == 2)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+    }
+    else if (car.xCoord == 3 && car.yCoord == 3)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+    }
+    else if (car.xCoord == 3 && car.yCoord == 4)
+    {
+        grid.gridArray[car.xCoord][car.yCoord].northIsWall = 1;
+        grid.gridArray[car.xCoord][car.yCoord].eastIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].southIsWall = 0;
+        grid.gridArray[car.xCoord][car.yCoord].westIsWall = 1;
+    }
 }
 
 void MarkWall(float ultrasonicDistance, Direction ultrasonicDirection)
