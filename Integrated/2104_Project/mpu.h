@@ -9,6 +9,8 @@ float calcTiltAngleX(int16_t aAngleY, int16_t aAngleZ);
 float calcHeight(float Angle);
 void mpu6050_calibration();
 float getHeight();
+void ComplementaryFilter(int16_t ax, int16_t ay, int16_t az, int16_t gy, int16_t gz, float elapsed);
+void getPitch();
 void init_accel();
 bool checkBumpISR(struct repeating_timer *t);
 
