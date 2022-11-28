@@ -62,15 +62,17 @@ void MappingMain()
 
     // convert mapping array to navigation array
     conversionConstructor(finalMapArray);
-
-    // send to uart
-    if (mapDataSent == false)
+    while (1)
     {
-        uart_send_map(navigationArray);
-        mapDataSent = true;
+        // send to uart
+        if (mapDataSent == false)
+        {
+            uart_send_map(navigationArray);
+            mapDataSent = true;
+        }
+        else
+            receiveCoordinate();
     }
-    else
-        receiveCoordinate();
 }
 
 void CheckCurrentNode()
