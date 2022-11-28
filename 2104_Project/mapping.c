@@ -53,7 +53,7 @@ void MappingMain()
             MoveCarToStackPos();
             SavePrevXYToCurrentNode();
         }
-        else // car finishes mapping
+        else if (numNodeVisited == 20) // car finishes mapping
             break;
     }
 
@@ -445,24 +445,25 @@ void CheckUltrasonic()
     float rightUltrasonicDist = ultrasonicPulse(11, 17); // call function to get right ultrasonic distance <to be done>
     float leftUltrasonicDist = ultrasonicPulse(13, 19);  // call function to get left ultrasonic distance <to be done>
     float backUltrasonicDist = ultrasonicPulse(12, 18);  // call function to get back ultrasonic distance <to be done>
-    // float frontUltrasonicDist = 0.0f; // call function to get front ultrasonic distance <to be done>
+    // float frontUltrasonicDist = 100.0f; // call function to get front ultrasonic distance <to be done>
     // float rightUltrasonicDist = 0.0f; // call function to get right ultrasonic distance <to be done>
     // float leftUltrasonicDist = 0.0f; // call function to get left ultrasonic distance <to be done>
     // float backUltrasonicDist = 0.0f; // call function to get back ultrasonic distance <to be done>
 
     // Printing to debug for ultrasonic
-    printf("Front dist: %.2f", frontUltrasonicDist);
-    printf("Right dist: %.2f", rightUltrasonicDist);
-    printf("Left dist: %.2f", leftUltrasonicDist);
-    printf("Back dist: %.2f", backUltrasonicDist);
-
+    // printf("Front dist: %.2f", frontUltrasonicDist);
+    // printf("Right dist: %.2f", rightUltrasonicDist);
+    // printf("Left dist: %.2f", leftUltrasonicDist);
+    // printf("Back dist: %.2f", backUltrasonicDist);
+    
     // Send front ultrasonic distance to M5
     uart_send_float(M5_DISTANCE, frontUltrasonicDist);
-
+    
     MarkWall(frontUltrasonicDist, car.directionFacing);
     MarkWall(rightUltrasonicDist, GetRightDirection(car.directionFacing));
     MarkWall(leftUltrasonicDist, GetLeftDirection(car.directionFacing));
     MarkWall(backUltrasonicDist, GetBackDirection(car.directionFacing));
+
 }
 
 void SetCar(Car *car, int xPos, int yPos, Direction direction)
