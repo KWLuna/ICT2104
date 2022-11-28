@@ -8,6 +8,7 @@ add_executable(${PROJECT_NAME}
         motor.c
         ultrasonic.c
         mpu.c
+        barcode.c
 )
 
 # Pull in common dependencies
@@ -19,6 +20,7 @@ target_link_libraries(${PROJECT_NAME}
         hardware_gpio
         hardware_clocks
         hardware_timer
+        hardware_adc
 )
 
 # Enable USB serial
