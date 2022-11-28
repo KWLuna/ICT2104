@@ -45,8 +45,8 @@ int main()
 
     //moveBackwardBY(60);
 
-    // moveForwardBY(60);
-    // turnLeft90();
+    // moveForwardBY(18);
+    // turnRight90();
     // moveForwardBY(60);
     // turnLeft90();
     // moveForwardBY(60);
