@@ -12,7 +12,7 @@
 #define M5_MAP ((uint8_t)100)     // d
 
 /* UART settings */
-#define UART_BAUD_RATE 115200
+#define UART_BAUD_RATE 57600
 
 /* I2C settings */
 #define M5_SLAVE 8               // Slave address of M5StickC Plus
