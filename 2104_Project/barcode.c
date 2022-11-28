@@ -1,9 +1,8 @@
 #include "barcode.h"
+#include "comms.h"
 
 static volatile float curatedRes;
-int adcResult, adcInterrupt, startTime = 0;
-int totalAdc, avgResult = 0;
-
+int adcResult, adcInterrupt, totalAdc, startTime, avgResult = 0;
 int avg, currentTime, whiteCounter, blackCounter = 0;
 int isBlack = 1;
 int lineThreshold = 2000;
@@ -28,6 +27,8 @@ void init_barcode()
     adc_select_input(ADC_NUM);            // GPIO 26 ADC 0
 }
 
+
+/* combine the bar and space*/
 void combineArray(char bars[], char spaces[], char combined[])
 {
     int i = 0, j = 0, k = 0;
@@ -47,6 +48,7 @@ void combineArray(char bars[], char spaces[], char combined[])
     }
 }
 
+/* To break down the array to start, barcode, end arrays*/
 void decipherBarcode(char *combined)
 {
     int i = 0;
@@ -75,9 +77,8 @@ void printArray(char arr[], int size)
     printf("\nElements are : ");
     for (i = 0; i < size; i++)
     {
-        printf("\n\tarr[%d] : %d", i, arr[i]);
+        printf("\n\tarr[%d]\n : %d", i, arr[i]);
     }
-    printf("\n");
 }
 
 /* To compare array elements */
@@ -92,7 +93,7 @@ char compareArray(char a[], char b[], int size)
     return 0;
 }
 
-/*decode barcode*/
+/* decode barcode*/
 void decodeBarcode()
 {
     char A[9] = {1, 0, 0, 0, 0, 1, 0, 0, 1};
@@ -125,142 +126,114 @@ void decodeBarcode()
 
     if (compareArray(A, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is A\n");
     }
     else if (compareArray(B, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is B\n");
     }
     else if (compareArray(C, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is C\n");
     }
     else if (compareArray(D, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is D\n");
     }
     else if (compareArray(E, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is E\n");
     }
     else if (compareArray(F, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is F\n");
     }
     else if (compareArray(G, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is G\n");
     }
     else if (compareArray(H, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is H\n");
     }
     else if (compareArray(I, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is I\n");
     }
     else if (compareArray(J, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is J\n");
     }
     else if (compareArray(K, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is K\n");
     }
     else if (compareArray(L, barcode, 9) == 0)
-    {
-        printArray(barcode, 9);
+    {  
         printf("Character identified is L\n");
     }
     else if (compareArray(M, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is M\n");
     }
     else if (compareArray(N, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is N\n");
     }
     else if (compareArray(O, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is O\n");
     }
     else if (compareArray(P, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is P\n");
     }
     else if (compareArray(Q, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is Q\n");
     }
     else if (compareArray(R, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is R\n");
     }
     else if (compareArray(S, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is S\n");
     }
     else if (compareArray(T, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is T\n");
     }
     else if (compareArray(U, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is U\n");
     }
     else if (compareArray(V, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is V\n");
     }
     else if (compareArray(W, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is W\n");
     }
     else if (compareArray(X, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is X\n");
     }
     else if (compareArray(Y, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is Y\n");
     }
     else if (compareArray(Z, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is Z\n");
     }
     else if (compareArray(asterisk, barcode, 9) == 0)
     {
-        printArray(barcode, 9);
         printf("Character identified is *\n");
     }
     else
     {
-        printArray(barcode, 9);
         printf("Different elements, no matches\n");
     }
 }
@@ -354,11 +327,9 @@ void barcode_sampling()
         {
             startTime = time_us_32();
         }
-
         avgResult = totalAdc / 1000;
         curatedRes = avgResult * ADC_CONVERT; // change to voltage
-        printf("%.2f\n", curatedRes);
-
+        //printf("%.2f\n", curatedRes);
         detectBar_raw(avgResult);
     }
     

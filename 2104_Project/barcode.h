@@ -13,7 +13,6 @@
 #define ADC_VREF 3.3
 #define ADC_RANGE (1 << 12)                      // 2^12
 #define ADC_CONVERT (ADC_VREF / (ADC_RANGE - 1)) // 3.3/4097
-#define N_SAMPLES 10
 #define NUM_BLACK_BAR 15
 #define NUM_WHITE_BAR 15
 

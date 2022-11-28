@@ -11,7 +11,7 @@
 
 #define Pi 3.14159265
 #define RAD_TO_DEG 57.29577951308232
-#define HYPOTENUSE 15
+#define HYPOTENUSE 20
 #define minVal 265
 #define maxVal 402
 #define detection_threshold 0.7
@@ -209,20 +209,3 @@ bool checkBumpISR(struct repeating_timer *t)
 
     return true;
 }
-
-// int main()
-// {
-
-//     struct repeating_timer accel_timer;
-//     add_repeating_timer_ms(150, checkBumpISR, NULL, &accel_timer);
-
-//     // initialize accel
-//     init_accel();
-
-//     while (1)
-//     {
-
-//     }
-
-//     return 0;
-// }

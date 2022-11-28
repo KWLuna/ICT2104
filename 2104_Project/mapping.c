@@ -53,16 +53,25 @@ void MappingMain()
             MoveCarToStackPos();
             SavePrevXYToCurrentNode();
         }
-        else // car stopped?
+        else if (numNodeVisited == 20) // car finishes mapping
+            break;
+    }
+
+    // converts map to 4x5 at the end of mapping
+    ConvertMappedGrid();
+
+    // convert mapping array to navigation array
+    conversionConstructor(finalMapArray);
+    while (1)
+    {
+        // send to uart
+        if (mapDataSent == false)
         {
-            if (mapDataSent == false)
-            {
-                uart_send_map(navigationArray);
-                mapDataSent = true;
-            }
-            else
-                receiveCoordinate();
+            uart_send_map(navigationArray);
+            mapDataSent = true;
         }
+        else
+            receiveCoordinate();
     }
 }
 
@@ -436,24 +445,25 @@ void CheckUltrasonic()
     float rightUltrasonicDist = ultrasonicPulse(11, 17); // call function to get right ultrasonic distance <to be done>
     float leftUltrasonicDist = ultrasonicPulse(13, 19);  // call function to get left ultrasonic distance <to be done>
     float backUltrasonicDist = ultrasonicPulse(12, 18);  // call function to get back ultrasonic distance <to be done>
-    // float frontUltrasonicDist = 0.0f; // call function to get front ultrasonic distance <to be done>
+    // float frontUltrasonicDist = 100.0f; // call function to get front ultrasonic distance <to be done>
     // float rightUltrasonicDist = 0.0f; // call function to get right ultrasonic distance <to be done>
     // float leftUltrasonicDist = 0.0f; // call function to get left ultrasonic distance <to be done>
     // float backUltrasonicDist = 0.0f; // call function to get back ultrasonic distance <to be done>
 
     // Printing to debug for ultrasonic
-    printf("Front dist: %.2f", frontUltrasonicDist);
-    printf("Right dist: %.2f", rightUltrasonicDist);
-    printf("Left dist: %.2f", leftUltrasonicDist);
-    printf("Back dist: %.2f", backUltrasonicDist);
-
+    // printf("Front dist: %.2f", frontUltrasonicDist);
+    // printf("Right dist: %.2f", rightUltrasonicDist);
+    // printf("Left dist: %.2f", leftUltrasonicDist);
+    // printf("Back dist: %.2f", backUltrasonicDist);
+    
     // Send front ultrasonic distance to M5
     uart_send_float(M5_DISTANCE, frontUltrasonicDist);
-
+    
     MarkWall(frontUltrasonicDist, car.directionFacing);
     MarkWall(rightUltrasonicDist, GetRightDirection(car.directionFacing));
     MarkWall(leftUltrasonicDist, GetLeftDirection(car.directionFacing));
     MarkWall(backUltrasonicDist, GetBackDirection(car.directionFacing));
+
 }
 
 void SetCar(Car *car, int xPos, int yPos, Direction direction)
@@ -694,8 +704,7 @@ void ConvertMappedGrid()
 // receive coordinate from signal team
 void receiveCoordinate()
 {
-    uart_read_data();
-    if (dataAvailable) // variables: x for x-coordinate, y for y-coordinate
+    if (dataAvailable)
     {
         //-> call setCoord with current car coord and dest row/col, function will convert into 9x11 usable coordinate
         //-> call conversionConstructor with the [4][5] array from mapping to create navigation array
@@ -704,7 +713,14 @@ void receiveCoordinate()
         //-> TODO-DONE: replace movement list print instructions with movement calls to car movement
         //-> TODO: send signal once destination reach to signal team to keep polling for more inputs
         //-> TODO: send a signal if no route possible to reach target dest
+        setCoord(car.yCoord, car.xCoord, y, x);
+        conversionConstructor(finalMapArray);
+        navigateTo(navigationArray, visitedArray, destRow, destCol);
+        targetLocator(exitFound, movementList, backfill);
+        dataAvailable = false;
     }
+    else
+        uart_read_data(); // variables: x for x-coordinate, y for y-coordinate
 }
 
 // convert 4x5 into 9x11

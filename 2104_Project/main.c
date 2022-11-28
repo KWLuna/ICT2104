@@ -29,11 +29,12 @@ int main()
 
     stdio_init_all(); // Enable UART so we can print status output
 
-    uart_start();       // initialize comms
+    uart_start();      // initialize comms
     init_motor();      // initialize motor
     init_pins();       // initialize pins for encoder
     init_ultrasonic(); // initialize pins for ultrasonic
     init_accel();      // initialize for accelerometer
+    init_barcode();    // initialize pins for barcode
 
     struct repeating_timer accel_timer;
     add_repeating_timer_ms(150, checkBumpISR, NULL, &accel_timer);
@@ -43,8 +44,16 @@ int main()
     gpio_set_irq_enabled_with_callback(RIGHT_ENCODER_PIN, GPIO_IRQ_EDGE_RISE, true, gpio_callback);
     gpio_set_irq_enabled_with_callback(LEFT_ENCODER_PIN, GPIO_IRQ_EDGE_RISE, true, gpio_callback);
 
-    // moveBackwardBY(60);
-    moveForward();
+    //moveBackwardBY(60);
+
+    // moveForwardBY(60);
+    // turnLeft90();
+    // moveForwardBY(60);
+    // turnLeft90();
+    // moveForwardBY(60);
+    // turnLeft90();
+    // moveForwardBY(60);
+    // turnLeft90();
 
     MappingMain();
 
@@ -82,16 +91,15 @@ int main()
     // uint8_t navigationArray[9][11] =
     //     {
     //         // sample map, go from 1,1 to 1,9
-    //         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    //         1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1,
-    //         1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1,
-    //         1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1,
-    //         1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1,
-    //         1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1,
-    //         1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1,
-    //         1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    //         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-
+    //         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    //         {1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1},
+    //         {1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1},
+    //         {1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1},
+    //         {1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1},
+    //         {1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1},
+    //         {1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1},
+    //         {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    //         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
     // // visualization of navmap
     // for (int x = 0; x < 9; x++)
@@ -183,6 +191,7 @@ int main()
     while (1)
     {
         tight_loop_contents();
+        barcode_IRQ();
     };
 
     return 0;

@@ -12,7 +12,7 @@ uint16_t set_duty_cycle;
 //Integers for pulse counters
 float target_notches; 
 
-
+//defining pins for motor
 #define PWM0A 0
 #define PWM0B 1
 #define IN4 6
@@ -170,6 +170,8 @@ void slowDown() {
 }
 
 void turnLeft180(){
+    reset_RightNotches(); 
+    moveForward();
     // put all pins except for IN1 to low
     gpio_put(IN4, 0);
     gpio_put(IN3, 0);
@@ -177,14 +179,16 @@ void turnLeft180(){
     gpio_put(IN1, 1);
     init_pwmChanB(0);
    float rightNotches = get_RightNotches();
-    while(rightNotches != 37){
+    while(rightNotches < 37){
         rightNotches = get_RightNotches();
     }
-    reset_RightNotches();
+    //reset_RightNotches();
     stop();
 }
 
 void turnRight180(){
+    reset_LeftNotches();
+    moveForward(); 
     // put all pins except for IN3 to low
     gpio_put(IN4, 0);
     gpio_put(IN3, 1);
@@ -192,14 +196,16 @@ void turnRight180(){
     gpio_put(IN1, 0);
     init_pwmChanA(0);
     float leftNotches = get_LeftNotches();
-    while(leftNotches != 37){
+    while(leftNotches < 37){
         leftNotches = get_LeftNotches();
     }
-    reset_LeftNotches();
+    //reset_LeftNotches();
     stop();
 }
 
 void turnLeft90(){
+    reset_RightNotches();
+    moveForward(); 
     // put all pins except for IN1 to low
     gpio_put(IN4, 0);
     gpio_put(IN3, 0);
@@ -207,14 +213,15 @@ void turnLeft90(){
     gpio_put(IN1, 1);
     init_pwmChanB(0);
     float rightNotches = get_RightNotches();
-    while(rightNotches != 20){
+    while(rightNotches < 20){
         rightNotches = get_RightNotches();
     }
-    reset_RightNotches();
     stop();
 }
 
 void turnRight90(){
+    reset_LeftNotches();
+    moveForward();
     // put all pins except for IN3 to low
     gpio_put(IN4, 0);
     gpio_put(IN3, 1);
@@ -222,14 +229,16 @@ void turnRight90(){
     gpio_put(IN1, 0);
     init_pwmChanA(0);
     float leftNotches = get_LeftNotches();
-    while(leftNotches != 20){
+    while(leftNotches < 20){
         leftNotches = get_LeftNotches();
     }
-    reset_LeftNotches();
+    //reset_LeftNotches();
     stop();
 }
 
 void turnLeft45(){
+    reset_RightNotches();
+    moveForward();
     // put all pins except for IN1 to low
     gpio_put(IN4, 0);
     gpio_put(IN3, 0);
@@ -237,15 +246,16 @@ void turnLeft45(){
     gpio_put(IN1, 1);
     init_pwmChanB(0);
     float rightNotches = get_RightNotches();
-    while(rightNotches != 9){
+    while(rightNotches < 13){
         rightNotches = get_RightNotches();
     }
-    reset_RightNotches();
     stop();
 }
     
 
 void turnRight45(){
+    reset_LeftNotches();
+    moveForward();
     // put all pins except for IN3 to low
     gpio_put(IN4, 0);
     gpio_put(IN3, 1);
@@ -253,14 +263,15 @@ void turnRight45(){
     gpio_put(IN1, 0);
     init_pwmChanA(0);
     float leftNotches = get_LeftNotches();
-    while(leftNotches != 9){
+    while(leftNotches < 13){
         leftNotches = get_LeftNotches();
     }
-    reset_LeftNotches();
     stop();
 }
 
 void turnLeft15(){
+    reset_RightNotches();
+    moveForward();
     // put all pins except for IN1 to low
     gpio_put(IN4, 0);
     gpio_put(IN3, 0);
@@ -268,14 +279,15 @@ void turnLeft15(){
     gpio_put(IN1, 1);
     init_pwmChanB(0);
     float rightNotches = get_RightNotches();
-    while(rightNotches != 4){
+    while(rightNotches < 4){
         rightNotches = get_RightNotches();
     }
-    reset_RightNotches();
     stop();
 }
 
 void turnRight15(){
+    reset_LeftNotches();
+    moveForward();
     // put all pins except for IN3 to low
     gpio_put(IN4, 0);
     gpio_put(IN3, 1);
@@ -283,15 +295,15 @@ void turnRight15(){
     gpio_put(IN1, 0);
     init_pwmChanA(0);
     float leftNotches = get_LeftNotches();
-    while(leftNotches != 4){
+    while(leftNotches < 4){
         leftNotches = get_LeftNotches();
     }
-    reset_LeftNotches();
     stop();
 }
 
 //move forward by distance 
 void moveForwardBY(float cm) {
+    reset_notches();
     float target_notches = CMtoSteps(cm);
     set_duty_cycle = 70;
     init_pwmChanA(set_duty_cycle);
@@ -306,12 +318,13 @@ void moveForwardBY(float cm) {
         notches = get_current_notches();
         printf("notches: %f target: %f\n", notches, target_notches);
     }
-    reset_notches();
+    //reset_notches();
     stop();
 }
 
 //move backward by distance 
 void moveBackwardBY(float cm) {
+    reset_notches();
     float target_notches = CMtoSteps(cm);
     set_duty_cycle = 70;
     init_pwmChanA(set_duty_cycle);
@@ -326,6 +339,6 @@ void moveBackwardBY(float cm) {
         notches = get_current_notches();
         printf("notches: %f target: %f\n", notches, target_notches);
     }
-    reset_notches();
+    //reset_notches();
     stop();
 }
