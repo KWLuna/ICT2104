@@ -34,6 +34,7 @@ int main()
     init_pins();       // initialize pins for encoder
     init_ultrasonic(); // initialize pins for ultrasonic
     init_accel();      // initialize for accelerometer
+    init_barcode();    // initialize pins for barcode
 
     struct repeating_timer accel_timer;
     add_repeating_timer_ms(150, checkBumpISR, NULL, &accel_timer);
@@ -190,6 +191,7 @@ int main()
     while (1)
     {
         tight_loop_contents();
+        barcode_IRQ();
     };
 
     return 0;
