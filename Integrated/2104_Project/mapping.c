@@ -52,6 +52,7 @@ void MappingMain()
         {
             MoveCarToStackPos();
             SavePrevXYToCurrentNode();
+            barcode_IRQ();
         }
         else if (numNodeVisited == 20) // car finishes mapping
             break;

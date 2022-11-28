@@ -191,7 +191,6 @@ int main()
     while (1)
     {
         tight_loop_contents();
-        barcode_IRQ();
     };
 
     return 0;

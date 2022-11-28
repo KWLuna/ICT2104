@@ -22,7 +22,7 @@ void decipherBarcode(char* combined);
 void printArray(char arr[], int size);
 char compareArray(char a[], char b[], int size);
 void decodeBarcode();
-void detectBar(int adc_reading);
+void detectBar_raw(int adc_reading);
 void barcode_sampling();
 void barcode_IRQ();
 

@@ -126,106 +126,132 @@ void decodeBarcode()
 
     if (compareArray(A, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'A');
         printf("Character identified is A\n");
     }
     else if (compareArray(B, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'B');
         printf("Character identified is B\n");
     }
     else if (compareArray(C, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'C');
         printf("Character identified is C\n");
     }
     else if (compareArray(D, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'D');
         printf("Character identified is D\n");
     }
     else if (compareArray(E, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'E');
         printf("Character identified is E\n");
     }
     else if (compareArray(F, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'F');
         printf("Character identified is F\n");
     }
     else if (compareArray(G, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'G');
         printf("Character identified is G\n");
     }
     else if (compareArray(H, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'H');
         printf("Character identified is H\n");
     }
     else if (compareArray(I, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'I');
         printf("Character identified is I\n");
     }
     else if (compareArray(J, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'J');
         printf("Character identified is J\n");
     }
     else if (compareArray(K, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'K');
         printf("Character identified is K\n");
     }
     else if (compareArray(L, barcode, 9) == 0)
     {  
+        uart_send_barcode(M5_BARCODE, 'L');
         printf("Character identified is L\n");
     }
     else if (compareArray(M, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'M');
         printf("Character identified is M\n");
     }
     else if (compareArray(N, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'N');
         printf("Character identified is N\n");
     }
     else if (compareArray(O, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'O');
         printf("Character identified is O\n");
     }
     else if (compareArray(P, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'P');
         printf("Character identified is P\n");
     }
     else if (compareArray(Q, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'Q');
         printf("Character identified is Q\n");
     }
     else if (compareArray(R, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'R');
         printf("Character identified is R\n");
     }
     else if (compareArray(S, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'S');
         printf("Character identified is S\n");
     }
     else if (compareArray(T, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'T');
         printf("Character identified is T\n");
     }
     else if (compareArray(U, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'U');
         printf("Character identified is U\n");
     }
     else if (compareArray(V, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'V');
         printf("Character identified is V\n");
     }
     else if (compareArray(W, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'W');
         printf("Character identified is W\n");
     }
     else if (compareArray(X, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'X');
         printf("Character identified is X\n");
     }
     else if (compareArray(Y, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'Y');
         printf("Character identified is Y\n");
     }
     else if (compareArray(Z, barcode, 9) == 0)
     {
+        uart_send_barcode(M5_BARCODE, 'Z');
         printf("Character identified is Z\n");
     }
     else if (compareArray(asterisk, barcode, 9) == 0)

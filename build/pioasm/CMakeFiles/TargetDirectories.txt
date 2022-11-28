@@ -1,0 +1,3 @@
+C:/Users/png_b/Downloads/Github folder 2/ICT2104/build/pioasm/CMakeFiles/pioasm.dir
+C:/Users/png_b/Downloads/Github folder 2/ICT2104/build/pioasm/CMakeFiles/edit_cache.dir
+C:/Users/png_b/Downloads/Github folder 2/ICT2104/build/pioasm/CMakeFiles/rebuild_cache.dir
