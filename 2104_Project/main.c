@@ -53,19 +53,8 @@ int main()
     // turnLeft90();
     // moveForwardBY(60);
     // turnLeft90();
-  
-  moveForward();
-  speedUp();
-  sleep_ms(500);
-speedUp();
-sleep_ms(500);
 
-
-
-    
-
-
-    //MappingMain();
+    MappingMain();
 
     // multidimensional array is defined row X column / vert X hori
     // in this case access goes from 0,0 to 9,8
