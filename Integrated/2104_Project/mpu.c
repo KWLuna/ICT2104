@@ -21,6 +21,10 @@ float offsetHeight = 0.0;
 float highestHeight = 0.0;
 bool bumpDataReady = false;
 
+float pitch = 0.0;
+float pitchAcc;
+float P_CompCoeff = 0.98;
+
 // Bus address for the MPU
 static int addr = 0x68;
 
@@ -68,7 +72,6 @@ static void mpu6050_read_rawG(int16_t gyro[3])
         ;
     }
 }
-
 int calcAccAngle(int16_t accVal, int16_t inMin, int16_t inMax, int16_t outMin, int16_t outMax)
 {
     int16_t aAngle = (accVal - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
@@ -96,10 +99,9 @@ void mpu6050_calibration()
 
     float cali_Height = 0.0;
 
-    // Measure X angle 100 times to calculate the mean offset
+    // Measure X angle 300 times to calculate the mean offset
     while (count < 300)
     {
-
         mpu6050_read_rawA(acc_calibration);
         cali_accAngleX = calcAccAngle(acc_calibration[0], minVal, maxVal, -90, 90);
         cali_accAngleY = calcAccAngle(acc_calibration[1], minVal, maxVal, -90, 90);
@@ -119,7 +121,6 @@ void mpu6050_calibration()
 }
 float getHeight()
 {
-
     int16_t acceleration[3], gyro[3];
     int16_t accAngleX = 0, accAngleY = 0, accAngleZ = 0;
     int16_t count = 0;
@@ -152,6 +153,46 @@ float getHeight()
     // printf("Height: %.2f cm\n", elevatedHeight);
     return elevatedHeight;
 }
+void ComplementaryFilter(int16_t ax, int16_t ay, int16_t az, int16_t gy, int16_t gz, float elapsed)
+{
+    long squaresum = (long)ay * ay + (long)az * az;
+    // calculate pitch from raw gyro data
+    pitch += ((-gy / 32.8) * (elapsed / 1000.0));
+    // calculate pitch from raw acclerometer data
+    pitchAcc = atan(ax / sqrt(squaresum)) * RAD_TO_DEG;
+    // combine and complement the data to get the accurate pitch angle
+    pitch = P_CompCoeff * pitch + (1.0 - P_CompCoeff) * pitchAcc;
+}
+void getPitch()
+{
+    int16_t p_acceleration[3], p_gyro[3];
+    int16_t accX = 0, accY = 0, accZ = 0;
+    int16_t gyX = 0, gyY = 0, gyZ = 0;
+
+    absolute_time_t prevTime, currentTime;
+    float prevTimems = 0.0, currentTimems = 0.0, elapsedTime = 0.0;
+
+    // read raw acceleration values from MPU6050
+    mpu6050_read_rawA(p_acceleration);
+    accX = p_acceleration[0];
+    accY = p_acceleration[1];
+    accZ = p_acceleration[2];
+
+    // Get elapsed time for the calculation of raw gyro data in deg/s
+    prevTimems = currentTimems;
+    currentTime = get_absolute_time();
+    currentTimems = to_ms_since_boot(currentTime);
+    elapsedTime = (currentTimems - prevTimems) / 1000.0;
+
+    // read raw gyro values from MPU6050
+    mpu6050_read_rawG(p_gyro);
+    gyX = p_gyro[0];
+    gyY = p_gyro[1];
+    gyZ = p_gyro[2];
+
+    ComplementaryFilter(accX, accY, accZ, gyY, gyZ, elapsedTime);
+    printf("Pitch Angle: %.2f\n", pitch);
+}
 void init_accel()
 {
     // initialize port for i2c1 400KHz
@@ -182,7 +223,6 @@ bool checkBumpISR(struct repeating_timer *t)
     // Start of bump/bump detected
     if (detectedHeight > detection_threshold)
     {
-
         if (detectedHeight > highestHeight)
         {
             highestHeight = detectedHeight;
@@ -191,9 +231,12 @@ bool checkBumpISR(struct repeating_timer *t)
     // End of bump - back to flat ground
     if (detectedHeight < detection_threshold && highestHeight > 0)
     {
-        // i2c_send_float(M5_HUMP, highestHeight);
-        uart_send_float(M5_HUMP, highestHeight);
-        // printf("Sending to comms: %.2f cm\n", highestHeight);
+        bumpDataReady = true;
+    }
+    if (bumpDataReady)
+    {
+        // send to comms
+        printf("Sending to comms: %.2f cm\n", highestHeight);
 
         // reset bump height & bump flag
         highestHeight = 0.0;
@@ -204,7 +247,7 @@ bool checkBumpISR(struct repeating_timer *t)
         highestHeight = 0.0;
     }
 
-    // printf("Height: %.2f cm\n", detectedHeight);
+    printf("Height: %.2f cm\n", detectedHeight);
     // printf("Offset Height %.2f cm\n", offsetHeight);
 
     return true;
