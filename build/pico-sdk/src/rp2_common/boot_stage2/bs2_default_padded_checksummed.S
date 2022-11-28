@@ -1,4 +1,4 @@
-// Padded and checksummed version of: C:/Users/png_b/Downloads/Github folder 2/ICT2104/build/pico-sdk/src/rp2_common/boot_stage2/bs2_default.bin
+// Padded and checksummed version of: C:/Users/pyeka/Desktop/ICT2104/ICT2104/build/pico-sdk/src/rp2_common/boot_stage2/bs2_default.bin
 
 .cpu cortex-m0plus
 .thumb

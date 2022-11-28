@@ -1,5 +1,6 @@
 #include "mapping.h"
 #include "comms.h"
+#include "barcode.h"
 
 // Mapping
 Grid grid;                       // The Map
@@ -47,12 +48,13 @@ void MappingMain()
 
     while (1)
     {
+
         CheckCurrentNode();
+        barcode_IRQ();
         if (numNodeVisited < 20)
         {
             MoveCarToStackPos();
             SavePrevXYToCurrentNode();
-            barcode_IRQ();
         }
         else if (numNodeVisited == 20) // car finishes mapping
             break;
@@ -456,15 +458,14 @@ void CheckUltrasonic()
     // printf("Right dist: %.2f", rightUltrasonicDist);
     // printf("Left dist: %.2f", leftUltrasonicDist);
     // printf("Back dist: %.2f", backUltrasonicDist);
-    
+
     // Send front ultrasonic distance to M5
     uart_send_float(M5_DISTANCE, frontUltrasonicDist);
-    
+
     MarkWall(frontUltrasonicDist, car.directionFacing);
     MarkWall(rightUltrasonicDist, GetRightDirection(car.directionFacing));
     MarkWall(leftUltrasonicDist, GetLeftDirection(car.directionFacing));
     MarkWall(backUltrasonicDist, GetBackDirection(car.directionFacing));
-
 }
 
 void SetCar(Car *car, int xPos, int yPos, Direction direction)

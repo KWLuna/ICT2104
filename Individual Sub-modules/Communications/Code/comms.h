@@ -34,4 +34,5 @@ void uart_read_data();
 void i2c_start();
 void i2c_send_barcode(uint8_t inst, char data);
 void i2c_send_float(uint8_t inst, float data);
+void i2c_send_map(uint8_t mapArr[9][11]);
 void i2c_read_data();

@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/png_b/Downloads/Github folder 2/ICT2104/2104_Project
+# Install script for directory: C:/Users/pyeka/Desktop/ICT2104/ICT2104/2104_Project
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,6 +34,6 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/VSARM/armcc/10 2021.10/bin/arm-none-eabi-objdump.exe")
+  set(CMAKE_OBJDUMP "C:/VSARM/armcc/11.3 rel1/bin/arm-none-eabi-objdump.exe")
 endif()
 

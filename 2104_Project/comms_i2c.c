@@ -50,6 +50,20 @@ void i2c_send_float(uint8_t inst, float data)
         printf("FLOAT SEND ERROR\n");
 }
 
+/* Send map data */
+void i2c_send_map(uint8_t mapArr[9][11])
+{
+    uint8_t inst = M5_MAP;
+    i2c_write_blocking(i2c0, M5_SLAVE, &inst, 1, true); // Instruction for M5
+    for (int i = 0; i < 9; i++)
+    {
+        if (i < 8)
+            i2c_write_blocking(i2c0, M5_SLAVE, mapArr[i], 11, true); // Retain control of I2C bus
+        else
+            i2c_write_blocking(i2c0, M5_SLAVE, mapArr[i], 11, false); // Release control of I2C bus
+    }
+}
+
 /* Read x and y coordinates from M5 */
 void i2c_read_data()
 {

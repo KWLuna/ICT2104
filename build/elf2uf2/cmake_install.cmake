@@ -34,12 +34,12 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/MinGW/bin/objdump.exe")
+  set(CMAKE_OBJDUMP "C:/VSARM/mingw/mingw32/bin/objdump.exe")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/Users/png_b/Downloads/Github folder 2/ICT2104/build/elf2uf2/boot_uf2_headers/cmake_install.cmake")
+  include("C:/Users/pyeka/Desktop/ICT2104/ICT2104/build/elf2uf2/boot_uf2_headers/cmake_install.cmake")
 
 endif()
 
@@ -51,5 +51,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/png_b/Downloads/Github folder 2/ICT2104/build/elf2uf2/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/pyeka/Desktop/ICT2104/ICT2104/build/elf2uf2/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

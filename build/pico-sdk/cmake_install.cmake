@@ -34,14 +34,14 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/VSARM/armcc/10 2021.10/bin/arm-none-eabi-objdump.exe")
+  set(CMAKE_OBJDUMP "C:/VSARM/armcc/11.3 rel1/bin/arm-none-eabi-objdump.exe")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/Users/png_b/Downloads/Github folder 2/ICT2104/build/pico-sdk/tools/cmake_install.cmake")
-  include("C:/Users/png_b/Downloads/Github folder 2/ICT2104/build/pico-sdk/src/cmake_install.cmake")
-  include("C:/Users/png_b/Downloads/Github folder 2/ICT2104/build/pico-sdk/docs/cmake_install.cmake")
+  include("C:/Users/pyeka/Desktop/ICT2104/ICT2104/build/pico-sdk/tools/cmake_install.cmake")
+  include("C:/Users/pyeka/Desktop/ICT2104/ICT2104/build/pico-sdk/src/cmake_install.cmake")
+  include("C:/Users/pyeka/Desktop/ICT2104/ICT2104/build/pico-sdk/docs/cmake_install.cmake")
 
 endif()
 
