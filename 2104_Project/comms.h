@@ -1,3 +1,7 @@
+/* Includes */
+#include <stdio.h>
+#include "pico/stdlib.h"
+
 /*
  * Instructions to be passed as first parameter for send functions (comms)
  * Used by M5 to differentiate the data received
