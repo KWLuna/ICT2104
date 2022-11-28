@@ -10,7 +10,7 @@
 
 
 /* Preprocessor directives */
-#define BAUD_RATE 115200
+#define BAUD_RATE 57600
 #define RX_PIN 32
 #define TX_PIN 33
 #define PICO_BARCODE 'a'
