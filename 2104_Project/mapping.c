@@ -53,17 +53,24 @@ void MappingMain()
             MoveCarToStackPos();
             SavePrevXYToCurrentNode();
         }
-        else // car stopped?
-        {
-            if (mapDataSent == false)
-            {
-                uart_send_map(navigationArray);
-                mapDataSent = true;
-            }
-            else
-                receiveCoordinate();
-        }
+        else // car finishes mapping
+            break;
     }
+
+    // converts map to 4x5 at the end of mapping
+    ConvertMappedGrid();
+
+    // convert mapping array to navigation array
+    conversionConstructor(finalMapArray);
+
+    // send to uart
+    if (mapDataSent == false)
+    {
+        uart_send_map(navigationArray);
+        mapDataSent = true;
+    }
+    else
+        receiveCoordinate();
 }
 
 void CheckCurrentNode()
