@@ -11,7 +11,7 @@ Modules used:
 ## Infrared
 1. Bao Huan
 2. Jean
-## Accelerator
+## Ultrasonic & Accelerometer
 1. Guan Lin
 2. Yi Kiat
 ## Communication
