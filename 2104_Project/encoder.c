@@ -65,10 +65,10 @@ void reset_LeftCounter(){
     leftCounter = 0; 
 }
 void reset_RightNotches(){
-    rightCounter = 0; 
+    rightNotches = 0; 
 }
 void reset_LeftNotches(){
-    leftCounter = 0; 
+    leftNotches = 0; 
 }
 //convert cm to steps
 int CMtoSteps(float cm){

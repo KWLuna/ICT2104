@@ -29,7 +29,7 @@ int main()
 
     stdio_init_all(); // Enable UART so we can print status output
 
-    uart_start();       // initialize comms
+    uart_start();      // initialize comms
     init_motor();      // initialize motor
     init_pins();       // initialize pins for encoder
     init_ultrasonic(); // initialize pins for ultrasonic
@@ -43,10 +43,29 @@ int main()
     gpio_set_irq_enabled_with_callback(RIGHT_ENCODER_PIN, GPIO_IRQ_EDGE_RISE, true, gpio_callback);
     gpio_set_irq_enabled_with_callback(LEFT_ENCODER_PIN, GPIO_IRQ_EDGE_RISE, true, gpio_callback);
 
-    // moveBackwardBY(60);
-    moveForward();
+    //moveBackwardBY(60);
 
-    MappingMain();
+    // moveForwardBY(60);
+    // turnLeft90();
+    // moveForwardBY(60);
+    // turnLeft90();
+    // moveForwardBY(60);
+    // turnLeft90();
+    // moveForwardBY(60);
+    // turnLeft90();
+  
+  moveForward();
+  speedUp();
+  sleep_ms(500);
+speedUp();
+sleep_ms(500);
+
+
+
+    
+
+
+    //MappingMain();
 
     // multidimensional array is defined row X column / vert X hori
     // in this case access goes from 0,0 to 9,8
